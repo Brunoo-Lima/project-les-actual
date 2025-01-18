@@ -31,8 +31,14 @@ export function Card({ product }: ICardProps) {
           <p>R$ {product.price}</p>
         </div>
 
-        <button type="button" className="bg-primary-dark text-background">
-          + Carrinho
+        <button
+          type="button"
+          className="bg-primary-dark p-1 mt-3 rounded-md flex items-center justify-center gap-2 hover:bg-primary-dark/75 transition duration-300"
+        >
+          +
+          <p className="text-base font-semibold text-background-dark">
+            Carrinho
+          </p>
         </button>
       </div>
     </div>

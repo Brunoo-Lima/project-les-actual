@@ -1,6 +1,6 @@
 export function Footer() {
   return (
-    <footer className="bg-backround-light text-white p-8 border-t border-primary-dark">
+    <footer className="bg-backround-light text-white py-8 px-12 border-t border-primary-dark">
       <div className="flex gap-12">
         <div className="w-96">
           <p>Logo</p>
