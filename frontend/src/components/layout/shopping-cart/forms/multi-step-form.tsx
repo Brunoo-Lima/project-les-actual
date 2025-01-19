@@ -2,6 +2,7 @@
 
 import { useMultiStepForm } from '@/hooks/useMultiStepForm';
 import { ShoppingCart } from '../shopping-cart';
+import { Addresses } from './addresses';
 
 export function MultiStepForm() {
   const { isFirstStep, currentStep, stepIndex, isLastStep, next, previous } =
@@ -14,35 +15,46 @@ export function MultiStepForm() {
       },
       steps: [
         <ShoppingCart />,
-        // <Step2 />,
+        <Addresses />,
         // <Step3 />,
         // <Step4 />,
       ],
     });
 
   return (
-    <section className="container mx-auto ">
-      <div>{currentStep}</div>
+    <form
+      onSubmit={(e) => e.preventDefault()}
+      className="flex flex-col items-center justify-center mt-8 pb-8"
+    >
+      {currentStep}
 
-      <form className="flex items-center justify-center mt-8">
+      <div className="flex justify-center gap-4">
         {!isFirstStep && (
-          <button type="button" onClick={previous}>
+          <button
+            type="button"
+            onClick={previous}
+            className="mt-8 bg-red-700 font-semibold text-primary-light p-2 rounded-md"
+          >
             Anterior
           </button>
         )}
         {!isLastStep ? (
-          <button type="button" onClick={next}>
+          <button
+            type="button"
+            onClick={next}
+            className="mt-8 bg-primary text-background p-2 rounded-md font-semibold text-base"
+          >
             Próximo
           </button>
         ) : (
           <button
             type="submit"
-            className="bg-primary text-background p-2 rounded-md font-semibold text-base"
+            className="bg-primary text-background p-2 rounded-md font-semibold text-base mt-8"
           >
             Finalizar
           </button>
         )}
-      </form>
-    </section>
+      </div>
+    </form>
   );
 }

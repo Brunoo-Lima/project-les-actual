@@ -24,6 +24,10 @@ body {
   display: none;
 }
 
+.container-address-form::-webkit-scrollbar {
+  display: none;
+}
+
 /* .container-shopping-cart::-webkit-scrollbar {
   width: 0.5em;
 }
