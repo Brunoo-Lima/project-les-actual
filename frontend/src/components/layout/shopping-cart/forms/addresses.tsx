@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { AddressForm } from './address-form';
 import { ModalBackground } from '@/components/modal/modal-background';
+import { CheckIcon } from 'lucide-react';
+import { Plus } from '@phosphor-icons/react';
 
 interface Address {
   id: number;
@@ -73,8 +75,8 @@ export function Addresses() {
             }`}
           >
             {selectedAddress === address.id && (
-              <small className="absolute right-2 bottom-1 bg-primary-dark text-primary-light px-1 rounded-md">
-                Selecionado
+              <small className="absolute right-2 bottom-1 bg-primary-dark text-primary-light pl-2 pr-1 rounded-md flex justify-center items-center gap-1">
+                Selecionado <CheckIcon size={16} />
               </small>
             )}
 
@@ -99,47 +101,15 @@ export function Addresses() {
             </div>
           </div>
         ))}
-
-        {/* <div className="grid grid-cols-3 bg-background rounded-md border border-primary-dark p-2">
-          <div className="flex flex-col gap-1">
-            <span>Identificação: CASA</span>
-            <span>Rua: Vicente</span>
-            <span>CEP: 08695-065</span>
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <span>Número: 100</span>
-            <span>Bairro: Jardins</span>
-            <span>Residência: Casa</span>
-            <span>Logradouro: Não sei</span>
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <span>Cidade: Suzano</span>
-            <span>Estado: São Paulo</span>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-3 bg-background rounded-md border border-primary-dark p-2 mt-6">
-          <div className="flex flex-col gap-2">
-            <span>Identificação: CASA</span>
-            <span>Rua: Vicente</span>
-            <span>CEP: 08695-065</span>
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <span>Número: 100</span>
-            <span>Bairro: Jardins</span>
-          </div>
-        </div> */}
       </div>
 
       <div>
         <button
           type="button"
-          className="bg-primary-dark text-background p-2 rounded-md font-semibold text-base w-60"
+          className="bg-primary-dark text-background p-2 rounded-md font-semibold text-base w-64 flex items-center justify-center gap-2 transition duration-300 hover:bg-primary"
           onClick={handleOpenModalNewAddress}
         >
+          <Plus size={16} weight="bold" />
           Cadastrar novo endereço
         </button>
       </div>

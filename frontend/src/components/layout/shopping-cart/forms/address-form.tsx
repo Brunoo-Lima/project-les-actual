@@ -1,4 +1,5 @@
 import { Input } from '@/components/ui/input/input';
+import { XIcon } from 'lucide-react';
 
 interface IAddressFormProps {
   onClose: () => void;
@@ -6,13 +7,13 @@ interface IAddressFormProps {
 
 export function AddressForm({ onClose }: IAddressFormProps) {
   return (
-    <div className="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2  bg-background-dark flex flex-col w-[600px] h-[550px] p-4">
+    <div className="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2  bg-background-dark flex flex-col w-[600px] h-[550px] p-4 rounded-lg">
       <button
         type="button"
         onClick={onClose}
-        className="absolute right-3 top-3"
+        className="absolute right-3 top-3 flex items-center justify-center"
       >
-        X
+        <XIcon size={24} color="#ffffff" />
       </button>
 
       <div className="mt-8 flex flex-col gap-2">
@@ -45,13 +46,13 @@ export function AddressForm({ onClose }: IAddressFormProps) {
         <div className="flex justify-center gap-4 mt-8">
           <button
             type="button"
-            className="bg-primary text-background p-2 rounded-md font-semibold text-base w-60"
+            className="bg-primary text-background p-2 rounded-md font-semibold text-base w-60 transition duration-300 hover:bg-primary-dark"
           >
             Salvar
           </button>
           <button
             type="button"
-            className="bg-red-700 font-semibold text-primary-light p-2 rounded-md w-60"
+            className="bg-red-700 font-semibold text-primary-light p-2 rounded-md w-60  transition duration-300 hover:bg-red-500"
           >
             Limpar campos
           </button>

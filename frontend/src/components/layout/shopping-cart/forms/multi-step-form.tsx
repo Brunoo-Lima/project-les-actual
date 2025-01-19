@@ -33,7 +33,7 @@ export function MultiStepForm() {
           <button
             type="button"
             onClick={previous}
-            className="mt-8 bg-red-700 font-semibold text-primary-light p-2 rounded-md"
+            className="mt-8 bg-red-700 font-semibold text-primary-light p-2 rounded-md transition duration-300 hover:bg-red-500"
           >
             Anterior
           </button>
@@ -42,14 +42,14 @@ export function MultiStepForm() {
           <button
             type="button"
             onClick={next}
-            className="mt-8 bg-primary text-background p-2 rounded-md font-semibold text-base"
+            className="mt-8 bg-primary text-background p-2 rounded-md font-semibold text-base transition duration-300 hover:bg-primary-dark"
           >
             Próximo
           </button>
         ) : (
           <button
             type="submit"
-            className="bg-primary text-background p-2 rounded-md font-semibold text-base mt-8"
+            className="bg-primary text-background p-2 rounded-md font-semibold text-base mt-8 transition duration-300 hover:bg-primary-dark"
           >
             Finalizar
           </button>
