@@ -25,10 +25,12 @@ export function Card({ product }: ICardProps) {
       </div>
 
       <div className="flex flex-col p-4">
-        <div className="flex flex-col flex-1">
-          <h2>{product.anime}</h2>
-          <h3>{product.name}</h3>
-          <p>R$ {product.price}</p>
+        <div className="flex flex-col gap-y-1 flex-1">
+          <small className="text-sm italic bg-red-600 inline-block w-max px-2 py-0.5 rounded-md">
+            {product.anime}
+          </small>
+          <p className="text-base font-thin">{product.name}</p>
+          <p className="text-base font-semibold">R$ {product.price}</p>
         </div>
 
         <button

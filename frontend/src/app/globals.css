@@ -19,3 +19,20 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.container-shopping-cart::-webkit-scrollbar {
+  display: none;
+}
+
+/* .container-shopping-cart::-webkit-scrollbar {
+  width: 0.5em;
+}
+
+.container-shopping-cart::-webkit-scrollbar-thumb {
+  background-color: var(--foreground);
+  border-radius: 0.5em;
+}
+
+.container-shopping-cart::-webkit-scrollbar-track {
+  background-color: var(--background);
+} */
