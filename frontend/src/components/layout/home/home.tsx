@@ -1,3 +1,3 @@
-export function HomePage() {
-  return <section>Inicio</section>;
+export function Home() {
+  return <section className="h-screen">Inicio</section>;
 }
