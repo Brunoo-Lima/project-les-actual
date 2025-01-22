@@ -1,9 +1,9 @@
 'use client';
 
+import { LinkNav } from '@/components/header/link-nav/link-nav';
 import { usePathname } from 'next/navigation';
-import { LinkNav } from './link-nav/link-nav';
 
-export function Header() {
+export function HeaderUser() {
   const pathname = usePathname();
 
   return (
@@ -13,14 +13,17 @@ export function Header() {
       <nav className="flex gap-8">
         <LinkNav isActive={pathname === '/'} href="/" text="Início" />
         <LinkNav
-          isActive={pathname === '/produto'}
-          href="/produto"
-          text="Produto"
+          isActive={pathname === '/produtos'}
+          href="/produtos"
+          text="Produtos"
         />
+
         <LinkNav
-          isActive={pathname === '/vendas'}
-          href="/vendas"
-          text="Vendas"
+          isActive={pathname === '/carrinho'}
+          href="/carrinho"
+          text="Carrinho"
+          cart
+          cartCount={0}
         />
       </nav>
     </header>

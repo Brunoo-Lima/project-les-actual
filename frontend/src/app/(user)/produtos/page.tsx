@@ -1,5 +1,4 @@
 import { Product } from '@/components/layout/product/product';
-
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -7,6 +6,6 @@ export const metadata: Metadata = {
   description: 'Página de produtos',
 };
 
-export default function ProductPage() {
+export default function ProductsPage() {
   return <Product />;
 }
