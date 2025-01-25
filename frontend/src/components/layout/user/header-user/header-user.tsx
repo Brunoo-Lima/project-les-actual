@@ -11,7 +11,6 @@ export function HeaderUser() {
       <h1>Logo</h1>
 
       <nav className="flex gap-8">
-        <LinkNav isActive={pathname === '/'} href="/" text="Início" />
         <LinkNav
           isActive={pathname === '/produtos'}
           href="/produtos"

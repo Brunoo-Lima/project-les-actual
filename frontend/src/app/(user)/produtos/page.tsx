@@ -1,4 +1,4 @@
-import { Product } from '@/components/layout/product/product';
+import { Products } from '@/components/layout/user/products/products';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function ProductsPage() {
-  return <Product />;
+  return <Products />;
 }

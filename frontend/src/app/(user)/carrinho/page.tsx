@@ -1,4 +1,5 @@
-import { MultiStepForm } from '@/components/layout/shopping-cart/forms/multi-step-form';
+import { MultiStepForm } from '@/components/layout/user/shopping-cart/forms/multi-step-form';
+import { TitlePage } from '@/components/ui/title/title-page/title-page';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
 export default function ShoppingCartPage() {
   return (
     <>
-      <h1 className="text-2xl font-bold">Carrinho</h1>
+      <TitlePage title="Carrinho de compras" />
       <MultiStepForm />
     </>
   );

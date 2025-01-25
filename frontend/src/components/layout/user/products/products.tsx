@@ -1,7 +1,7 @@
 import { productList } from '@/mocks/product-list';
 import { Card } from './card/card';
 
-export function Product() {
+export function Products() {
   return (
     <section className="container mx-auto py-10">
       <div className="grid grid-cols-3 gap-4 place-items-center">

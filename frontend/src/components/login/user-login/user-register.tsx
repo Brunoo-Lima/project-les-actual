@@ -2,7 +2,7 @@
 
 import { ButtonLogin } from '@/components/ui/button/button-login/button-login';
 import { Input } from '@/components/ui/input/input';
-import { TitleLogin } from '@/components/ui/title-login/title-login';
+import { TitleLogin } from '@/components/ui/title/title-login/title-login';
 import { useRouter } from 'next/navigation';
 
 export function UserRegister() {
