@@ -26,6 +26,18 @@ export default {
           DEFAULT: ' #ef4444',
           dark: '#b91c1c',
         },
+
+        success: {
+          light: '#34d399',
+          DEFAULT: '#10B981',
+          dark: '#047857',
+        },
+
+        textColor: {
+          light: '#ffffff',
+          DEFAULT: '#2DD4BF',
+          dark: '#9ca3af',
+        },
       },
     },
   },
