@@ -1,30 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { ButtonsQuantity } from './buttons-quantity/buttons-quantity';
-import { Trash2Icon } from 'lucide-react';
 import { Input } from '@/components/ui/input/input';
-
-const initialItems = [
-  {
-    id: 1,
-    name: 'Itachi Uchiha - Naruto',
-    price: 200,
-    quantity: 1,
-  },
-  {
-    id: 2,
-    name: 'Ace - One Piece',
-    price: 350,
-    quantity: 1,
-  },
-  {
-    id: 3,
-    name: 'Sukuna - Jujustu Kaisen',
-    price: 400,
-    quantity: 1,
-  },
-];
+import { FormatValue } from '@/utils/format-value';
+import { ItemCart } from './item-cart';
+import { initialItems } from '@/mocks/initial-items-cart';
 
 export function ShoppingCart() {
   const [items, setItems] = useState(initialItems);
@@ -83,38 +63,13 @@ export function ShoppingCart() {
           {items.length > 0 ? (
             <>
               {items.map((item) => (
-                <div
+                <ItemCart
                   key={item.id}
-                  className="flex gap-4 justify-between bg-background-light py-2 px-3 rounded-md"
-                >
-                  <div className="flex flex-col gap-2 flex-1">
-                    <p className="text-lg font-semibold">{item.name}</p>
-                    <small className="italic">R$ {item.price}</small>
-                  </div>
-
-                  <div className="flex flex-col items-start gap-4">
-                    <ButtonsQuantity
-                      quantity={item.quantity}
-                      handleIncrement={() => handleIncrement(item.id)}
-                      handleDecrement={() => handleDecrement(item.id)}
-                    />
-
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveItem(item.id)}
-                      className="w-max flex items-center gap-2 self-center bg-background px-2 rounded-md text-sm transition duration-300 hover:bg-gray-800"
-                    >
-                      <Trash2Icon size={12} color="#ffffff" />
-                      Remover
-                    </button>
-                  </div>
-
-                  <div className="w-24 text-right">
-                    <p className="text-lg font-semibold">
-                      R$ {item.quantity * item.price}
-                    </p>
-                  </div>
-                </div>
+                  item={item}
+                  handleIncrement={handleIncrement}
+                  handleDecrement={handleDecrement}
+                  handleRemoveItem={handleRemoveItem}
+                />
               ))}
             </>
           ) : (
@@ -142,28 +97,26 @@ export function ShoppingCart() {
           </button>
         </div>
 
-        <div className="flex justify-between">
-          <p className="text-base font-semibold">Subtotal</p>
-          <p className="text-base font-semibold">R$ {valueTotal}</p>
+        <div className="flex justify-between *:text-base *:font-semibold">
+          <p>Subtotal</p>
+          <p>{FormatValue(valueTotal)}</p>
         </div>
 
-        <div className="flex justify-between">
-          <p className="text-base font-semibold">Frete</p>
-          <p className="text-base font-semibold">R$ {frete}</p>
+        <div className="flex justify-between *:text-base *:font-semibold">
+          <p>Frete</p>
+          <p>{FormatValue(frete)}</p>
         </div>
 
         {appliedCoupon && (
-          <div className="flex justify-between">
-            <p className="text-base font-semibold">Cupom ({appliedCoupon})</p>
-            <p className="text-base font-semibold">
-              -R$ {discountValueCoupon.toFixed(2)}
-            </p>
+          <div className="flex justify-between *:text-base *:font-semibold">
+            <p>Cupom ({appliedCoupon})</p>
+            <p> -{FormatValue(discountValueCoupon)}</p>
           </div>
         )}
 
-        <div className="flex justify-between">
-          <p className="text-lg font-semibold">Total</p>
-          <p className="text-lg font-semibold">{finalTotal.toFixed(2)}</p>
+        <div className="flex justify-between *:text-lg *:font-semibold">
+          <p>Total</p>
+          <p>{FormatValue(finalTotal)}</p>
         </div>
       </div>
     </div>
