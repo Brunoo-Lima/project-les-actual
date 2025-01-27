@@ -1,24 +1,24 @@
 'use client';
 
-import { Footer } from '@/components/footer/footer';
-import { Header } from '@/components/header/header';
 import { ButtonRedirectLogin } from '../ui/button/button-redirect-login';
 import { AuthProvider, useUseAuth } from '@/hooks/useAuth';
+import { Sidebar } from '../sidebar/sidebar';
 
 export function MasterLayout({ children }: { children: React.ReactNode }) {
   const { handleLoginUser } = useUseAuth();
 
   return (
     <>
-      <Header />
-      <main className="container py-8 px-12">
+      <main className="flex bg-background">
         <AuthProvider>
-          {children}
+          <Sidebar />
 
-          <ButtonRedirectLogin handleLoginUser={handleLoginUser} />
+          <section className="h-screen flex-grow px-8 py-5 overflow-auto">
+            {children}
+            <ButtonRedirectLogin handleLoginUser={handleLoginUser} />
+          </section>
         </AuthProvider>
       </main>
-      <Footer />
     </>
   );
 }
