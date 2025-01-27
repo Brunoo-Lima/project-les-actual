@@ -1,8 +1,8 @@
 'use client';
 
-import { LinkNav } from '@/components/header/link-nav/link-nav';
 import { GlobeIcon } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { LinkNav } from './link-nav/link-nav';
 
 export function HeaderUser() {
   const pathname = usePathname();
