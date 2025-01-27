@@ -1,3 +1,4 @@
+import { Product } from '@/components/layout/admin/product/product';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -6,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function ProductPage() {
-  return <section>Cadastrar produto</section>;
+  return <Product />;
 }

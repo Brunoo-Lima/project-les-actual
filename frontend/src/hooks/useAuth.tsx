@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }: IChildrenProps) => {
   const router = useRouter();
 
   const handleLoginUser = () => {
-    setUser(user);
+    setUser({} as IUser);
     router.push('/');
   };
 
