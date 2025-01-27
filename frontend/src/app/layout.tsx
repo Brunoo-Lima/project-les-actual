@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 import './globals.css';
 import { MasterLayout } from '@/components/master-layout/master-layout';
+import { AuthProvider } from '@/hooks/useAuth';
 
 const roboto = Roboto({
   weight: ['400', '500', '700'],
@@ -23,7 +24,7 @@ export default function RootLayout({
     <html lang="pt-br">
       <body className={`${roboto.variable} ${roboto.className} antialiased`}>
         {/* <MasterLayout> */}
-        {children}
+        <AuthProvider>{children}</AuthProvider>
         {/* </MasterLayout> */}
       </body>
     </html>
