@@ -1,18 +1,24 @@
+import { IProduct } from '@/@types/IProduct';
 import { EyeIcon, PencilIcon, Trash2Icon } from 'lucide-react';
 
 interface ITableRowProps {
-  product: any;
+  product: IProduct;
   onEditStatusProduct: (
-    product: any,
+    product: IProduct,
     event: React.MouseEvent<HTMLButtonElement>
   ) => void;
-  onOpenDetailsProduct: (product: any) => void;
+  onOpenDetailsProduct: (product: IProduct) => void;
+  onDeleteProduct: (
+    product: IProduct,
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => void;
 }
 
 export function TableRow({
   product,
   onEditStatusProduct,
   onOpenDetailsProduct,
+  onDeleteProduct,
 }: ITableRowProps) {
   return (
     <tr
@@ -51,10 +57,7 @@ export function TableRow({
             <PencilIcon size={20} color="#ffffff" />
           </button>
 
-          <button
-            type="button"
-            // onClick={onDeleteClient}
-          >
+          <button type="button" onClick={(e) => onDeleteProduct(product, e)}>
             <Trash2Icon size={20} color="#ffffff" />
           </button>
         </div>

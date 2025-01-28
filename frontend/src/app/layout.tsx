@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 import './globals.css';
-import { MasterLayout } from '@/components/master-layout/master-layout';
 import { AuthProvider } from '@/hooks/useAuth';
+import { Toaster } from 'sonner';
 
 const roboto = Roboto({
   weight: ['400', '500', '700'],
@@ -23,13 +23,11 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body className={`${roboto.variable} ${roboto.className} antialiased`}>
-        {/* <MasterLayout> */}
         <AuthProvider>
           {children}
-
-          <div id="root" />
+          <Toaster richColors />
         </AuthProvider>
-        {/* </MasterLayout> */}
+        <div id="modal-root" />
       </body>
     </html>
   );

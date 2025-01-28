@@ -10,8 +10,15 @@ import { ModalBackground } from '@/components/modal/modal-background/modal-backg
 import { ModalRegister } from './modals/modal-register/modal-register';
 
 export function Product() {
+  const [products, setProducts] = useState(productListRegister);
   const [isOpenModalNewProduct, setIsOpenModalNewProduct] =
     useState<boolean>(false);
+
+  const handleDeleteProduct = (productId: number) => {
+    setProducts((prevProducts) =>
+      prevProducts.filter((product) => product.id !== productId)
+    );
+  };
 
   const handleOpenModalNewProduct = () => {
     setIsOpenModalNewProduct(true);
@@ -32,7 +39,7 @@ export function Product() {
         onClick={handleOpenModalNewProduct}
       />
 
-      <Table data={productListRegister} />
+      <Table data={products} onDeleteProduct={handleDeleteProduct} />
 
       {isOpenModalNewProduct && (
         <ModalBackground>
