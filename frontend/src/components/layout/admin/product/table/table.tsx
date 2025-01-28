@@ -4,12 +4,13 @@ import { JSX, useState } from 'react';
 import { TableRow } from './table-row';
 import { ModalBackground } from '@/components/modal/modal-background/modal-background';
 import { ModalStatus } from '../modals/modal-status/modal-status';
+import { ModalInfo } from '../modals/modal-info/modal-info';
 
 interface ITableProps {
   data: any[];
 }
 
-type ModalType = 'status' | 'edit' | null;
+type ModalType = 'status' | 'edit' | 'info' | null;
 
 export function Table({ data }: ITableProps) {
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -24,12 +25,20 @@ export function Table({ data }: ITableProps) {
     setModalType('status');
   };
 
+  const handleOpenModalInfoProduct = (product: any) => {
+    setSelectedProduct(product);
+    setModalType('info');
+  };
+
   const modalComponent: Record<Exclude<ModalType, null>, JSX.Element> = {
     status: (
       <ModalStatus
         product={selectedProduct}
         onClose={() => setModalType(null)}
       />
+    ),
+    info: (
+      <ModalInfo product={selectedProduct} onClose={() => setModalType(null)} />
     ),
   };
 
@@ -51,7 +60,7 @@ export function Table({ data }: ITableProps) {
             <TableRow
               key={product.id}
               product={product}
-              // onOpenDetailsClient={handleOpenDetailsClient}
+              onOpenDetailsProduct={handleOpenModalInfoProduct}
               onEditStatusProduct={handleOpenModalEditStatusProduct}
               // onEditClient={handleEditClient}
               // onDeleteClient={handleDeleteClient}

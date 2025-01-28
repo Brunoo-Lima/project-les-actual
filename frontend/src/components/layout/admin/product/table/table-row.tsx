@@ -6,13 +6,18 @@ interface ITableRowProps {
     product: any,
     event: React.MouseEvent<HTMLButtonElement>
   ) => void;
+  onOpenDetailsProduct: (product: any) => void;
 }
 
-export function TableRow({ product, onEditStatusProduct }: ITableRowProps) {
+export function TableRow({
+  product,
+  onEditStatusProduct,
+  onOpenDetailsProduct,
+}: ITableRowProps) {
   return (
     <tr
       className="rounded-lg bg-background-dark h-14 text-left hover:brightness-110 cursor-pointer"
-      // onClick={() => onOpenDetailsClient(client)}
+      onClick={() => onOpenDetailsProduct(product)}
     >
       <td className="pl-2">{product.id}</td>
       <td>{product.name}</td>
@@ -35,10 +40,7 @@ export function TableRow({ product, onEditStatusProduct }: ITableRowProps) {
 
       <td>
         <div className="flex items-center gap-x-4">
-          <button
-            type="button"
-            // onClick={() => onOpenDetailsClient(client)}
-          >
+          <button type="button" onClick={() => onOpenDetailsProduct(product)}>
             <EyeIcon size={20} color="#ffffff" />
           </button>
 
