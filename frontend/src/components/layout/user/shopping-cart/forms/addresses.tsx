@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { AddressForm } from './address-form';
-import { ModalBackground } from '@/components/modal/modal-background';
+import { ModalBackground } from '@/components/modal/modal-background/modal-background';
 import { CheckIcon } from 'lucide-react';
 import { Plus } from '@phosphor-icons/react';
 

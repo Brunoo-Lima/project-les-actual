@@ -1,10 +1,20 @@
+'use client';
+
+import { JSX, useState } from 'react';
 import { TableRow } from './table-row';
+import { ModalBackground } from '@/components/modal/modal-background/modal-background';
 
 interface ITableProps {
   data: any[];
 }
 
+type ModalType = 'status' | 'edit' | null;
+
 export function Table({ data }: ITableProps) {
+  const [modalType, setModalType] = useState<ModalType>(null);
+
+  // const modalComponent: Record<Exclude<ModalType, null>, JSX.Element> = {};
+
   return (
     <div className="w-full">
       <table className="table-fixed w-full border-separate border-spacing-y-5">
@@ -33,8 +43,8 @@ export function Table({ data }: ITableProps) {
       </table>
 
       {/* {modalType && (
-      <ModalBackground>{modalComponent[modalType]}</ModalBackground>
-    )} */}
+        <ModalBackground>{modalComponent[modalType]}</ModalBackground>
+      )} */}
     </div>
   );
 }

@@ -24,7 +24,11 @@ export default function RootLayout({
     <html lang="pt-br">
       <body className={`${roboto.variable} ${roboto.className} antialiased`}>
         {/* <MasterLayout> */}
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          {children}
+
+          <div id="root" />
+        </AuthProvider>
         {/* </MasterLayout> */}
       </body>
     </html>

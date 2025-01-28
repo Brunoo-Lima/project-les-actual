@@ -1,15 +1,23 @@
 import { ReactNode } from 'react';
 
 interface IButtonGeneralProps {
-  icon: ReactNode;
+  icon?: ReactNode;
   text: string;
   className?: string;
+  onClick?: () => void;
 }
 
-export function ButtonGeneral({ icon, text, className }: IButtonGeneralProps) {
+export function ButtonGeneral({
+  icon,
+  text,
+  className,
+  onClick,
+}: IButtonGeneralProps) {
   return (
     <button
-      className={`${className} bg-primary text-background px-2 p-1 mt-3 rounded-md flex items-center justify-center gap-2 hover:bg-primary-dark transition duration-300`}
+      type="button"
+      onClick={onClick}
+      className={`${className} bg-primary text-background p-2 rounded-md flex items-center justify-center gap-2 hover:bg-primary-dark transition duration-300`}
     >
       {icon && icon}
       <p>{text}</p>
