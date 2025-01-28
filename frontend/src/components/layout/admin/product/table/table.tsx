@@ -3,6 +3,7 @@
 import { JSX, useState } from 'react';
 import { TableRow } from './table-row';
 import { ModalBackground } from '@/components/modal/modal-background/modal-background';
+import { ModalStatus } from '../modals/modal-status/modal-status';
 
 interface ITableProps {
   data: any[];
@@ -11,9 +12,26 @@ interface ITableProps {
 type ModalType = 'status' | 'edit' | null;
 
 export function Table({ data }: ITableProps) {
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalType, setModalType] = useState<ModalType>(null);
 
-  // const modalComponent: Record<Exclude<ModalType, null>, JSX.Element> = {};
+  const handleOpenModalEditStatusProduct = (
+    product: any,
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.stopPropagation();
+    setSelectedProduct(product);
+    setModalType('status');
+  };
+
+  const modalComponent: Record<Exclude<ModalType, null>, JSX.Element> = {
+    status: (
+      <ModalStatus
+        product={selectedProduct}
+        onClose={() => setModalType(null)}
+      />
+    ),
+  };
 
   return (
     <div className="w-full">
@@ -34,7 +52,7 @@ export function Table({ data }: ITableProps) {
               key={product.id}
               product={product}
               // onOpenDetailsClient={handleOpenDetailsClient}
-              // onEditStatusClient={handleEditStatusClient}
+              onEditStatusProduct={handleOpenModalEditStatusProduct}
               // onEditClient={handleEditClient}
               // onDeleteClient={handleDeleteClient}
             />
@@ -42,9 +60,9 @@ export function Table({ data }: ITableProps) {
         </tbody>
       </table>
 
-      {/* {modalType && (
+      {modalType && (
         <ModalBackground>{modalComponent[modalType]}</ModalBackground>
-      )} */}
+      )}
     </div>
   );
 }

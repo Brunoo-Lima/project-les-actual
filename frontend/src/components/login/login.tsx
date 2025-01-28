@@ -4,11 +4,8 @@ import { useState } from 'react';
 import { AdminLogin } from './admin-login/admin-login';
 import { UserLogin } from './user-login/user-login';
 import { ButtonOptionLogin } from '../ui/button/button-option-login';
-import { useUseAuth } from '@/hooks/useAuth';
 
 export function Login() {
-  const { setUser, user } = useUseAuth();
-
   const [option, setOption] = useState<'ADMIN' | 'USER'>('USER');
 
   const handleChangeOption = (option: 'ADMIN' | 'USER') => {

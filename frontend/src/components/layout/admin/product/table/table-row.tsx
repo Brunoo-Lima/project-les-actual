@@ -2,9 +2,13 @@ import { EyeIcon, PencilIcon, Trash2Icon } from 'lucide-react';
 
 interface ITableRowProps {
   product: any;
+  onEditStatusProduct: (
+    product: any,
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => void;
 }
 
-export function TableRow({ product }: ITableRowProps) {
+export function TableRow({ product, onEditStatusProduct }: ITableRowProps) {
   return (
     <tr
       className="rounded-lg bg-background-dark h-14 text-left hover:brightness-110 cursor-pointer"
@@ -16,7 +20,7 @@ export function TableRow({ product }: ITableRowProps) {
       <td>
         <button
           type="button"
-          // onClick={(event) => onEditStatusClient(client, event)}
+          onClick={(event) => onEditStatusProduct(product, event)}
           className={`${
             product.status === 'Ativo' ? 'bg-green-500' : 'bg-red-500'
           } w-24 px-2 text-center rounded-sm border-none flex items-center justify-center gap-x-2`}

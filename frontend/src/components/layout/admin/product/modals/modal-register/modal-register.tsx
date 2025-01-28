@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { Modal } from '@/components/modal';
 import { ButtonCancel } from '@/components/ui/button/button-cancel/button-cancel';
 import { ButtonGeneral } from '@/components/ui/button/button-general';
@@ -24,14 +25,14 @@ export function ModalRegister({ onClose }: IModalRegisterProps) {
   };
 
   return (
-    <Modal.Root className="flex flex-col gap-y-4 w-[600px] h-[550px] p-4 rounded-lg overflow-auto container-modal">
+    <Modal.Root className="flex flex-col gap-y-4 w-[600px] h-[600px] p-4 rounded-lg overflow-auto container-modal">
       <Modal.Header title="Novo Produto" onClick={onClose} />
 
       <Modal.Content className="flex flex-col gap-4 ">
         <div>
           <label
             htmlFor="inputFile"
-            className="w-[300px] h-[250px] inline-block px-3 py-5 border border-primary-light rounded-md cursor-pointer"
+            className="w-[200px] h-[250px] inline-block px-3 py-5 border border-primary-light rounded-md cursor-pointer"
           >
             {previewImage ? (
               <img

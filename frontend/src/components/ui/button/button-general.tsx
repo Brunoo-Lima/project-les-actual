@@ -5,6 +5,7 @@ interface IButtonGeneralProps {
   text: string;
   className?: string;
   onClick?: () => void;
+  type?: 'submit' | 'reset' | 'button';
 }
 
 export function ButtonGeneral({
@@ -12,10 +13,11 @@ export function ButtonGeneral({
   text,
   className,
   onClick,
+  type = 'button',
 }: IButtonGeneralProps) {
   return (
     <button
-      type="button"
+      type={type}
       onClick={onClick}
       className={`${className} bg-primary text-background p-2 rounded-md flex items-center justify-center gap-2 hover:bg-primary-dark transition duration-300`}
     >
