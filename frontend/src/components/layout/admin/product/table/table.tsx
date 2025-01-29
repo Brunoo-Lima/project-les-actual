@@ -7,6 +7,7 @@ import { ModalStatus } from '../modals/modal-status/modal-status';
 import { ModalInfo } from '../modals/modal-info/modal-info';
 import { IProduct } from '@/@types/IProduct';
 import { toast } from 'sonner';
+import { ModalEdit } from '../modals/modal-edit/modal-edit';
 
 interface ITableProps {
   data: IProduct[];
@@ -42,6 +43,15 @@ export function Table({ data, onDeleteProduct }: ITableProps) {
     setModalType('info');
   };
 
+  const handleOpenModalEditProduct = (
+    product: IProduct,
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.stopPropagation();
+    setSelectedProduct(product);
+    setModalType('edit');
+  };
+
   const modalComponent: Record<Exclude<ModalType, null>, JSX.Element> = {
     status: (
       <ModalStatus
@@ -51,6 +61,10 @@ export function Table({ data, onDeleteProduct }: ITableProps) {
     ),
     info: (
       <ModalInfo product={selectedProduct} onClose={() => setModalType(null)} />
+    ),
+
+    edit: (
+      <ModalEdit product={selectedProduct} onClose={() => setModalType(null)} />
     ),
   };
 
@@ -75,7 +89,7 @@ export function Table({ data, onDeleteProduct }: ITableProps) {
                 product={product}
                 onOpenDetailsProduct={handleOpenModalInfoProduct}
                 onEditStatusProduct={handleOpenModalEditStatusProduct}
-                // onEditClient={handleEditClient}
+                onEditProduct={handleOpenModalEditProduct}
                 onDeleteProduct={handleDeleteProduct}
               />
             ))}

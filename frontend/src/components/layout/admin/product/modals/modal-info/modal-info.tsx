@@ -1,14 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
+import { IProduct } from '@/@types/IProduct';
 import { Modal } from '@/components/modal';
 import { ButtonCancel } from '@/components/ui/button/button-cancel/button-cancel';
 import { FormatValue } from '@/utils/format-value';
 
 interface IModalInfoProps {
   onClose: () => void;
-  product: any;
+  product: IProduct | null;
 }
 
 export function ModalInfo({ onClose, product }: IModalInfoProps) {
+  if (!product) return;
+
   return (
     <Modal.Root className="flex flex-col gap-y-4 w-[600px] h-[400px] p-4 rounded-lg overflow-auto container-modal">
       <Modal.Header title="Informações do produto" onClick={onClose} />

@@ -8,6 +8,10 @@ interface ITableRowProps {
     event: React.MouseEvent<HTMLButtonElement>
   ) => void;
   onOpenDetailsProduct: (product: IProduct) => void;
+  onEditProduct: (
+    product: IProduct,
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => void;
   onDeleteProduct: (
     product: IProduct,
     event: React.MouseEvent<HTMLButtonElement>
@@ -19,6 +23,7 @@ export function TableRow({
   onEditStatusProduct,
   onOpenDetailsProduct,
   onDeleteProduct,
+  onEditProduct,
 }: ITableRowProps) {
   return (
     <tr
@@ -52,7 +57,7 @@ export function TableRow({
 
           <button
             type="button"
-            // onClick={(event) => onEditClient(client, event)}
+            onClick={(event) => onEditProduct(product, event)}
           >
             <PencilIcon size={20} color="#ffffff" />
           </button>

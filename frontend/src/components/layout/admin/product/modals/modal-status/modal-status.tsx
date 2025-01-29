@@ -5,13 +5,17 @@ import { ButtonGeneral } from '@/components/ui/button/button-general';
 
 interface IModalStatusProps {
   onClose: () => void;
-  product: any;
+  product: {
+    status: string;
+  } | null;
 }
 
 export function ModalStatus({ onClose, product }: IModalStatusProps) {
   const handleSaveStatus = () => {
     onClose();
   };
+
+  if (!product) return;
 
   return (
     <Modal.Root className="flex flex-col gap-y-4 w-[400px] h-[250px] p-4 rounded-lg overflow-auto container-modal">
