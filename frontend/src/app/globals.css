@@ -35,6 +35,12 @@ body {
   gap: 1rem;
 }
 
+.row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+}
+
 /* .container-shopping-cart::-webkit-scrollbar {
   width: 0.5em;
 }
