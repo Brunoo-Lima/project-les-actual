@@ -1,19 +1,32 @@
+import { IProduct } from '@/@types/IProduct';
+import { useData } from '@/hooks/useData';
 import { ShoppingCart } from '@phosphor-icons/react';
 import { ShoppingBag } from 'lucide-react';
 import Image from 'next/image';
 
 interface ICardProps {
-  product: {
-    id: number;
-    name: string;
-    price: number;
-    image: string;
-    anime: string;
-    category: string;
-  };
+  product: IProduct;
 }
 
 export function Card({ product }: ICardProps) {
+  const { cartItems, setCartItems } = useData();
+
+  const handleAddProductCart = () => {
+    setCartItems((prevItems) => {
+      const itemExists = prevItems.find((item) => item.id === product.id);
+
+      if (itemExists) {
+        return prevItems.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      } else {
+        return [...prevItems, { ...product, quantity: 1 }];
+      }
+    });
+  };
+
   return (
     <div className="w-[300px] h-[480px] bg-background-light shadow-md rounded-md">
       <div className="overflow-hidden h-[300px] w-full rounded-tl-md rounded-tr-md transition-all duration-500">
@@ -37,6 +50,7 @@ export function Card({ product }: ICardProps) {
 
         <button
           type="button"
+          onClick={handleAddProductCart}
           className="bg-primary p-1 mt-3 rounded-md flex items-center justify-center gap-2 hover:bg-primary-dark transition duration-300"
         >
           <ShoppingBag size={16} color="#000000" />

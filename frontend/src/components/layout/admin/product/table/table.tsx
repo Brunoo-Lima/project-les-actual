@@ -64,7 +64,11 @@ export function Table({ data, onDeleteProduct }: ITableProps) {
     ),
 
     edit: (
-      <ModalEdit product={selectedProduct} onClose={() => setModalType(null)} />
+      <ModalEdit
+        product={selectedProduct}
+        setSelectedProduct={setSelectedProduct}
+        onClose={() => setModalType(null)}
+      />
     ),
   };
 

@@ -3,9 +3,11 @@
 import { GlobeIcon } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { LinkNav } from './link-nav/link-nav';
+import { useData } from '@/hooks/useData';
 
 export function HeaderUser() {
   const pathname = usePathname();
+  const { cartItems } = useData();
 
   return (
     <header className="flex justify-between items-center py-4 px-12 bg-background border-b border-primary-dark text-white">
@@ -23,7 +25,7 @@ export function HeaderUser() {
           href="/carrinho"
           text="Carrinho"
           cart
-          cartCount={0}
+          cartCount={cartItems.length}
         />
       </nav>
     </header>

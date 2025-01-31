@@ -3,6 +3,7 @@ import { Roboto } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/hooks/useAuth';
 import { Toaster } from 'sonner';
+import { DataProvider } from '@/hooks/useData';
 
 const roboto = Roboto({
   weight: ['400', '500', '700'],
@@ -24,8 +25,10 @@ export default function RootLayout({
     <html lang="pt-br">
       <body className={`${roboto.variable} ${roboto.className} antialiased`}>
         <AuthProvider>
-          {children}
-          <Toaster richColors />
+          <DataProvider>
+            {children}
+            <Toaster richColors />
+          </DataProvider>
         </AuthProvider>
         <div id="modal-root" />
       </body>

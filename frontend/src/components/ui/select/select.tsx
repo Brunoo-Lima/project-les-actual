@@ -29,7 +29,7 @@ export const Select = forwardRef<HTMLSelectElement, ISelectProps>(
           {...rest}
           className="border-[1px] border-background-light bg-background-dark rounded-md p-2 w-full h-[43px] focus-visible:border-primary-dark outline-none text-base text-background-light/50 placeholder:text-background-light/50"
         >
-          <option value="">Selecione uma op&ccedil;&atilde;o</option>
+          {/* <option value="">Selecione uma op&ccedil;&atilde;o</option> */}
 
           {options.map((option) => (
             <option key={option.value} value={option.value}>

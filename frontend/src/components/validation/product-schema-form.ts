@@ -12,3 +12,9 @@ export const ProductSchemaForm = yup.object().shape({
   price: yup.string().required('O preço é obrigatório'),
   stock: yup.string().required('O estoque é obrigatório'),
 });
+
+export type IStatusSchemaForm = yup.InferType<typeof StatusSchemaForm>;
+
+export const StatusSchemaForm = yup.object().shape({
+  status: yup.string().required('O status é obrigatório'),
+});

@@ -8,9 +8,12 @@ import { ButtonGeneral } from '@/components/ui/button/button-general';
 import { useState } from 'react';
 import { ModalBackground } from '@/components/modal/modal-background/modal-background';
 import { ModalRegister } from './modals/modal-register/modal-register';
+import { useData } from '@/hooks/useData';
 
 export function Product() {
-  const [products, setProducts] = useState(productListRegister);
+  const { products, setProducts } = useData();
+
+  // const [products, setProducts] = useState(productListRegister);
   const [isOpenModalNewProduct, setIsOpenModalNewProduct] =
     useState<boolean>(false);
 

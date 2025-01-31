@@ -5,16 +5,18 @@ import { Input } from '@/components/ui/input/input';
 import { FormatValue } from '@/utils/format-value';
 import { ItemCart } from './item-cart';
 import { initialItems } from '@/mocks/initial-items-cart';
+import { useData } from '@/hooks/useData';
 
 export function ShoppingCart() {
   const [items, setItems] = useState(initialItems);
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
   const [newCoupon, setNewCoupon] = useState<string>('');
   const [discountValueCoupon, setDiscountValueCoupon] = useState<number>(0);
+  const { cartItems, setCartItems } = useData();
 
   const frete = 20;
 
-  const valueTotal = items.reduce(
+  const valueTotal = cartItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
   );
@@ -22,7 +24,7 @@ export function ShoppingCart() {
   const finalTotal = valueTotal + frete - discountValueCoupon;
 
   const handleIncrement = (id: number) => {
-    setItems((prev) =>
+    setCartItems((prev) =>
       prev.map((item) =>
         item.id === id ? { ...item, quantity: item.quantity + 1 } : item
       )
@@ -30,7 +32,7 @@ export function ShoppingCart() {
   };
 
   const handleDecrement = (id: number) => {
-    setItems((prev) =>
+    setCartItems((prev) =>
       prev.map((item) =>
         item.id === id && item.quantity > 0
           ? { ...item, quantity: item.quantity - 1 }
@@ -53,16 +55,16 @@ export function ShoppingCart() {
   };
 
   const handleRemoveItem = (id: number) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
+    setCartItems((prev) => prev.filter((item) => item.id !== id));
   };
 
   return (
     <div className="grid grid-cols-2 gap-x-16 place-items-start mt-8 container mx-auto">
       <div className="border border-background-light rounded-lg flex flex-col gap-4 w-[600px] h-[500px]">
         <div className="flex flex-col gap-4 flex-1 overflow-auto p-6 container-shopping-cart">
-          {items.length > 0 ? (
+          {cartItems.length > 0 ? (
             <>
-              {items.map((item) => (
+              {cartItems.map((item) => (
                 <ItemCart
                   key={item.id}
                   item={item}
