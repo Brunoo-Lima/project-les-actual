@@ -1,26 +1,46 @@
+import { Modal } from '@/components/modal';
+import { ButtonCancel } from '@/components/ui/button/button-cancel/button-cancel';
 import { Input } from '@/components/ui/input/input';
-import { XIcon } from 'lucide-react';
+import {
+  addressEmpty,
+  AddressSchemaForm,
+  IAddressSchemaForm,
+} from '@/components/validation/address-schema.form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
 interface IAddressFormProps {
   onClose: () => void;
 }
 
 export function AddressForm({ onClose }: IAddressFormProps) {
-  return (
-    <div className="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2  bg-background-dark flex flex-col w-[600px] h-[550px] p-4 rounded-lg">
-      <button
-        type="button"
-        onClick={onClose}
-        className="absolute right-3 top-3 flex items-center justify-center"
-      >
-        <XIcon size={24} color="#ffffff" />
-      </button>
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    reset,
+  } = useForm<IAddressSchemaForm>({
+    resolver: yupResolver(AddressSchemaForm),
+  });
 
-      <div className="mt-8 flex flex-col gap-2">
+  const onSubmit: SubmitHandler<IAddressSchemaForm> = (data) => {
+    console.log('endereço', data);
+  };
+
+  return (
+    <Modal.Root className="w-[600px] h-[550px] overflow-auto p-4">
+      <Modal.Header title="Cadastrar endereço" onClick={onClose} />
+
+      <div
+        onSubmit={handleSubmit(onSubmit)}
+        className="mt-8 flex flex-col gap-2"
+      >
         <div>
           <Input
             label="Nome de Identificação"
             placeholder="Digite o nome de identificação"
+            {...register('identifier')}
+            error={errors.identifier}
           />
         </div>
         <div className="grid grid-cols-2 gap-4">
@@ -45,19 +65,14 @@ export function AddressForm({ onClose }: IAddressFormProps) {
 
         <div className="flex justify-center gap-4 mt-8">
           <button
-            type="button"
+            type="submit"
             className="bg-primary text-background p-2 rounded-md font-semibold text-base w-60 transition duration-300 hover:bg-primary-dark"
           >
             Salvar
           </button>
-          <button
-            type="button"
-            className="bg-red-700 font-semibold text-primary-light p-2 rounded-md w-60  transition duration-300 hover:bg-red-500"
-          >
-            Limpar campos
-          </button>
+          <ButtonCancel text="Limpar campos" onClick={() => addressEmpty} />
         </div>
       </div>
-    </div>
+    </Modal.Root>
   );
 }

@@ -6,6 +6,7 @@ import { FormatValue } from '@/utils/format-value';
 import { ItemCart } from './item-cart';
 import { initialItems } from '@/mocks/initial-items-cart';
 import { useData } from '@/hooks/useData';
+import { useFormContext } from 'react-hook-form';
 
 export function ShoppingCart() {
   const [items, setItems] = useState(initialItems);
@@ -13,6 +14,7 @@ export function ShoppingCart() {
   const [newCoupon, setNewCoupon] = useState<string>('');
   const [discountValueCoupon, setDiscountValueCoupon] = useState<number>(0);
   const { cartItems, setCartItems } = useData();
+  const { register } = useFormContext();
 
   const frete = 20;
 
@@ -86,14 +88,13 @@ export function ShoppingCart() {
             type="text"
             placeholder="Digite o cupom"
             label="Cupom"
-            value={newCoupon}
-            onChange={(e) => setNewCoupon(e.target.value)}
+            {...register('coupon')}
           />
 
           <button
             type="button"
             onClick={handleApplyNewCoupon}
-            className="bg-primary-dark text-primary-light px-4 py-2 rounded-md self-end"
+            className="bg-primary-dark text-primary-light px-4 py-2 w-64 rounded-md self-end"
           >
             Aplicar Cupom
           </button>

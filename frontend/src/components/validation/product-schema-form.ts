@@ -11,6 +11,7 @@ export const ProductSchemaForm = yup.object().shape({
   anime: yup.string().required('O anime é obrigatório'),
   price: yup.string().required('O preço é obrigatório'),
   stock: yup.string().required('O estoque é obrigatório'),
+  coupon: yup.string(),
 });
 
 export type IStatusSchemaForm = yup.InferType<typeof StatusSchemaForm>;
@@ -18,3 +19,9 @@ export type IStatusSchemaForm = yup.InferType<typeof StatusSchemaForm>;
 export const StatusSchemaForm = yup.object().shape({
   status: yup.string().required('O status é obrigatório'),
 });
+
+// export type ICouponSchemaForm = yup.InferType<typeof CouponSchemaForm>;
+
+// export const CouponSchemaForm = yup.object().shape({
+//   coupon: yup.string(),
+// });
