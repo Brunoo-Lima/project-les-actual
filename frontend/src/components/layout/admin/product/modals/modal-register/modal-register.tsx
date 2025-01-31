@@ -34,7 +34,7 @@ export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
     const file = event.target.files?.[0];
 
     if (file) {
-      setValue('image', file); // Define o arquivo no react-hook-form
+      setValue('image', file);
       setFilename(file.name);
 
       const reader = new FileReader();

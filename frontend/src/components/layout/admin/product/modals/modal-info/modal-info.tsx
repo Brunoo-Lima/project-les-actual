@@ -12,6 +12,17 @@ interface IModalInfoProps {
 export function ModalInfo({ onClose, product }: IModalInfoProps) {
   if (!product) return;
 
+  let imageSrc: string;
+
+  // Verifica se a imagem é um objeto Blob (arquivo)
+  if (product.image instanceof Blob) {
+    imageSrc = URL.createObjectURL(product.image);
+  } else {
+    imageSrc = product.image || '';
+  }
+
+  console.log('product', product);
+
   return (
     <Modal.Root className="flex flex-col gap-y-4 w-[600px] h-[400px] p-4 rounded-lg overflow-auto container-modal">
       <Modal.Header title="Informações do produto" onClick={onClose} />
@@ -27,7 +38,7 @@ export function ModalInfo({ onClose, product }: IModalInfoProps) {
           </div>
 
           <div className="w-[200px] h-auto mr-4">
-            <img src="/img/naruto.webp" alt="" />
+            <img src={imageSrc} alt={product.name} />
           </div>
         </div>
 
