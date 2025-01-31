@@ -10,12 +10,15 @@ import {
   IProductSchemaForm,
   ProductSchemaForm,
 } from '@/components/validation/product-schema-form';
+import { IProduct } from '@/@types/IProduct';
+import { toast } from 'sonner';
 
 interface IModalRegisterProps {
   onClose: () => void;
+  setProducts: React.Dispatch<React.SetStateAction<IProduct[] | []>>;
 }
 
-export function ModalRegister({ onClose }: IModalRegisterProps) {
+export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [filename, setFilename] = useState<string | null>(null);
   const {
@@ -31,18 +34,31 @@ export function ModalRegister({ onClose }: IModalRegisterProps) {
     const file = event.target.files?.[0];
 
     if (file) {
+      setValue('image', file); // Define o arquivo no react-hook-form
+      setFilename(file.name);
+
       const reader = new FileReader();
       reader.onload = (e: any) => {
         setPreviewImage(e.target.result as string);
-        setFilename(file.name);
-        setValue('image', file);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const onSubmit: SubmitHandler<IProductSchemaForm> = () => {
-    console.log('submit');
+  const onSubmit: SubmitHandler<IProductSchemaForm> = (
+    data: IProductSchemaForm
+  ) => {
+    const updatedData: IProduct = {
+      ...data,
+      id: Math.ceil(Math.random() * 10000),
+      price: +data.price,
+      stock: +data.stock,
+      status: 'Ativo',
+    };
+
+    setProducts((prevProducts) => [...prevProducts, updatedData]);
+    toast.success('Produto cadastrado com sucesso!');
+
     onClose();
   };
 

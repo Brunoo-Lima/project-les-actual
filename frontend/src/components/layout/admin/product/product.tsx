@@ -43,7 +43,10 @@ export function Product() {
 
       {isOpenModalNewProduct && (
         <ModalBackground>
-          <ModalRegister onClose={handleCloseModalNewProduct} />
+          <ModalRegister
+            setProducts={setProducts}
+            onClose={handleCloseModalNewProduct}
+          />
         </ModalBackground>
       )}
     </section>

@@ -5,6 +5,6 @@ export interface IProduct {
   price: number;
   stock: number;
   category: string;
-  image: string;
-  status: string;
+  image: File | null;
+  status?: string;
 }
