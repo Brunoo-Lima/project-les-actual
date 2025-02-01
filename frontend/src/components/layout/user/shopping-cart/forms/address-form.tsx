@@ -1,6 +1,9 @@
 import { Modal } from '@/components/modal';
 import { ButtonCancel } from '@/components/ui/button/button-cancel/button-cancel';
+import { ButtonGeneral } from '@/components/ui/button/button-general';
+import { Checkbox } from '@/components/ui/checkbox/checkbox';
 import { Input } from '@/components/ui/input/input';
+import { Textarea } from '@/components/ui/textarea/textarea';
 import {
   addressEmpty,
   AddressSchemaForm,
@@ -58,18 +61,23 @@ export function AddressForm({ onClose }: IAddressFormProps) {
           <Input label="Tipo de logradouro" placeholder="Digite o logradouro" />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-4">
           <Input label="Cidade" placeholder="Digite a cidade" />
           <Input label="Estado" placeholder="Digite o estado" />
+          <Input label="País" placeholder="Digite o país" />
         </div>
 
+        <Textarea label="Observação" placeholder="Digite a observação" />
+
+        <div className="flex gap-4">
+          <Checkbox label="Cobrança" />
+          <Checkbox label="Entrega" />
+        </div>
+
+        {/* Fazer uma condicional para se entrega for true, o input de identificador de delivery aparecer */}
+
         <div className="flex justify-center gap-4 mt-8">
-          <button
-            type="submit"
-            className="bg-primary text-background p-2 rounded-md font-semibold text-base w-60 transition duration-300 hover:bg-primary-dark"
-          >
-            Salvar
-          </button>
+          <ButtonGeneral type="submit" text="Salvar" className=" w-60" />
           <ButtonCancel text="Limpar campos" onClick={() => addressEmpty} />
         </div>
       </div>

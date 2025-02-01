@@ -3,6 +3,7 @@ import { AddressForm } from './address-form';
 import { ModalBackground } from '@/components/modal/modal-background/modal-background';
 import { CheckIcon } from 'lucide-react';
 import { Plus } from '@phosphor-icons/react';
+import { ButtonGeneral } from '@/components/ui/button/button-general';
 
 interface Address {
   id: number;
@@ -104,14 +105,12 @@ export function Addresses() {
       </div>
 
       <div>
-        <button
-          type="button"
-          className="bg-primary-dark text-background p-2 rounded-md font-semibold text-base w-64 flex items-center justify-center gap-2 transition duration-300 hover:bg-primary"
+        <ButtonGeneral
+          icon={<Plus size={16} weight="bold" />}
+          text="Cadastrar novo endereço"
           onClick={handleOpenModalNewAddress}
-        >
-          <Plus size={16} weight="bold" />
-          Cadastrar novo endereço
-        </button>
+          className="w-64"
+        />
       </div>
 
       {isOpenModalNewAddress && (
