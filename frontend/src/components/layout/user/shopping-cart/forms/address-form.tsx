@@ -34,7 +34,7 @@ export function AddressForm({ onClose }: IAddressFormProps) {
     <Modal.Root className="w-[600px] h-[550px] overflow-auto p-4">
       <Modal.Header title="Cadastrar endereço" onClick={onClose} />
 
-      <div
+      <form
         onSubmit={handleSubmit(onSubmit)}
         className="mt-8 flex flex-col gap-2"
       >
@@ -80,7 +80,7 @@ export function AddressForm({ onClose }: IAddressFormProps) {
           <ButtonGeneral type="submit" text="Salvar" className=" w-60" />
           <ButtonCancel text="Limpar campos" onClick={() => addressEmpty} />
         </div>
-      </div>
+      </form>
     </Modal.Root>
   );
 }

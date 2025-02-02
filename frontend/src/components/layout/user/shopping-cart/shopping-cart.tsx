@@ -4,44 +4,24 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input/input';
 import { FormatValue } from '@/utils/format-value';
 import { ItemCart } from './item-cart';
-import { initialItems } from '@/mocks/initial-items-cart';
-import { useData } from '@/hooks/useData';
-import { useFormContext } from 'react-hook-form';
+import { toast } from 'sonner';
+import { useCheckout } from '@/hooks/useCheckout';
 
 export function ShoppingCart() {
-  const [items, setItems] = useState(initialItems);
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
   const [newCoupon, setNewCoupon] = useState<string>('');
   const [discountValueCoupon, setDiscountValueCoupon] = useState<number>(0);
-  const { cartItems, setCartItems } = useData();
-  const { register } = useFormContext();
+  const { cart, incrementItemCart, decrementItemCart, removeItemCart } =
+    useCheckout();
 
   const frete = 20;
 
-  const valueTotal = cartItems.reduce(
+  const valueTotal = cart.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
   );
 
   const finalTotal = valueTotal + frete - discountValueCoupon;
-
-  const handleIncrement = (id: number) => {
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-      )
-    );
-  };
-
-  const handleDecrement = (id: number) => {
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.id === id && item.quantity > 0
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      )
-    );
-  };
 
   const handleApplyNewCoupon = () => {
     if (newCoupon === 'PROMO10') {
@@ -51,28 +31,24 @@ export function ShoppingCart() {
       setAppliedCoupon(newCoupon);
       setDiscountValueCoupon(valueTotal * 0.2);
     } else {
-      alert('Cupom inválido!');
+      toast.warning('Cupom inválido!');
     }
     setNewCoupon('');
-  };
-
-  const handleRemoveItem = (id: number) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
   };
 
   return (
     <div className="grid grid-cols-2 gap-x-16 place-items-start mt-8 container mx-auto">
       <div className="border border-background-light rounded-lg flex flex-col gap-4 w-[600px] h-[500px]">
         <div className="flex flex-col gap-4 flex-1 overflow-auto p-6 container-shopping-cart">
-          {cartItems.length > 0 ? (
+          {cart.length > 0 ? (
             <>
-              {cartItems.map((item) => (
+              {cart.map((item) => (
                 <ItemCart
                   key={item.id}
                   item={item}
-                  handleIncrement={handleIncrement}
-                  handleDecrement={handleDecrement}
-                  handleRemoveItem={handleRemoveItem}
+                  handleIncrement={incrementItemCart}
+                  handleDecrement={decrementItemCart}
+                  handleRemoveItem={removeItemCart}
                 />
               ))}
             </>
@@ -84,12 +60,7 @@ export function ShoppingCart() {
 
       <div className="flex flex-col border border-background-light rounded-lg p-6 w-[450px] h-max">
         <div className="mb-4 flex gap-2 items-center">
-          <Input
-            type="text"
-            placeholder="Digite o cupom"
-            label="Cupom"
-            {...register('coupon')}
-          />
+          <Input type="text" placeholder="Digite o cupom" label="Cupom" />
 
           <button
             type="button"

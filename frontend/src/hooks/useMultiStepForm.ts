@@ -1,16 +1,11 @@
 import { ReactNode, useState } from 'react';
 
 interface IUseMultiStepFormProps<T> {
-  initialValues: T;
   steps: ReactNode[];
 }
 
-export function useMultiStepForm<T>({
-  initialValues,
-  steps,
-}: IUseMultiStepFormProps<T>) {
+export function useMultiStepForm<T>({ steps }: IUseMultiStepFormProps<T>) {
   const [stepIndex, setStepIndex] = useState(0);
-  const [formData, setFormData] = useState(initialValues);
 
   const next = () => {
     setStepIndex((prev) => Math.min(prev + 1, steps.length - 1));

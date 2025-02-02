@@ -6,5 +6,6 @@ export interface IProduct {
   stock: number;
   category: string;
   image: File | null;
+  quantity: number;
   status?: string;
 }

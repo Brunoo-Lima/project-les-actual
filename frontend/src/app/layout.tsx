@@ -4,6 +4,7 @@ import './globals.css';
 import { AuthProvider } from '@/hooks/useAuth';
 import { Toaster } from 'sonner';
 import { DataProvider } from '@/hooks/useData';
+import { CheckoutProvider } from '@/hooks/useCheckout';
 
 const roboto = Roboto({
   weight: ['400', '500', '700'],
@@ -25,10 +26,12 @@ export default function RootLayout({
     <html lang="pt-br">
       <body className={`${roboto.variable} ${roboto.className} antialiased`}>
         <AuthProvider>
-          <DataProvider>
-            {children}
-            <Toaster richColors />
-          </DataProvider>
+          <CheckoutProvider>
+            <DataProvider>
+              {children}
+              <Toaster richColors />
+            </DataProvider>
+          </CheckoutProvider>
         </AuthProvider>
         <div id="modal-root" />
       </body>
