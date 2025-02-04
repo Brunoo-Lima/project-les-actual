@@ -4,6 +4,7 @@ import { createContext, ReactNode, useContext, useMemo, useState } from 'react';
 import { IAddress } from '@/@types/IAddress';
 import { ICreditCard } from '@/@types/ICreditCard';
 import { IProduct } from '@/@types/IProduct';
+import { IOrder } from '@/@types/IOrder';
 
 interface ICheckoutContextProps {
   cart: IProduct[];
@@ -20,6 +21,7 @@ interface ICheckoutContextProps {
   decrementItemCart: (id: number) => void;
   incrementItemCart: (id: number) => void;
   removeItemCart: (id: number) => void;
+  getOrderSummary: () => IOrder;
 }
 
 interface ICheckoutProvider {
@@ -82,6 +84,13 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
 
   const addCard = (card: ICreditCard) => setCards([...cards, card]);
 
+  const getOrderSummary = () => ({
+    items: cart,
+    total: cart.reduce((acc, item) => acc + item.price * item.quantity, 0), // Calcula total
+    address: selectedAddress,
+    payment: selectedCard,
+  });
+
   const contextValue = useMemo(
     () => ({
       cart,
@@ -102,6 +111,7 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
       decrementItemCart,
       incrementItemCart,
       removeItemCart,
+      getOrderSummary,
     }),
     [cart, setCart, addresses, setAddresses, cards, setCards]
   );

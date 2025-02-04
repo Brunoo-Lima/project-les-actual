@@ -3,7 +3,8 @@ import { ICreditCard } from './ICreditCard';
 import { IProduct } from './IProduct';
 
 export interface IOrder {
-  products: IProduct[];
-  addresses: IAddress;
-  creditCards: ICreditCard;
+  items: IProduct[];
+  total: number;
+  address: IAddress | null;
+  payment: ICreditCard | null;
 }
