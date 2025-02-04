@@ -1,4 +1,3 @@
-import { IAddress } from '@/@types/IAddress';
 import { Modal } from '@/components/modal';
 import { ButtonCancel } from '@/components/ui/button/button-cancel/button-cancel';
 import { ButtonGeneral } from '@/components/ui/button/button-general';

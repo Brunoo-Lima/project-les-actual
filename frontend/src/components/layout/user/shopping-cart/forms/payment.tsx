@@ -1,22 +1,24 @@
 import { ModalBackground } from '@/components/modal/modal-background/modal-background';
-import { CheckIcon } from 'lucide-react';
 import { useState } from 'react';
 import { PaymentForm } from './modal-forms/payment-form';
 import { Plus } from '@phosphor-icons/react';
+import { CreditCard } from '../ui/credit-card';
+import { useCheckout } from '@/hooks/useCheckout';
 
-const payments = [
-  {
-    id: 1,
-    flag: 'Visa',
-    number: '5555-5555-5555-5555',
-    cvv: '1230',
-    namePrinted: 'Bruno Lima',
-    dateExpired: '12/2030',
-    preferential: true,
-  },
-];
+// const payments = [
+//   {
+//     id: 1,
+//     flag: 'Visa',
+//     number: '5555-5555-5555-5555',
+//     cvv: '1230',
+//     namePrinted: 'Bruno Lima',
+//     dateExpired: '12/2030',
+//     preferential: true,
+//   },
+// ];
 
 export function Payment() {
+  const { selectCard, cards } = useCheckout();
   const [selectedPayment, setSelectedPayment] = useState<number | null>(null);
   const [isOpenModalAddPayment, setIsOpenModalAddPayment] =
     useState<boolean>(false);
@@ -37,34 +39,13 @@ export function Payment() {
     <div className="flex flex-col gap-y-4 w-[600px] h-[500px] p-6 border border-background-light rounded-lg overflow-hidden">
       <h2 className="text-lg font-bold">Cartões de crédito cadastrados</h2>
       <div className="overflow-auto h-[400px] container-address-form flex flex-col gap-4">
-        {payments.map((payment) => (
-          <div
-            key={payment.id}
-            onClick={() => handleSelectPayment(payment.id)}
-            className={`grid grid-cols-2 gap-x-1 bg-background rounded-md border p-4 cursor-pointer relative ${
-              selectedPayment === payment.id
-                ? 'border-primary-dark'
-                : 'border-primary-light'
-            }`}
-          >
-            {selectedPayment === payment.id && (
-              <small className="absolute right-2 bottom-1 bg-primary-dark text-primary-light pl-2 pr-1 rounded-md flex justify-center items-center gap-1">
-                Selecionado <CheckIcon size={16} />
-              </small>
-            )}
-
-            <div className="flex flex-col gap-1">
-              <span>Bandeira: {payment.flag}</span>
-              <span>Data de validade: {payment.dateExpired}</span>
-              <span>CVV: {payment.cvv}</span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span>N° do cartão: {payment.number}</span>
-              <span>Nome: {payment.namePrinted}</span>
-              <span>Preferencial: {payment.preferential ? 'Sim' : 'Não'}</span>
-            </div>
-          </div>
-        ))}
+        {cards.length > 0 ? (
+          cards.map((card) => (
+            <CreditCard key={card.id} card={card} onSelectCard={selectCard} />
+          ))
+        ) : (
+          <p>Não há cartões cadastrados.</p>
+        )}
       </div>
 
       <div>
