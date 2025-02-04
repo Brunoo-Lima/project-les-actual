@@ -7,6 +7,7 @@ export const AddressSchemaForm = yup.object().shape({
   typeResidence: yup.string().required('Tipo de residência é obrigatório'),
   neighborhood: yup.string().required('Bairro é obrigatório'),
   number: yup.string().required('Número é obrigatório'),
+  street: yup.string().required('Rua é obrigatório'),
   typePublicPlace: yup.string().required('Tipo de logradouro é obrigatório'),
   publicPlace: yup.string().required('Logradouro é obrigatório'),
   city: yup.string().required('Cidade é obrigatória'),
@@ -16,17 +17,22 @@ export const AddressSchemaForm = yup.object().shape({
   delivery: yup.boolean().optional(),
   charge: yup.boolean().optional(),
   identifier: yup.string().required('Identificador do endereço é obrigatório'),
-  identifierDelivery: yup.string().when('delivery', (delivery, schema) => {
-    return delivery
-      ? schema.required('Identificador de entrega é obrigatório')
-      : schema.optional();
-  }),
+  identifierDelivery: yup
+    .string()
+    .nullable()
+    .when('delivery', {
+      is: true,
+      then: (schema) =>
+        schema.required('Identificador de entrega é obrigatório'),
+      otherwise: (schema) => schema.optional(),
+    }),
 });
 
 export const addressEmpty = {
   identifier: '',
   identifierDelivery: '',
   zipCode: '',
+  street: '',
   typeResidence: '',
   neighborhood: '',
   number: '',

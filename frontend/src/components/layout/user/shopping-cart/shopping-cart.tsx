@@ -60,7 +60,13 @@ export function ShoppingCart() {
 
       <div className="flex flex-col border border-background-light rounded-lg p-6 w-[450px] h-max">
         <div className="mb-4 flex gap-2 items-center">
-          <Input type="text" placeholder="Digite o cupom" label="Cupom" />
+          <Input
+            type="text"
+            placeholder="Digite o cupom"
+            label="Cupom"
+            value={newCoupon}
+            onChange={(e) => setNewCoupon(e.target.value)}
+          />
 
           <button
             type="button"

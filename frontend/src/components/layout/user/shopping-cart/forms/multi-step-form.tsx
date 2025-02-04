@@ -5,11 +5,12 @@ import { ShoppingCart } from '../shopping-cart';
 import { Addresses } from './addresses';
 
 import { Payment } from './payment';
+import { useCheckout } from '@/hooks/useCheckout';
 
 export function MultiStepForm() {
   //implementando o checkout que ta no hook
   // https://chatgpt.com/c/679fc216-9768-8006-9563-9743d0b14608 atualmente to usando esse chatgpt
-
+  const { cart } = useCheckout();
   const { isFirstStep, currentStep, stepIndex, isLastStep, next, previous } =
     useMultiStepForm({
       steps: [<ShoppingCart />, <Addresses />, <Payment />],
@@ -32,6 +33,7 @@ export function MultiStepForm() {
         {!isLastStep ? (
           <button
             type="button"
+            // disabled={cart.length === 0}
             onClick={next}
             className="mt-8 bg-primary text-background p-2 rounded-md font-semibold text-base transition duration-300 hover:bg-primary-dark"
           >

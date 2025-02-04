@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { AddressForm } from './address-form';
+import { AddressForm } from './modal-forms/address-form';
 import { ModalBackground } from '@/components/modal/modal-background/modal-background';
-import { CheckIcon } from 'lucide-react';
 import { Plus } from '@phosphor-icons/react';
 import { ButtonGeneral } from '@/components/ui/button/button-general';
+import { useCheckout } from '@/hooks/useCheckout';
+import { AddressCard } from '../ui/address-card';
 
 interface Address {
   id: number;
@@ -18,32 +19,33 @@ interface Address {
   logradouro?: string;
 }
 
-const addresses: Address[] = [
-  {
-    id: 1,
-    identification: 'CASA',
-    street: 'Vicente',
-    cep: '08695-065',
-    number: '100',
-    neighborhood: 'Jardins',
-    city: 'Suzano',
-    state: 'São Paulo',
-    residence: 'Casa',
-    logradouro: 'Não sei',
-  },
-  {
-    id: 2,
-    identification: 'APARTAMENTO',
-    street: 'Américo',
-    cep: '08690-040',
-    number: '200',
-    neighborhood: 'Centro',
-    city: 'Suzano',
-    state: 'São Paulo',
-  },
-];
+// const addresses: Address[] = [
+//   {
+//     id: 1,
+//     identification: 'CASA',
+//     street: 'Vicente',
+//     cep: '08695-065',
+//     number: '100',
+//     neighborhood: 'Jardins',
+//     city: 'Suzano',
+//     state: 'São Paulo',
+//     residence: 'Casa',
+//     logradouro: 'Não sei',
+//   },
+//   {
+//     id: 2,
+//     identification: 'APARTAMENTO',
+//     street: 'Américo',
+//     cep: '08690-040',
+//     number: '200',
+//     neighborhood: 'Centro',
+//     city: 'Suzano',
+//     state: 'São Paulo',
+//   },
+// ];
 
 export function Addresses() {
+  const { addresses, selectAddress } = useCheckout();
   const [isOpenModalNewAddress, setIsOpenModalNewAddress] =
     useState<boolean>(false);
   const [selectedAddress, setSelectedAddress] = useState<number | null>(null);
@@ -65,43 +67,18 @@ export function Addresses() {
       <h2 className="text-lg font-bold">Endereços cadastrados</h2>
 
       <div className="overflow-auto h-[400px] container-address-form flex flex-col gap-4">
-        {addresses.map((address) => (
-          <div
-            key={address.id}
-            onClick={() => handleSelectAddress(address.id)}
-            className={`grid grid-cols-3 bg-background rounded-md border p-4 cursor-pointer relative ${
-              selectedAddress === address.id
-                ? 'border-primary-dark'
-                : 'border-primary-light'
-            }`}
-          >
-            {selectedAddress === address.id && (
-              <small className="absolute right-2 bottom-1 bg-primary-dark text-primary-light pl-2 pr-1 rounded-md flex justify-center items-center gap-1">
-                Selecionado <CheckIcon size={16} />
-              </small>
-            )}
-
-            <div className="flex flex-col gap-1">
-              <span>Identificação: {address.identification}</span>
-              <span>Rua: {address.street}</span>
-              <span>CEP: {address.cep}</span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span>Número: {address.number}</span>
-              <span>Bairro: {address.neighborhood}</span>
-              {address.residence && (
-                <span>Residência: {address.residence}</span>
-              )}
-              {address.logradouro && (
-                <span>Logradouro: {address.logradouro}</span>
-              )}
-            </div>
-            <div className="flex flex-col gap-1">
-              <span>Cidade: {address.city}</span>
-              <span>Estado: {address.state}</span>
-            </div>
-          </div>
-        ))}
+        {addresses.length > 0 ? (
+          addresses.map((address) => (
+            <AddressCard
+              key={address.id}
+              address={address}
+              selectAddress={selectAddress}
+              onSelectedAddress={handleSelectAddress}
+            />
+          ))
+        ) : (
+          <p>Não há endereços cadastrados!</p>
+        )}
       </div>
 
       <div>
