@@ -5,19 +5,20 @@ import { ShoppingCart } from '../shopping-cart';
 import { Addresses } from './addresses';
 
 import { Payment } from './payment';
-import { useCheckout } from '@/hooks/useCheckout';
 import { useRouter } from 'next/navigation';
 import { OrderFinished } from '../order-finished';
 import { toast } from 'sonner';
 
 export function MultiStepForm() {
   const router = useRouter();
-  //implementando o checkout que ta no hook
-  // https://chatgpt.com/c/679fc216-9768-8006-9563-9743d0b14608 atualmente to usando esse chatgpt
-  const { cart } = useCheckout();
-  const { isFirstStep, currentStep, stepIndex, isLastStep, next, previous } =
+  const { isFirstStep, currentStep, isLastStep, next, previous } =
     useMultiStepForm({
-      steps: [<ShoppingCart />, <Addresses />, <Payment />, <OrderFinished />],
+      steps: [
+        <ShoppingCart key={0} />,
+        <Addresses key={1} />,
+        <Payment key={2} />,
+        <OrderFinished key={3} />,
+      ],
     });
 
   const handleOrderFinished = async () => {

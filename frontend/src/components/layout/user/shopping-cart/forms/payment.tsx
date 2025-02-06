@@ -18,8 +18,7 @@ import { useCheckout } from '@/hooks/useCheckout';
 // ];
 
 export function Payment() {
-  const { selectCard, cards } = useCheckout();
-  const [selectedPayment, setSelectedPayment] = useState<number | null>(null);
+  const { handleSelectCreditCard, cards, selectedCreditCard } = useCheckout();
   const [isOpenModalAddPayment, setIsOpenModalAddPayment] =
     useState<boolean>(false);
 
@@ -31,17 +30,18 @@ export function Payment() {
     setIsOpenModalAddPayment(false);
   };
 
-  const handleSelectPayment = (id: number) => {
-    setSelectedPayment(id);
-  };
-
   return (
     <div className="flex flex-col gap-y-4 w-[600px] h-[500px] p-6 border border-background-light rounded-lg overflow-hidden">
       <h2 className="text-lg font-bold">Cartões de crédito cadastrados</h2>
       <div className="overflow-auto h-[400px] container-address-form flex flex-col gap-4">
         {cards.length > 0 ? (
           cards.map((card) => (
-            <CreditCard key={card.id} card={card} onSelectCard={selectCard} />
+            <CreditCard
+              key={card.id}
+              card={card}
+              onSelectCreditCard={handleSelectCreditCard}
+              isSelected={selectedCreditCard?.id === card.id}
+            />
           ))
         ) : (
           <p>Não há cartões cadastrados.</p>

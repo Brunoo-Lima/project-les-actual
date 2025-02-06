@@ -18,7 +18,7 @@ interface IPaymentFormProps {
 }
 
 export function PaymentForm({ onClose }: IPaymentFormProps) {
-  const { addCard } = useCheckout();
+  const { handleAddCreditCardOnOrder } = useCheckout();
   const {
     register,
     formState: { errors },
@@ -35,7 +35,7 @@ export function PaymentForm({ onClose }: IPaymentFormProps) {
       ...data,
     };
 
-    addCard(updatedData);
+    handleAddCreditCardOnOrder(updatedData);
 
     toast.success('Cartão cadastrado com sucesso!');
     onClose();

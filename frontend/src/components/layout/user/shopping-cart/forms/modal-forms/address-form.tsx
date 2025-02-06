@@ -19,7 +19,7 @@ interface IAddressFormProps {
 }
 
 export function AddressForm({ onClose }: IAddressFormProps) {
-  const { addAddress } = useCheckout();
+  const { handleAddAddressOnOrder } = useCheckout();
   const {
     register,
     formState: { errors },
@@ -40,7 +40,7 @@ export function AddressForm({ onClose }: IAddressFormProps) {
       ...data,
     };
 
-    addAddress(updatedData);
+    handleAddAddressOnOrder(updatedData);
     onClose();
 
     toast.success('Endereço cadastrado!');

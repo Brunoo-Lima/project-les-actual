@@ -3,9 +3,7 @@
 import { useCheckout } from '@/hooks/useCheckout';
 
 export function OrderFinished() {
-  const { getOrderSummary } = useCheckout();
-
-  const order = getOrderSummary();
+  const { order } = useCheckout();
 
   if (!order) return;
 
@@ -23,8 +21,16 @@ export function OrderFinished() {
         </div>
       ))}
       {order.total}
-      {order.address}
-      {order.payment}
+      <div>
+        <p>Endereço de cobrança: {order.address?.charge}</p>
+        <p>Rua: {order.address?.street}</p>
+        <p>Cep: {order.address?.zipCode}</p>
+        <p>Número: {order.address?.number}</p>
+      </div>
+      <div>
+        <p>Bandeira: {order.payment?.flag}</p>
+        <p>Numero: {order.payment?.number}</p>
+      </div>
     </div>
   );
 }

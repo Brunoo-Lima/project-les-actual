@@ -45,10 +45,9 @@ interface Address {
 // ];
 
 export function Addresses() {
-  const { addresses, selectAddress } = useCheckout();
+  const { addresses, handleSelectAddress, selectedAddress } = useCheckout();
   const [isOpenModalNewAddress, setIsOpenModalNewAddress] =
     useState<boolean>(false);
-  const [selectedAddress, setSelectedAddress] = useState<number | null>(null);
 
   const handleOpenModalNewAddress = () => {
     setIsOpenModalNewAddress(true);
@@ -56,10 +55,6 @@ export function Addresses() {
 
   const handleCloseModalNewAddress = () => {
     setIsOpenModalNewAddress(false);
-  };
-
-  const handleSelectAddress = (id: number) => {
-    setSelectedAddress(id);
   };
 
   return (
@@ -72,7 +67,7 @@ export function Addresses() {
             <AddressCard
               key={address.id}
               address={address}
-              selectAddress={selectAddress}
+              isSelected={selectedAddress?.id === address.id}
               onSelectedAddress={handleSelectAddress}
             />
           ))

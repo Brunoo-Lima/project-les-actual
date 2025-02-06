@@ -8,20 +8,21 @@ import { IOrder } from '@/@types/IOrder';
 
 interface ICheckoutContextProps {
   cart: IProduct[];
-  setCart: React.Dispatch<React.SetStateAction<IProduct[] | []>>;
   addresses: IAddress[];
   selectedAddress: IAddress | null;
   cards: ICreditCard[];
-  selectedCard: ICreditCard | null;
+  selectedCreditCard: ICreditCard | null;
   addProductToCart: (product: IProduct) => void;
-  selectAddress: (address: IAddress) => void;
-  addAddress: (address: IAddress) => void;
-  selectCard: (card: ICreditCard) => void;
-  addCard: (card: ICreditCard) => void;
+  handleSelectAddress: (address: IAddress) => void;
+  handleAddAddressOnOrder: (address: IAddress) => void;
+  handleSelectCreditCard: (card: ICreditCard) => void;
+  handleAddCreditCardOnOrder: (card: ICreditCard) => void;
   decrementItemCart: (id: number) => void;
   incrementItemCart: (id: number) => void;
   removeItemCart: (id: number) => void;
   getOrderSummary: () => IOrder;
+  order: IOrder;
+  setOrder: React.Dispatch<React.SetStateAction<IOrder>>;
 }
 
 interface ICheckoutProvider {
@@ -35,22 +36,29 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
   const [addresses, setAddresses] = useState<IAddress[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<IAddress | null>(null);
   const [cards, setCards] = useState<ICreditCard[]>([]);
-  const [selectedCard, setSelectedCard] = useState<ICreditCard | null>(null);
+  const [selectedCreditCard, setSelectedCreditCard] =
+    useState<ICreditCard | null>(null);
+  const [order, setOrder] = useState<IOrder>({} as IOrder);
 
   const addProductToCart = (product: IProduct) => {
     setCart((prevItems) => {
       const itemExists = prevItems.find((item) => item.id === product.id);
 
       if (itemExists) {
-        return prevItems.map((item) => {
+        return prevItems.map((item) =>
           item.id === product.id
             ? { ...item, quantity: item.quantity + 1 }
-            : item;
-        });
+            : item
+        );
       } else {
         return [...prevItems, { ...product, quantity: 1 }];
       }
     });
+
+    setOrder((prevOrder) => ({
+      ...prevOrder,
+      items: cart,
+    }));
   };
 
   const decrementItemCart = (id: number) => {
@@ -75,45 +83,56 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
     setCart((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const selectAddress = (address: IAddress) => setSelectedAddress(address);
+  const handleSelectAddress = (address: IAddress) => {
+    setSelectedAddress(address);
+    setOrder((prevOrder) => ({
+      ...prevOrder,
+      address: address,
+    }));
+  };
 
-  const addAddress = (address: IAddress) =>
-    setAddresses([...addresses, address]);
+  const handleAddAddressOnOrder = (address: IAddress) =>
+    setAddresses((prevAddresses) => [...prevAddresses, address]);
 
-  const selectCard = (card: ICreditCard) => setSelectedCard(card);
+  const handleSelectCreditCard = (card: ICreditCard) => {
+    setSelectedCreditCard(card);
+    setOrder((prevOrder) => ({
+      ...prevOrder,
+      payment: card,
+    }));
+  };
 
-  const addCard = (card: ICreditCard) => setCards([...cards, card]);
+  const handleAddCreditCardOnOrder = (card: ICreditCard) =>
+    setCards((prevCards) => [...prevCards, card]);
 
   const getOrderSummary = () => ({
     items: cart,
     total: cart.reduce((acc, item) => acc + item.price * item.quantity, 0), // Calcula total
     address: selectedAddress,
-    payment: selectedCard,
+    payment: selectedCreditCard,
   });
 
   const contextValue = useMemo(
     () => ({
       cart,
-      setCart,
       addresses,
       setAddresses,
       cards,
-      setCards,
-      selectedCard,
+      selectedCreditCard,
       selectedAddress,
-      setSelectedAddress,
-      setSelectedCard,
       addProductToCart,
-      selectAddress,
-      addAddress,
-      selectCard,
-      addCard,
+      handleSelectAddress,
+      handleAddAddressOnOrder,
+      handleSelectCreditCard,
+      handleAddCreditCardOnOrder,
       decrementItemCart,
       incrementItemCart,
       removeItemCart,
       getOrderSummary,
+      order,
+      setOrder,
     }),
-    [cart, setCart, addresses, setAddresses, cards, setCards]
+    [cart, addresses, cards, order, selectedCreditCard, selectedAddress]
   );
   return (
     <CheckoutContext.Provider value={contextValue}>
