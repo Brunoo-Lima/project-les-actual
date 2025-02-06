@@ -6,10 +6,11 @@ import { Addresses } from './addresses';
 
 import { Payment } from './payment';
 import { useRouter } from 'next/navigation';
-import { OrderFinished } from '../order-finished';
 import { toast } from 'sonner';
+import { useCheckout } from '@/hooks/useCheckout';
 
 export function MultiStepForm() {
+  const { setCart } = useCheckout();
   const router = useRouter();
   const { isFirstStep, currentStep, isLastStep, next, previous } =
     useMultiStepForm({
@@ -17,15 +18,16 @@ export function MultiStepForm() {
         <ShoppingCart key={0} />,
         <Addresses key={1} />,
         <Payment key={2} />,
-        <OrderFinished key={3} />,
       ],
     });
 
   const handleOrderFinished = async () => {
     //Logica para enviar para o backend
 
-    toast.success('Pedido concluído com sucesso!');
-    router.push('/produtos');
+    toast.success('Pedido realizado com sucesso!');
+    router.push('/pedido');
+
+    setCart([]);
   };
 
   return (

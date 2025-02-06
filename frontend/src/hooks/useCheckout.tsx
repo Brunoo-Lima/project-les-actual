@@ -8,6 +8,7 @@ import { IOrder } from '@/@types/IOrder';
 
 interface ICheckoutContextProps {
   cart: IProduct[];
+  setCart: React.Dispatch<React.SetStateAction<IProduct[]>>;
   addresses: IAddress[];
   selectedAddress: IAddress | null;
   cards: ICreditCard[];
@@ -42,41 +43,68 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
 
   const addProductToCart = (product: IProduct) => {
     setCart((prevItems) => {
-      const itemExists = prevItems.find((item) => item.id === product.id);
+      const updatedCart = prevItems.some((item) => item.id === product.id)
+        ? prevItems.map((item) =>
+            item.id === product.id
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          )
+        : [...prevItems, { ...product, quantity: 1 }];
 
-      if (itemExists) {
-        return prevItems.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      } else {
-        return [...prevItems, { ...product, quantity: 1 }];
-      }
+      // Atualiza a ordem com o novo carrinho
+      setOrder((prevOrder) => ({
+        ...prevOrder,
+        items: updatedCart,
+        total: updatedCart.reduce(
+          (acc, item) => acc + item.price * item.quantity,
+          0
+        ),
+      }));
+
+      return updatedCart;
     });
-
-    setOrder((prevOrder) => ({
-      ...prevOrder,
-      items: cart,
-    }));
   };
 
   const decrementItemCart = (id: number) => {
-    setCart((prev) =>
-      prev.map((item) =>
-        item.id === id && item.quantity > 0
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      )
-    );
+    setCart((prev) => {
+      const updatedCart = prev
+        .map((item) =>
+          item.id === id && item.quantity > 1
+            ? { ...item, quantity: item.quantity - 1 }
+            : item
+        )
+        .filter((item) => item.quantity > 0);
+
+      setOrder((prevOrder) => ({
+        ...prevOrder,
+        items: updatedCart,
+        total: updatedCart.reduce(
+          (acc, item) => acc + item.price * item.quantity,
+          0
+        ),
+      }));
+
+      return updatedCart;
+    });
   };
 
   const incrementItemCart = (id: number) => {
-    setCart((prev) =>
-      prev.map((item) =>
+    setCart((prev) => {
+      const updatedCart = prev.map((item) =>
         item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-      )
-    );
+      );
+
+      setOrder((prevOrder) => ({
+        ...prevOrder,
+        items: updatedCart,
+        total: updatedCart.reduce(
+          (acc, item) => acc + item.price * item.quantity,
+          0
+        ),
+      }));
+
+      return updatedCart;
+    });
   };
 
   const removeItemCart = (id: number) => {
@@ -107,7 +135,7 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
 
   const getOrderSummary = () => ({
     items: cart,
-    total: cart.reduce((acc, item) => acc + item.price * item.quantity, 0), // Calcula total
+    total: cart.reduce((acc, item) => acc + item.price * item.quantity, 0),
     address: selectedAddress,
     payment: selectedCreditCard,
   });
@@ -115,6 +143,7 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
   const contextValue = useMemo(
     () => ({
       cart,
+      setCart,
       addresses,
       setAddresses,
       cards,
@@ -132,7 +161,15 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
       order,
       setOrder,
     }),
-    [cart, addresses, cards, order, selectedCreditCard, selectedAddress]
+    [
+      cart,
+      setCart,
+      addresses,
+      cards,
+      order,
+      selectedCreditCard,
+      selectedAddress,
+    ]
   );
   return (
     <CheckoutContext.Provider value={contextValue}>
