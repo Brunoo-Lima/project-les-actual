@@ -22,7 +22,7 @@ export const Input = forwardRef<HTMLInputElement, IInputProps>(
           type={type}
           placeholder={placeholder}
           ref={ref}
-          className={`${className} bg-background p-2 rounded-md text-base`}
+          className={`${className} bg-background-dark p-2 rounded-md text-base`}
           {...rest}
         />
         {error && <span className="text-sm text-error">{error.message}</span>}
@@ -30,3 +30,5 @@ export const Input = forwardRef<HTMLInputElement, IInputProps>(
     );
   }
 );
+
+Input.displayName = 'Input';

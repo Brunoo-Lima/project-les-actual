@@ -17,7 +17,7 @@ export function Card({ product }: ICardProps) {
   };
 
   return (
-    <div className="w-[300px] h-[480px] bg-background-light shadow-md rounded-md">
+    <div className="w-[300px] h-[480px] bg-background-dark shadow-md rounded-md">
       <div className="overflow-hidden h-[300px] w-full rounded-tl-md rounded-tr-md transition-all duration-500">
         <Image
           src={product.image}

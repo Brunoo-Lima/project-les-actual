@@ -2,7 +2,7 @@ import { Modal } from '@/components/modal';
 import { ButtonCancel } from '@/components/ui/button/button-cancel/button-cancel';
 import { Checkbox } from '@/components/ui/checkbox/checkbox';
 import { Input } from '@/components/ui/input/input';
-import { Select } from '@/components/ui/select/select';
+import { SelectComponent } from '@/components/ui/select/select';
 import {
   CreditCardSchemaForm,
   ICreditCardSchemaForm,
@@ -10,7 +10,7 @@ import {
 import { useCheckout } from '@/hooks/useCheckout';
 import { selectFlagCard } from '@/mocks/select/select';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
 interface IPaymentFormProps {
@@ -21,6 +21,7 @@ export function PaymentForm({ onClose }: IPaymentFormProps) {
   const { handleAddCreditCardOnOrder } = useCheckout();
   const {
     register,
+    control,
     formState: { errors },
     handleSubmit,
   } = useForm<ICreditCardSchemaForm>({
@@ -50,11 +51,21 @@ export function PaymentForm({ onClose }: IPaymentFormProps) {
           onSubmit={handleSubmit(onSubmit)}
           className="mt-8 flex flex-col gap-2"
         >
-          <Select
-            label="Bandeira"
-            options={selectFlagCard}
-            {...register('flag')}
-            error={errors.flag}
+          <Controller
+            control={control}
+            name="flag"
+            render={({ field, fieldState }) => (
+              <SelectComponent
+                label="Status"
+                placeholder="Selecione o status"
+                options={selectFlagCard}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                name={field.name}
+                ref={field.ref}
+                error={fieldState.error}
+              />
+            )}
           />
 
           <Input

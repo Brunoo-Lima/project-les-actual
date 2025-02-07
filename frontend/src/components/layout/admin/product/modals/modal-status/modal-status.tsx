@@ -1,5 +1,4 @@
 import { Modal } from '@/components/modal';
-import { Select } from '@/components/ui/select/select';
 import { selectStatus } from './../../../../../../mocks/select/select';
 import { ButtonGeneral } from '@/components/ui/button/button-general';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -7,9 +6,10 @@ import {
   IStatusSchemaForm,
   StatusSchemaForm,
 } from '@/components/validation/product-schema-form';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { IProduct } from '@/@types/IProduct';
+import { SelectComponent } from '@/components/ui/select/select';
 
 interface IModalStatusProps {
   onClose: () => void;
@@ -17,11 +17,7 @@ interface IModalStatusProps {
 }
 
 export function ModalStatus({ onClose, product }: IModalStatusProps) {
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-  } = useForm<IStatusSchemaForm>({
+  const { control, handleSubmit } = useForm<IStatusSchemaForm>({
     resolver: yupResolver(StatusSchemaForm),
   });
   const handleSaveStatus: SubmitHandler<IStatusSchemaForm> = (data: {
@@ -47,11 +43,21 @@ export function ModalStatus({ onClose, product }: IModalStatusProps) {
           onSubmit={handleSubmit(handleSaveStatus)}
           className="flex flex-col gap-4"
         >
-          <Select
-            label="Status"
-            options={selectStatus}
-            {...register('status')}
-            error={errors.status}
+          <Controller
+            control={control}
+            name="status"
+            render={({ field, fieldState }) => (
+              <SelectComponent
+                label="Status"
+                placeholder="Selecione o status"
+                options={selectStatus}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                name={field.name}
+                ref={field.ref}
+                error={fieldState.error}
+              />
+            )}
           />
 
           <ButtonGeneral type="submit" text="Salvar" className="mt-4" />

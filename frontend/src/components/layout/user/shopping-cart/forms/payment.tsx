@@ -31,7 +31,7 @@ export function Payment() {
   };
 
   return (
-    <div className="flex flex-col gap-y-4 w-[600px] h-[500px] p-6 border border-background-light rounded-lg overflow-hidden">
+    <div className="flex flex-col gap-y-4 w-[600px] h-[500px] p-6 border border-gray-700 rounded-lg overflow-hidden">
       <h2 className="text-lg font-bold">Cartões de crédito cadastrados</h2>
       <div className="overflow-auto h-[400px] container-address-form flex flex-col gap-4">
         {cards.length > 0 ? (

@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input/input';
 import { FormatValue } from '@/utils/format-value';
 import { ItemCart } from './item-cart';
 import { useCheckout } from '@/hooks/useCheckout';
-import { redirect } from 'next/navigation';
 
 export function ShoppingCart() {
   const [newCoupon, setNewCoupon] = useState<string>('');
@@ -23,11 +22,9 @@ export function ShoppingCart() {
     setNewCoupon('');
   };
 
-  // if (!order || !order.items) return redirect('/produtos');
-
   return (
     <div className="grid grid-cols-2 gap-x-16 place-items-start mt-8 container mx-auto">
-      <div className="border border-background-light rounded-lg flex flex-col gap-4 w-[600px] h-[500px]">
+      <div className="border border-gray-700  rounded-lg flex flex-col gap-4 w-[600px] h-[500px]">
         <div className="flex flex-col gap-4 flex-1 overflow-auto p-6 container-shopping-cart">
           {cart.length > 0 ? (
             <>
@@ -47,7 +44,7 @@ export function ShoppingCart() {
         </div>
       </div>
 
-      <div className="flex flex-col border border-background-light rounded-lg p-6 w-[450px] h-max">
+      <div className="flex flex-col border border-gray-700  rounded-lg p-6 w-[450px] h-max">
         <div className="mb-4 flex gap-2 items-center">
           <Input
             type="text"

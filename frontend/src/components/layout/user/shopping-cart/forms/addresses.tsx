@@ -6,44 +6,6 @@ import { ButtonGeneral } from '@/components/ui/button/button-general';
 import { useCheckout } from '@/hooks/useCheckout';
 import { AddressCard } from '../ui/address-card';
 
-interface Address {
-  id: number;
-  identification: string;
-  street: string;
-  cep: string;
-  number: string;
-  neighborhood: string;
-  city: string;
-  state: string;
-  residence?: string;
-  logradouro?: string;
-}
-
-// const addresses: Address[] = [
-//   {
-//     id: 1,
-//     identification: 'CASA',
-//     street: 'Vicente',
-//     cep: '08695-065',
-//     number: '100',
-//     neighborhood: 'Jardins',
-//     city: 'Suzano',
-//     state: 'São Paulo',
-//     residence: 'Casa',
-//     logradouro: 'Não sei',
-//   },
-//   {
-//     id: 2,
-//     identification: 'APARTAMENTO',
-//     street: 'Américo',
-//     cep: '08690-040',
-//     number: '200',
-//     neighborhood: 'Centro',
-//     city: 'Suzano',
-//     state: 'São Paulo',
-//   },
-// ];
-
 export function Addresses() {
   const { addresses, handleSelectAddress, selectedAddress } = useCheckout();
   const [isOpenModalNewAddress, setIsOpenModalNewAddress] =
@@ -58,7 +20,7 @@ export function Addresses() {
   };
 
   return (
-    <div className="flex flex-col gap-y-4 w-[600px] h-[500px] p-6 border border-background-light rounded-lg overflow-hidden">
+    <div className="flex flex-col gap-y-4 w-[600px] h-[500px] p-6 border border-gray-700 rounded-lg overflow-hidden">
       <h2 className="text-lg font-bold">Endereços cadastrados</h2>
 
       <div className="overflow-auto h-[400px] container-address-form flex flex-col gap-4">

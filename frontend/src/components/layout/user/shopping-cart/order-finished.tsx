@@ -19,7 +19,7 @@ export function OrderFinished() {
     <section className="flex items-center flex-col gap-y-4 py-4 min-h-screen">
       <h1 className="text-2xl font-semibold mb-4">Pedido Concluído!</h1>
 
-      <div className="grid grid-cols-[1fr_200px] place-items-center gap-6 bg-background-light rounded-md p-4 w-[650px] h-max">
+      <div className="grid grid-cols-[1fr_200px] place-items-center gap-6 bg-background-dark rounded-md p-4 w-[650px] h-max min-h-[200px]">
         <div className="flex flex-col gap-y-4 w-full">
           {order.items.length > 0 ? (
             order.items.map((item) => (

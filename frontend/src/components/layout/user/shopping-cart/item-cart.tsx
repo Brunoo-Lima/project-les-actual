@@ -22,7 +22,7 @@ export function ItemCart({
   return (
     <div
       key={item.id}
-      className="flex gap-4 justify-between bg-background-light py-2 px-3 rounded-md"
+      className="flex gap-4 justify-between bg-background-dark py-2 px-3 rounded-md"
     >
       <div className="flex flex-col gap-2 flex-1">
         <p className="text-lg font-semibold">{item.name}</p>

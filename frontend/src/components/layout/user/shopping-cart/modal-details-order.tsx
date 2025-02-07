@@ -15,7 +15,7 @@ export default function ModalDetailsOrder({
 
       <Modal.Content className="">
         <div className="grid grid-cols-2 gap-4">
-          <div className="flex flex-col gap-2 bg-background-light rounded-md p-4">
+          <div className="flex flex-col gap-2 bg-zinc-800 rounded-md p-4">
             <h2 className="text-xl font-semibold">Endereço de entrega: </h2>
             {order.address?.delivery && (
               <p>
@@ -37,7 +37,7 @@ export default function ModalDetailsOrder({
             <p>Endereço de cobrança: {order.address?.charge ? 'Sim' : 'Nao'}</p>
           </div>
 
-          <div className="flex flex-col gap-4 bg-background-light rounded-md p-4">
+          <div className="flex flex-col gap-4 bg-zinc-800 rounded-md p-4">
             <h2 className="text-xl font-semibold">Pagamento</h2>
             <p>Bandeira: {order.payment?.flag}</p>
             <p>Numero: {order.payment?.number}</p>
