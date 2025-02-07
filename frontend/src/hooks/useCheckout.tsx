@@ -5,6 +5,7 @@ import { IAddress } from '@/@types/IAddress';
 import { ICreditCard } from '@/@types/ICreditCard';
 import { IProduct } from '@/@types/IProduct';
 import { IOrder } from '@/@types/IOrder';
+import { toast } from 'sonner';
 
 interface ICheckoutContextProps {
   cart: IProduct[];
@@ -21,9 +22,9 @@ interface ICheckoutContextProps {
   decrementItemCart: (id: number) => void;
   incrementItemCart: (id: number) => void;
   removeItemCart: (id: number) => void;
-  getOrderSummary: () => IOrder;
   order: IOrder;
   setOrder: React.Dispatch<React.SetStateAction<IOrder>>;
+  applyCoupon: (coupon: string) => void;
 }
 
 interface ICheckoutProvider {
@@ -39,7 +40,16 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
   const [cards, setCards] = useState<ICreditCard[]>([]);
   const [selectedCreditCard, setSelectedCreditCard] =
     useState<ICreditCard | null>(null);
-  const [order, setOrder] = useState<IOrder>({} as IOrder);
+  const [order, setOrder] = useState<IOrder>({
+    items: [],
+    total: 0,
+    address: null,
+    payment: null,
+    status: 'Pendente',
+    freight: 20,
+    coupon: null,
+    discountValue: 0,
+  });
 
   const addProductToCart = (product: IProduct) => {
     setCart((prevItems) => {
@@ -51,18 +61,47 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
           )
         : [...prevItems, { ...product, quantity: 1 }];
 
+      const newTotal = updatedCart.reduce(
+        (acc, item) => acc + item.price * item.quantity,
+        0
+      );
+
       // Atualiza a ordem com o novo carrinho
       setOrder((prevOrder) => ({
         ...prevOrder,
         items: updatedCart,
-        total: updatedCart.reduce(
-          (acc, item) => acc + item.price * item.quantity,
-          0
-        ),
+        total: newTotal + prevOrder.freight,
       }));
 
       return updatedCart;
     });
+  };
+
+  const applyCoupon = (coupon: string) => {
+    let discount = 0;
+
+    if (coupon === 'PROMO10') {
+      discount = 10;
+    } else if (coupon === 'DESCONTO20') {
+      discount =
+        cart.reduce((acc, item) => acc + item.price * item.quantity, 0) * 0.2;
+    } else {
+      toast.warning('Cupom inválido!');
+      return;
+    }
+
+    setOrder((prevOrder) => ({
+      ...prevOrder,
+      coupon,
+      discountValue: discount,
+      total:
+        prevOrder.items.reduce(
+          (acc, item) => acc + item.price * item.quantity,
+          0
+        ) +
+        prevOrder.freight -
+        discount,
+    }));
   };
 
   const decrementItemCart = (id: number) => {
@@ -133,13 +172,6 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
   const handleAddCreditCardOnOrder = (card: ICreditCard) =>
     setCards((prevCards) => [...prevCards, card]);
 
-  const getOrderSummary = () => ({
-    items: cart,
-    total: cart.reduce((acc, item) => acc + item.price * item.quantity, 0),
-    address: selectedAddress,
-    payment: selectedCreditCard,
-  });
-
   const contextValue = useMemo(
     () => ({
       cart,
@@ -157,9 +189,9 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
       decrementItemCart,
       incrementItemCart,
       removeItemCart,
-      getOrderSummary,
       order,
       setOrder,
+      applyCoupon,
     }),
     [
       cart,

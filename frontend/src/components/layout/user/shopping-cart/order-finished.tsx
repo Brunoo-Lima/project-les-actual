@@ -7,12 +7,13 @@ import { useState } from 'react';
 import ModalDetailsOrder from './modal-details-order';
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 import Image from 'next/image';
+import { redirect } from 'next/navigation';
 
 export function OrderFinished() {
   const { order } = useCheckout();
   const [isOpenDetails, setIsOpenDetails] = useState<boolean>(false);
 
-  if (!order) return;
+  if (!order || !order.items) return redirect('/produtos');
 
   return (
     <section className="flex items-center flex-col gap-y-4 py-4 min-h-screen">
@@ -20,35 +21,39 @@ export function OrderFinished() {
 
       <div className="grid grid-cols-[1fr_200px] place-items-center gap-6 bg-background-light rounded-md p-4 w-[650px] h-max">
         <div className="flex flex-col gap-y-4 w-full">
-          {order.items.map((item) => (
-            <div
-              key={item.id}
-              className="flex gap-x-4 border-b border-b-gray-400 pb-4"
-            >
-              <div className="size-16 flex items-center justify-center">
-                <Image
-                  src={item.image}
-                  width={64}
-                  height={64}
-                  alt=""
-                  className="size-16 object-contain"
-                />
-              </div>
-              <div className="grid grid-cols-2 flex-1 gap-4">
-                <div className="flex-1 flex flex-col gap-y-2">
-                  <p>{item.name}</p>
-                  <p>{FormatValue(item.price)}</p>
+          {order.items.length > 0 ? (
+            order.items.map((item) => (
+              <div
+                key={item.id}
+                className="flex gap-x-4 border-b border-b-gray-400 pb-4"
+              >
+                <div className="size-16 flex items-center justify-center">
+                  <Image
+                    src={item.image}
+                    width={64}
+                    height={64}
+                    alt=""
+                    className="size-16 object-contain"
+                  />
                 </div>
+                <div className="grid grid-cols-2 flex-1 gap-4">
+                  <div className="flex-1 flex flex-col gap-y-2">
+                    <p>{item.name}</p>
+                    <p>{FormatValue(item.price)}</p>
+                  </div>
 
-                <div className="flex flex-col items-end gap-y-2">
-                  <p className="bg-error-light font-semibold py-0.5 px-1 rounded-md">
-                    {item.category}
-                  </p>
-                  <p>Quantidade: {item.quantity}</p>
+                  <div className="flex flex-col items-end gap-y-2">
+                    <p className="bg-error-light font-semibold py-0.5 px-1 rounded-md">
+                      {item.category}
+                    </p>
+                    <p>Quantidade: {item.quantity}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p>Não há pedidos para exibir!</p>
+          )}
         </div>
 
         <div className="flex flex-col relative h-full">

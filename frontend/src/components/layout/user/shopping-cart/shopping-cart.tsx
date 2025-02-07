@@ -4,37 +4,26 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input/input';
 import { FormatValue } from '@/utils/format-value';
 import { ItemCart } from './item-cart';
-import { toast } from 'sonner';
 import { useCheckout } from '@/hooks/useCheckout';
+import { redirect } from 'next/navigation';
 
 export function ShoppingCart() {
-  const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
   const [newCoupon, setNewCoupon] = useState<string>('');
-  const [discountValueCoupon, setDiscountValueCoupon] = useState<number>(0);
-  const { cart, incrementItemCart, decrementItemCart, removeItemCart } =
-    useCheckout();
-
-  const frete = 20;
-
-  const valueTotal = cart.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
-
-  const finalTotal = valueTotal + frete - discountValueCoupon;
+  const {
+    cart,
+    incrementItemCart,
+    decrementItemCart,
+    removeItemCart,
+    applyCoupon,
+    order,
+  } = useCheckout();
 
   const handleApplyNewCoupon = () => {
-    if (newCoupon === 'PROMO10') {
-      setAppliedCoupon(newCoupon);
-      setDiscountValueCoupon(10);
-    } else if (newCoupon === 'DESCONTO20') {
-      setAppliedCoupon(newCoupon);
-      setDiscountValueCoupon(valueTotal * 0.2);
-    } else {
-      toast.warning('Cupom inválido!');
-    }
+    applyCoupon(newCoupon);
     setNewCoupon('');
   };
+
+  // if (!order || !order.items) return redirect('/produtos');
 
   return (
     <div className="grid grid-cols-2 gap-x-16 place-items-start mt-8 container mx-auto">
@@ -79,24 +68,31 @@ export function ShoppingCart() {
 
         <div className="flex justify-between *:text-base *:font-semibold">
           <p>Subtotal</p>
-          <p>{FormatValue(valueTotal)}</p>
+          <p>
+            {FormatValue(
+              order.items.reduce(
+                (acc, item) => acc + item.price * item.quantity,
+                0
+              )
+            )}
+          </p>
         </div>
 
         <div className="flex justify-between *:text-base *:font-semibold">
           <p>Frete</p>
-          <p>{FormatValue(frete)}</p>
+          <p>{FormatValue(order.freight)}</p>
         </div>
 
-        {appliedCoupon && (
+        {order.coupon && (
           <div className="flex justify-between *:text-base *:font-semibold">
-            <p>Cupom ({appliedCoupon})</p>
-            <p> -{FormatValue(discountValueCoupon)}</p>
+            <p>Cupom ({order.coupon})</p>
+            <p> -{FormatValue(order.discountValue)}</p>
           </div>
         )}
 
         <div className="flex justify-between *:text-lg *:font-semibold">
           <p>Total</p>
-          <p>{FormatValue(finalTotal)}</p>
+          <p>{FormatValue(order.total)}</p>
         </div>
       </div>
     </div>

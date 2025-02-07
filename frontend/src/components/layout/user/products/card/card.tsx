@@ -1,9 +1,8 @@
 import { IProduct } from '@/@types/IProduct';
 import { useCheckout } from '@/hooks/useCheckout';
-import { useData } from '@/hooks/useData';
-import { ShoppingCart } from '@phosphor-icons/react';
 import { ShoppingBag } from 'lucide-react';
 import Image from 'next/image';
+import { toast } from 'sonner';
 
 interface ICardProps {
   product: IProduct;
@@ -11,6 +10,11 @@ interface ICardProps {
 
 export function Card({ product }: ICardProps) {
   const { addProductToCart } = useCheckout();
+
+  const handleAddProductToCart = () => {
+    toast.success('Produto adicionado ao carrinho!');
+    addProductToCart(product);
+  };
 
   return (
     <div className="w-[300px] h-[480px] bg-background-light shadow-md rounded-md">
@@ -35,7 +39,7 @@ export function Card({ product }: ICardProps) {
 
         <button
           type="button"
-          onClick={() => addProductToCart(product)}
+          onClick={handleAddProductToCart}
           className="bg-primary p-1 mt-3 rounded-md flex items-center justify-center gap-2 hover:bg-primary-dark transition duration-300"
         >
           <ShoppingBag size={16} color="#000000" />
