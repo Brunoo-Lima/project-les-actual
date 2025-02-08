@@ -1,16 +1,22 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AdminLogin } from './admin-login/admin-login';
 import { UserLogin } from './user-login/user-login';
 import { ButtonOptionLogin } from '../ui/button/button-option-login';
 
 export function Login() {
-  const [option, setOption] = useState<'ADMIN' | 'USER'>('USER');
+  const [option, setOption] = useState<'ADMIN' | 'USER' | null>(null);
+
+  useEffect(() => {
+    setOption('USER');
+  }, []);
 
   const handleChangeOption = (option: 'ADMIN' | 'USER') => {
     setOption(option);
   };
+
+  if (option === null) return null;
 
   return (
     <section className="flex flex-col items-center justify-center h-screen">

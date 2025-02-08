@@ -35,3 +35,5 @@ export const Textarea = forwardRef<HTMLTextAreaElement, ITextareaProps>(
     );
   }
 );
+
+Textarea.displayName = 'Textarea';

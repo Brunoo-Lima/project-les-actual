@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { ButtonLogin } from '@/components/ui/button/button-login/button-login';
 import { Input } from '@/components/ui/input/input';

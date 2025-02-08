@@ -1,3 +1,5 @@
+'use client';
+
 import { ButtonLogin } from '@/components/ui/button/button-login/button-login';
 import { Input } from '@/components/ui/input/input';
 import { TitleLogin } from '@/components/ui/title/title-login/title-login';

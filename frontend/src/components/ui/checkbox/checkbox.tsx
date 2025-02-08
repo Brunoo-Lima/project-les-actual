@@ -1,5 +1,5 @@
-import { forwardRef } from "react";
-import { FieldError } from "react-hook-form";
+import { forwardRef } from 'react';
+import { FieldError } from 'react-hook-form';
 
 interface ICheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -27,3 +27,5 @@ export const Checkbox = forwardRef<HTMLInputElement, ICheckboxProps>(
     );
   }
 );
+
+Checkbox.displayName = 'Checkbox';
