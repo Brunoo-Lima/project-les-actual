@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { ModalBackground } from '@/components/modal/modal-background/modal-background';
-import { useCheckout } from '@/hooks/useCheckout';
-import { FormatValue } from '@/utils/format-value';
-import { useEffect, useState } from 'react';
-import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
-import { redirect } from 'next/navigation';
-import ModalDetailsOrder from '../shopping-cart/modal-details-order';
-import { CardOrder } from './card-order';
-import { ordersFinishedList } from './../../../../mocks/orders-finished-list';
+import { ModalBackground } from "@/components/modal/modal-background/modal-background";
+import { useCheckout } from "@/hooks/useCheckout";
+import { FormatValue } from "@/utils/format-value";
+import { useEffect, useState } from "react";
+import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import { redirect } from "next/navigation";
+import ModalDetailsOrder from "../shopping-cart/modal-details-order";
+import { CardOrder } from "./card-order";
+import { ordersFinishedList } from "./../../../../mocks/orders-finished-list";
 
 export function Orders() {
   const { order } = useCheckout();
@@ -21,9 +21,9 @@ export function Orders() {
     if (order && order.items.length > 0) {
       const newOrder = {
         id: Math.ceil(Math.random() * 1000),
-        status: order.status || 'Finalizado',
-        created_at: new Date().toLocaleDateString('pt-BR'),
-        updated_at: new Date().toLocaleDateString('pt-BR'),
+        status: order.status || "Finalizado",
+        created_at: new Date().toLocaleDateString("pt-BR"),
+        updated_at: new Date().toLocaleDateString("pt-BR"),
         items: order.items,
         address: order.address,
         payment: order.payment,
@@ -40,7 +40,7 @@ export function Orders() {
   // console.log('order', order);
   // console.log('ordersss', orders);
 
-  if (!orders) return redirect('/produtos');
+  if (!orders) return redirect("/produtos");
 
   return (
     <section className="flex items-center flex-col gap-y-4 py-4 min-h-screen">
@@ -50,9 +50,9 @@ export function Orders() {
         orders.map((item) => (
           <div
             key={item.id}
-            className="grid grid-cols-[1fr_200px] place-items-center gap-6 bg-background-dark rounded-md p-4 w-[650px] h-max min-h-[200px]"
+            className="grid grid-cols-[1fr_200px] place-items-center gap-6 bg-background-dark rounded-md p-4 w-[650px] h-max min-h-[250px]"
           >
-            <div className="flex flex-col gap-y-4 w-full">
+            <div className="flex flex-col gap-y-4 w-full h-[250px] overflow-auto relative z-1 container-address-form">
               {item.items.map((product) => (
                 <CardOrder key={`${item.id}-${product.id}`} item={product} />
               ))}
@@ -75,6 +75,43 @@ export function Orders() {
                     onClick={() => setIsOpenDetails(true)}
                   />
                 )}
+              </div>
+
+              <p className="text-base font-semibold mt-1">
+                Status:{" "}
+                <span
+                  className={`${
+                    item.status === "Finalizado"
+                      ? "text-success"
+                      : "text-yellow-400"
+                  }`}
+                >
+                  {item.status}
+                </span>
+              </p>
+
+              <p className="text-base font-semibold mt-1">
+                Pedido: {item.delivery}
+              </p>
+
+              <div className="flex flex-col gap-2 z-2 mt-1">
+                <button
+                  type="button"
+                  disabled={item.delivery === "Entregue"}
+                  className={`p-1 rounded-md ${
+                    item.delivery === "Entregue"
+                      ? "bg-blue-500/70 cursor-not-allowed"
+                      : "bg-blue-500"
+                  }`}
+                >
+                  Pedido entregue
+                </button>
+                <button type="button" className="bg-error p-1 rounded-md">
+                  Cancelar pedido
+                </button>
+                <button type="button" className="underline text-orange-400">
+                  Solicitar troca
+                </button>
               </div>
 
               <div className="absolute bottom-0 left-0">

@@ -1,6 +1,6 @@
-import { IProduct } from '@/@types/IProduct';
-import { FormatValue } from '@/utils/format-value';
-import Image from 'next/image';
+import { IProduct } from "@/@types/IProduct";
+import { FormatValue } from "@/utils/format-value";
+import Image from "next/image";
 
 interface ICardOrderProps {
   item: Partial<IProduct>;
