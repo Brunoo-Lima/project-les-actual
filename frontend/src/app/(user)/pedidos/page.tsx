@@ -1,9 +1,9 @@
-import { OrderFinished } from '@/components/layout/user/shopping-cart/order-finished';
+import { Orders } from '@/components/layout/user/orders/orders';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Pedido',
-  description: 'Página de pedido concluído',
+  title: 'Pedidos',
+  description: 'Página de pedidos',
 };
 
 // TODO: Aqui posso fazer algum esquema de pedido em andamento, realizado ou cancelado, algo simulando o processo de compra
@@ -12,6 +12,6 @@ export const metadata: Metadata = {
 
 // Colocar talvez parcelamento do pedido talvez
 
-export default function Order() {
-  return <OrderFinished />;
+export default function OrdersPage() {
+  return <Orders />;
 }

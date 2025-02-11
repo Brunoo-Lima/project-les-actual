@@ -21,6 +21,12 @@ export function HeaderUser() {
         />
 
         <LinkNav
+          isActive={pathname === '/pedidos'}
+          href="/pedidos"
+          text="Pedidos"
+        />
+
+        <LinkNav
           isActive={pathname === '/carrinho'}
           href="/carrinho"
           text="Carrinho"

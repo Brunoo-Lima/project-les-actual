@@ -25,7 +25,7 @@ export function MultiStepForm() {
     //Logica para enviar para o backend
 
     toast.success('Pedido realizado com sucesso!');
-    router.push('/pedido');
+    router.push('/pedidos');
 
     setCart([]);
   };
