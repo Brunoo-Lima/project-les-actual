@@ -1,4 +1,3 @@
-import { Login } from '@/components/login/login';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -6,5 +5,9 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
-  return <Login />;
+  return (
+    <p>Home</p>
+
+    // <Login />
+  );
 }

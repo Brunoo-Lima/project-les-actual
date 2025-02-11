@@ -39,7 +39,7 @@ export const FilterProvider = ({ children }: FilterProviderProps) => {
   const [selectedCategory, setSelectedCategory] = useState<ISelect | null>(
     null
   );
-  const [selectedPrice, setSelectedPrice] = useState<number>(0);
+  const [selectedPrice, setSelectedPrice] = useState<number>(10);
 
   const handleChangeCategory = (value: string) => {
     setSelectedCategory({

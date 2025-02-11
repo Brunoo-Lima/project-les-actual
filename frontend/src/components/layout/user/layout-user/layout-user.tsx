@@ -7,7 +7,7 @@ import { AuthProvider, useUseAuth } from '@/hooks/useAuth';
 import { ButtonRedirectLogin } from '@/components/ui/button/button-redirect-login';
 
 export function LayoutUser({ children }: { children: React.ReactNode }) {
-  const { handleLoginUser } = useUseAuth();
+  const { handleChangeUser } = useUseAuth();
 
   return (
     <>
@@ -16,7 +16,9 @@ export function LayoutUser({ children }: { children: React.ReactNode }) {
         <main className="container mx-auto py-8 px-12 relative">
           {children}
 
-          <ButtonRedirectLogin handleLoginUser={handleLoginUser} />
+          <ButtonRedirectLogin
+            handleChangeUser={() => handleChangeUser('ADMIN')}
+          />
         </main>
       </AuthProvider>
       <Footer />

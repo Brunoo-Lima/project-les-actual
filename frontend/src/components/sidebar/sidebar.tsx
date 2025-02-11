@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Tag } from '@phosphor-icons/react';
 import Item from './item/item';
-import { GlobeIcon, LibraryIcon, LogOut } from 'lucide-react';
+import { GlobeIcon, LibraryIcon, LogOut, UsersIcon } from 'lucide-react';
 import { Tooltip } from '../ui/tooltip/tooltip';
 
 export function Sidebar() {
@@ -28,6 +28,16 @@ export function Sidebar() {
           <nav className="flex flex-col items-center gap-y-6">
             <Item
               activeTooltip={activeTooltip}
+              href="/vendas"
+              icon={<Tag size={24} color="#2DD4BF" weight="bold" />}
+              text="Vendas"
+              handleMouseEnter={() => handleMouseEnter('sale')}
+              handleMouseLeave={handleMouseLeave}
+              tooltip="sale"
+            />
+
+            <Item
+              activeTooltip={activeTooltip}
               href="/produto"
               icon={<LibraryIcon size={24} color="#2DD4BF" />}
               text="Produto"
@@ -38,12 +48,12 @@ export function Sidebar() {
 
             <Item
               activeTooltip={activeTooltip}
-              href="/vendas"
-              icon={<Tag size={24} color="#2DD4BF" weight="bold" />}
-              text="Vendas"
-              handleMouseEnter={() => handleMouseEnter('sale')}
+              href="/usuarios"
+              icon={<UsersIcon size={24} color="#2DD4BF" />}
+              text="Usuários"
+              handleMouseEnter={() => handleMouseEnter('users')}
               handleMouseLeave={handleMouseLeave}
-              tooltip="sale"
+              tooltip="users"
             />
           </nav>
         </div>

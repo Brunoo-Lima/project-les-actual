@@ -1,16 +1,10 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { createContext, useContext, useMemo, useState } from 'react';
-
-interface IUser {
-  userLogin: 'ADMIN' | 'USER';
-}
+import { createContext, useContext, useMemo } from 'react';
 
 interface IAuthContextProps {
-  user: IUser | null;
-  setUser: React.Dispatch<React.SetStateAction<IUser | null>>;
-  handleLoginUser: () => void;
+  handleChangeUser: (selected: 'ADMIN' | 'USER') => void;
 }
 
 interface IChildrenProps {
@@ -20,21 +14,21 @@ interface IChildrenProps {
 export const AuthContext = createContext({} as IAuthContextProps);
 
 export const AuthProvider = ({ children }: IChildrenProps) => {
-  const [user, setUser] = useState<IUser | null>(null);
   const router = useRouter();
 
-  const handleLoginUser = () => {
-    setUser({} as IUser);
-    router.push('/');
+  const handleChangeUser = (selected: 'ADMIN' | 'USER') => {
+    if (selected === 'ADMIN') {
+      router.push('/vendas');
+    } else {
+      router.push('/produtos');
+    }
   };
 
   const contextValue = useMemo(
     () => ({
-      user,
-      setUser,
-      handleLoginUser,
+      handleChangeUser,
     }),
-    [user, setUser]
+    []
   );
 
   return (
