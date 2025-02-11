@@ -8,4 +8,5 @@ export interface IProduct {
   image: File | null;
   quantity: number;
   status?: string;
+  delivery?: string;
 }
