@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { ISelect } from '@/@types/ISelect';
-import { createContext, ReactNode, useContext, useMemo, useState } from 'react';
+import { ISelect } from "@/@types/ISelect";
+import { createContext, ReactNode, useContext, useMemo, useState } from "react";
 
 interface IFilterContextProps {
   isSearching: boolean;
@@ -16,8 +16,10 @@ interface IFilterContextProps {
   >;
   selectedCategory: ISelect | null;
   setSelectedCategory: React.Dispatch<React.SetStateAction<ISelect | null>>;
-  selectedPrice: number;
-  setSelectedPrice: React.Dispatch<React.SetStateAction<number>>;
+  selectedPrice: number | null;
+  setSelectedPrice: React.Dispatch<React.SetStateAction<number | null>>;
+  selectedStock: number | string;
+  setSelectedStock: React.Dispatch<React.SetStateAction<number | string>>;
   handleChangeCategory: (value: string) => void;
   handleChangeStatus: (value: string) => void;
 }
@@ -33,13 +35,14 @@ export const FilterContext = createContext<IFilterContextProps>(
 export const FilterProvider = ({ children }: FilterProviderProps) => {
   const [isSearching, setIsSearching] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<ISelect | null>(null);
-  const [searchName, setSearchName] = useState<string>('');
+  const [searchName, setSearchName] = useState<string>("");
   const [selectedProfilePurchase, setSelectedProfilePurchase] =
     useState<ISelect | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<ISelect | null>(
     null
   );
-  const [selectedPrice, setSelectedPrice] = useState<number>(10);
+  const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
+  const [selectedStock, setSelectedStock] = useState<number | string>("");
 
   const handleChangeCategory = (value: string) => {
     setSelectedCategory({
@@ -71,6 +74,8 @@ export const FilterProvider = ({ children }: FilterProviderProps) => {
       handleChangeStatus,
       selectedPrice,
       setSelectedPrice,
+      selectedStock,
+      setSelectedStock,
     }),
     [
       selectedStatus,
@@ -85,6 +90,8 @@ export const FilterProvider = ({ children }: FilterProviderProps) => {
       setSelectedCategory,
       selectedPrice,
       setSelectedPrice,
+      selectedStock,
+      setSelectedStock,
     ]
   );
 

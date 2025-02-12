@@ -1,5 +1,5 @@
-import { forwardRef } from 'react';
-import { FieldError } from 'react-hook-form';
+import { forwardRef } from "react";
+import { FieldError } from "react-hook-form";
 
 interface IInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -12,7 +12,19 @@ interface IInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 export const Input = forwardRef<HTMLInputElement, IInputProps>(
-  ({ label, type = 'text', placeholder, error, className, ...rest }, ref) => {
+  (
+    {
+      label,
+      type = "text",
+      placeholder,
+      error,
+      className,
+      onChange,
+      value,
+      ...rest
+    },
+    ref
+  ) => {
     return (
       <div className="flex flex-col w-full">
         <label htmlFor={label} className="text-primary-light text-base mb-1">
@@ -22,6 +34,8 @@ export const Input = forwardRef<HTMLInputElement, IInputProps>(
           type={type}
           placeholder={placeholder}
           ref={ref}
+          onChange={onChange}
+          value={value}
           className={`${className} bg-background-dark p-2 rounded-md text-base`}
           {...rest}
         />
@@ -31,4 +45,4 @@ export const Input = forwardRef<HTMLInputElement, IInputProps>(
   }
 );
 
-Input.displayName = 'Input';
+Input.displayName = "Input";

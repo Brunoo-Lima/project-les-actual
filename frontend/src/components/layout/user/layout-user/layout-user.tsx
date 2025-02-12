@@ -1,10 +1,9 @@
-'use client';
+"use client";
 
-import { Footer } from '@/components/footer/footer';
-import { HeaderUser } from '../header-user/header-user';
-import { LogInIcon } from 'lucide-react';
-import { AuthProvider, useUseAuth } from '@/hooks/useAuth';
-import { ButtonRedirectLogin } from '@/components/ui/button/button-redirect-login';
+import { Footer } from "@/components/footer/footer";
+import { HeaderUser } from "../header-user/header-user";
+import { AuthProvider, useUseAuth } from "@/hooks/useAuth";
+import { ButtonRedirectLogin } from "@/components/ui/button/button-redirect-login";
 
 export function LayoutUser({ children }: { children: React.ReactNode }) {
   const { handleChangeUser } = useUseAuth();
@@ -17,7 +16,7 @@ export function LayoutUser({ children }: { children: React.ReactNode }) {
           {children}
 
           <ButtonRedirectLogin
-            handleChangeUser={() => handleChangeUser('ADMIN')}
+            handleChangeUser={() => handleChangeUser("ADMIN")}
           />
         </main>
       </AuthProvider>

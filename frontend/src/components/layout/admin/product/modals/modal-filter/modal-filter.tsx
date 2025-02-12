@@ -1,11 +1,15 @@
-import { Modal } from '@/components/modal';
-import { ButtonCancel } from '@/components/ui/button/button-cancel/button-cancel';
-import { ButtonGeneral } from '@/components/ui/button/button-general';
-import { Input } from '@/components/ui/input/input';
-import { SelectComponent } from '@/components/ui/select/select';
-import { Slider } from '@/components/ui/slider';
-import { useFilter } from '@/hooks/useFilter';
-import { selectCategory, selectStatus } from '@/mocks/select/select';
+"use client";
+
+import { Modal } from "@/components/modal";
+import { ButtonCancel } from "@/components/ui/button/button-cancel/button-cancel";
+import { ButtonGeneral } from "@/components/ui/button/button-general";
+import { Input } from "@/components/ui/input/input";
+import { SearchInput } from "@/components/ui/search/search";
+import { SelectComponent } from "@/components/ui/select/select";
+import { Slider } from "@/components/ui/slider";
+import { useFilter } from "@/hooks/useFilter";
+import { selectCategory, selectStatus } from "@/mocks/select/select";
+import { FormatValue } from "@/utils/format-value";
 
 interface IModalFilterProps {
   handleSubmit: () => void;
@@ -29,6 +33,8 @@ export function ModalFilter({
     setSelectedPrice,
     handleChangeCategory,
     handleChangeStatus,
+    selectedStock,
+    setSelectedStock,
   } = useFilter();
 
   const handleFilter = () => {
@@ -45,11 +51,17 @@ export function ModalFilter({
       <Modal.Header title="Filtrar produtos" onClick={onClose} />
 
       <Modal.Content className="flex flex-col gap-4">
-        <Input
-          label="Nome do produto"
+        <SearchInput
           placeholder="Digite o nome do produto"
           value={searchName}
           onChange={(e) => setSearchName(e.target.value)}
+        />
+
+        <Input
+          label="Estoque"
+          placeholder="Digite o estoque"
+          value={String(selectedStock) || ""}
+          onChange={(e) => setSelectedStock(Number(e.target.value))}
         />
 
         <SelectComponent
@@ -66,13 +78,19 @@ export function ModalFilter({
           onChange={handleChangeStatus}
         />
 
-        {/* Ver dps qual o problema */}
-        {/* <div>
+        <div className="flex flex-col gap-y-2">
           <label htmlFor="">Preço</label>
-          <Slider onValueChange={handleChange} />
+          <Slider
+            onValueChange={handleChange}
+            max={2000}
+            className="bg-white"
+            value={[selectedPrice || 0]}
+          />
 
-          <p>Valor: {selectedPrice}</p>
-        </div> */}
+          <p className="text-base font-semibold">
+            Valor: {FormatValue(selectedPrice || 0)}
+          </p>
+        </div>
 
         <div className="grid grid-cols-2 gap-2">
           <ButtonGeneral

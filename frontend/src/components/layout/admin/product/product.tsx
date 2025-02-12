@@ -1,17 +1,18 @@
-'use client';
+"use client";
 
-import { TitlePage } from '@/components/ui/title/title-page/title-page';
-import { Table } from './table/table';
-import { productListRegister } from '@/mocks/product-list-register';
-import { PlusIcon } from 'lucide-react';
-import { ButtonGeneral } from '@/components/ui/button/button-general';
-import { useState } from 'react';
-import { ModalBackground } from '@/components/modal/modal-background/modal-background';
-import { ModalRegister } from './modals/modal-register/modal-register';
-import { useData } from '@/hooks/useData';
-import { IProduct } from '@/@types/IProduct';
-import { ModalFilter } from './modals/modal-filter/modal-filter';
-import { useFilter } from '@/hooks/useFilter';
+import { TitlePage } from "@/components/ui/title/title-page/title-page";
+import { Table } from "./table/table";
+import { productListRegister } from "@/mocks/product-list-register";
+import { PlusIcon } from "lucide-react";
+import { ButtonGeneral } from "@/components/ui/button/button-general";
+import { useState } from "react";
+import { ModalBackground } from "@/components/modal/modal-background/modal-background";
+import { ModalRegister } from "./modals/modal-register/modal-register";
+import { useData } from "@/hooks/useData";
+import { IProduct } from "@/@types/IProduct";
+import { ModalFilter } from "./modals/modal-filter/modal-filter";
+import { useFilter } from "@/hooks/useFilter";
+import { toast } from "sonner";
 
 export function Product() {
   const {
@@ -20,11 +21,15 @@ export function Product() {
     searchName,
     setSearchName,
     selectedStatus,
+    selectedPrice,
     setSelectedStatus,
     selectedProfilePurchase,
     setSelectedProfilePurchase,
+    setSelectedPrice,
     selectedCategory,
     setSelectedCategory,
+    selectedStock,
+    setSelectedStock,
   } = useFilter();
   const { products, setProducts } = useData();
 
@@ -58,24 +63,36 @@ export function Product() {
         const matchesStatus =
           !selectedStatus || client.status === selectedStatus.value;
 
-        const matchesProfilePurchase =
-          !selectedProfilePurchase ||
-          client.category === selectedCategory?.value;
+        const matchesCategory =
+          !selectedCategory || client.category === selectedCategory.value;
 
-        return matchesName && matchesStatus && matchesProfilePurchase;
+        const matchesPrice = !selectedPrice || client.price <= selectedPrice;
+
+        const matchesStock = !selectedStock || client.stock <= +selectedStock;
+
+        return (
+          matchesName &&
+          matchesStatus &&
+          matchesPrice &&
+          matchesCategory &&
+          matchesStock
+        );
       });
 
       setFilteredData(filtered);
     } catch (err) {
-      // handleError(err);
+      toast.error("Erro ao buscar clientes");
     }
   };
 
   const clearFields = () => {
-    setSearchName('');
+    setSearchName("");
     setSelectedStatus(null);
     setSelectedProfilePurchase(null);
     setSelectedCategory(null);
+    setSelectedPrice(null);
+    setSelectedStock("");
+    setIsOpenModalFilter(false);
   };
 
   return (

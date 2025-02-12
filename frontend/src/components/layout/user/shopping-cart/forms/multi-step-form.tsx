@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useMultiStepForm } from '@/hooks/useMultiStepForm';
-import { ShoppingCart } from '../shopping-cart';
-import { Addresses } from './addresses';
+import { useMultiStepForm } from "@/hooks/useMultiStepForm";
+import { ShoppingCart } from "../shopping-cart";
+import { Addresses } from "./addresses";
 
-import { Payment } from './payment';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
-import { useCheckout } from '@/hooks/useCheckout';
+import { Payment } from "./payment";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useCheckout } from "@/hooks/useCheckout";
 
 export function MultiStepForm() {
   const { setCart } = useCheckout();
@@ -24,8 +24,8 @@ export function MultiStepForm() {
   const handleOrderFinished = async () => {
     //Logica para enviar para o backend
 
-    toast.success('Pedido realizado com sucesso!');
-    router.push('/pedidos');
+    toast.success("Pedido realizado com sucesso!");
+    router.push("/pedidos");
 
     setCart([]);
   };
