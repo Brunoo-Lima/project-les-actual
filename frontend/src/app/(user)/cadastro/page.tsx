@@ -2,10 +2,5 @@ import { RegisterUser } from "@/components/layout/user/register-user/register-us
 import type { Metadata } from "next";
 
 export default function RegisterPage() {
-  return (
-    <div className="min-h-screen">
-      <RegisterUser />
-    </div>
-  );
+  return <RegisterUser />;
 }
-

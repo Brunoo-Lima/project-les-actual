@@ -1,9 +1,9 @@
-import { MasterLayout } from '@/components/master-layout/master-layout';
+import { MasterLayout } from "@/components/master-layout/master-layout";
 
-export default function UserLayout({
+export default function AdminLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return <MasterLayout>{children}</MasterLayout>;
 }
