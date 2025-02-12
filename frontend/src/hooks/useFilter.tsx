@@ -20,6 +20,8 @@ interface IFilterContextProps {
   setSelectedPrice: React.Dispatch<React.SetStateAction<number | null>>;
   selectedStock: number | string;
   setSelectedStock: React.Dispatch<React.SetStateAction<number | string>>;
+  selectedDateRegister: string | null;
+  setSelectedDateRegister: React.Dispatch<React.SetStateAction<string | null>>;
   handleChangeCategory: (value: string) => void;
   handleChangeStatus: (value: string) => void;
 }
@@ -43,6 +45,9 @@ export const FilterProvider = ({ children }: FilterProviderProps) => {
   );
   const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
   const [selectedStock, setSelectedStock] = useState<number | string>("");
+  const [selectedDateRegister, setSelectedDateRegister] = useState<
+    string | null
+  >(null);
 
   const handleChangeCategory = (value: string) => {
     setSelectedCategory({
@@ -76,6 +81,8 @@ export const FilterProvider = ({ children }: FilterProviderProps) => {
       setSelectedPrice,
       selectedStock,
       setSelectedStock,
+      selectedDateRegister,
+      setSelectedDateRegister,
     }),
     [
       selectedStatus,
@@ -92,6 +99,8 @@ export const FilterProvider = ({ children }: FilterProviderProps) => {
       setSelectedPrice,
       selectedStock,
       setSelectedStock,
+      selectedDateRegister,
+      setSelectedDateRegister,
     ]
   );
 
