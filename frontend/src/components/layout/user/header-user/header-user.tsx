@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { GlobeIcon } from 'lucide-react';
-import { usePathname } from 'next/navigation';
-import { LinkNav } from './link-nav/link-nav';
-import { useCheckout } from '@/hooks/useCheckout';
+import { GlobeIcon } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { LinkNav } from "./link-nav/link-nav";
+import { useCheckout } from "@/hooks/useCheckout";
 
 export function HeaderUser() {
   const pathname = usePathname();
@@ -15,19 +15,25 @@ export function HeaderUser() {
 
       <nav className="flex gap-8">
         <LinkNav
-          isActive={pathname === '/produtos'}
+          isActive={pathname === "/cadastro"}
+          href="/cadastro"
+          text="Cadastro"
+        />
+
+        <LinkNav
+          isActive={pathname === "/produtos"}
           href="/produtos"
           text="Produtos"
         />
 
         <LinkNav
-          isActive={pathname === '/pedidos'}
+          isActive={pathname === "/pedidos"}
           href="/pedidos"
           text="Pedidos"
         />
 
         <LinkNav
-          isActive={pathname === '/carrinho'}
+          isActive={pathname === "/carrinho"}
           href="/carrinho"
           text="Carrinho"
           cart
