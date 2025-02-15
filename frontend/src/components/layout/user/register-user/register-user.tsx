@@ -66,7 +66,7 @@ export function RegisterUser() {
 
   return (
     <div className="min-h-screen py-8">
-      <TitlePage title="Cadastro de usuários" />
+      <TitlePage title="Cadastro de usuário" />
 
       <form
         onSubmit={handleSubmit(onSubmit)}

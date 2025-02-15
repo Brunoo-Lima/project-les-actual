@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { X, Search } from "lucide-react"; // Ou importe de "phosphor-react"
+import { Search, XIcon } from "lucide-react";
 
 interface ISearchInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -17,7 +17,6 @@ export const SearchInput = forwardRef<HTMLInputElement, ISearchInputProps>(
   ) => {
     return (
       <div className={`relative flex items-center ${className}`}>
-        {/* Ícone de busca */}
         <Search className="absolute left-3 text-gray-400" size={18} />
 
         <input
@@ -30,14 +29,13 @@ export const SearchInput = forwardRef<HTMLInputElement, ISearchInputProps>(
           {...rest}
         />
 
-        {/* Botão para limpar busca */}
         {value && onClear && (
           <button
             type="button"
             onClick={onClear}
             className="absolute right-3 text-gray-400 hover:text-white"
           >
-            <X size={18} />
+            <XIcon size={18} />
           </button>
         )}
       </div>
