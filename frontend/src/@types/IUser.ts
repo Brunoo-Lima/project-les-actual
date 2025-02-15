@@ -1,3 +1,4 @@
+import { IAddress } from "./IAddress";
 import { ICreditCard } from "./ICreditCard";
 
 export interface IUser {
@@ -12,22 +13,9 @@ export interface IUser {
   gender: string;
   typePhone: string;
   phone: string;
-  address: IAddress;
+  address: IAddress[];
   creditCard: ICreditCard;
   orders: Order[];
-}
-
-export interface IAddress {
-  identifier: string;
-  street: string;
-  number: string;
-  neighborhood: string;
-  zipCode: string;
-  typeResidence: string;
-  typePublicPlace: string;
-  city: string;
-  state: string;
-  country: string;
 }
 
 export interface Order {

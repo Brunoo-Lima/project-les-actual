@@ -29,16 +29,20 @@ export function ModalInfoUser({ onClose, user }: IModalInfoUserProps) {
 
           <div className="flex flex-col gap-4 ">
             <h2 className="text-lg text-white">Endereço</h2>
-            <p>Nome endereço: {user.address.identifier}</p>
-            <p>CEP: {user.address.zipCode}</p>
-            <p>Rua: {user.address.street}</p>
-            <p>Número: {user.address.number}</p>
-            <p>Bairro: {user.address.neighborhood}</p>
-            <p>Cidade: {user.address.city}</p>
-            <p>Estado: {user.address.state}</p>
-            <p>País: {user.address.country}</p>
-            <p>Tipo de residência: {user.address.typeResidence}</p>
-            <p>Tipo de logradouro: {user.address.typePublicPlace}</p>
+            {user.address.map((address) => (
+              <div key={address.id}>
+                <p>Nome endereço: {address.identifier}</p>
+                <p>CEP: {address.zipCode}</p>
+                <p>Rua: {address.street}</p>
+                <p>Número: {address.number}</p>
+                <p>Bairro: {address.neighborhood}</p>
+                <p>Cidade: {address.city}</p>
+                <p>Estado: {address.state}</p>
+                <p>País: {address.country}</p>
+                <p>Tipo de residência: {address.typeResidence}</p>
+                <p>Tipo de logradouro: {address.typePublicPlace}</p>
+              </div>
+            ))}
           </div>
         </div>
 

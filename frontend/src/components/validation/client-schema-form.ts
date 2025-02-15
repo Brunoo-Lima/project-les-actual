@@ -1,4 +1,6 @@
 import * as yup from "yup";
+import { AddressSchemaForm } from "./address-schema.form";
+import { CreditCardSchemaForm } from "./credit-card-schema-form";
 
 export type IClientSchemaForm = yup.InferType<typeof ClientSchemaForm>;
 
@@ -21,24 +23,14 @@ export const ClientSchemaForm = yup.object().shape({
     .oneOf([yup.ref("password")], "As senhas devem ser iguais")
     .min(8, "Senha deve ter no mínimo 8 caracteres"),
 
-  // addresses: yup
-  //   .array()
-  //   .of(AddressClientSchemaForm)
-  //   .min(1, "Pelo menos um endereço deve ser adicionado"),
+  addresses: yup
+    .array()
+    .of(AddressSchemaForm)
+    .min(1, "Pelo menos um endereço deve ser adicionado"),
   // creditCards: yup
   //   .array()
   //   .of(CreditCardSchemaForm)
   //   .min(1, "Pelo menos um cartão deve ser adicionado"),
-
-  zipCode: yup.string().required("CEP é obrigatório"),
-  typeResidence: yup.string().required("Tipo de residência é obrigatório"),
-  neighborhood: yup.string().required("Bairro é obrigatório"),
-  number: yup.string().required("Número é obrigatório"),
-  street: yup.string().required("Rua é obrigatório"),
-  typePublicPlace: yup.string().required("Tipo de logradouro é obrigatório"),
-  city: yup.string().required("Cidade é obrigatória"),
-  state: yup.string().required("Estado é obrigatório"),
-  country: yup.string().required("Pais é obrigatório"),
 });
 
 export const emptyClient = {
@@ -51,16 +43,19 @@ export const emptyClient = {
   email: "",
   password: "",
   confirmPassword: "",
-  zipCode: "",
-  typeResidence: "",
-  neighborhood: "",
-  number: "",
-  street: "",
-  typePublicPlace: "",
-  city: "",
-  state: "",
-  country: "Brasil",
+  addresses: [],
+  // creditCards: [],
 };
+
+// zipCode: "",
+// typeResidence: "",
+// neighborhood: "",
+// number: "",
+// street: "",
+// typePublicPlace: "",
+// city: "",
+// state: "",
+// country: "Brasil",
 
 export const mockClient = {
   id: 1,
@@ -73,9 +68,24 @@ export const mockClient = {
   email: "lTlQZ@example.com",
   password: "12345678",
   confirmPassword: "12345678",
-  zipCode: "08695-065",
-  typeResidence: "Casa",
-  number: "123",
-  typePublicPlace: "Rua",
-  state: "SP",
+  address: [
+    {
+      id: 1,
+      identifier: "Casa",
+      zipCode: "12345678",
+      street: "Rua A",
+      typeResidence: "Casa",
+      neighborhood: "Bairro A",
+      number: "123",
+      typePublicPlace: "Rua",
+      publicPlace: "A",
+      city: "Suzano",
+      state: "SP",
+      country: "Brasil",
+      observation: "Observação",
+      delivery: true,
+      charge: true,
+      identifierDelivery: "Casa",
+    },
+  ],
 };
