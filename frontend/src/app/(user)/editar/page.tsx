@@ -1,4 +1,4 @@
-import { EditUser } from "@/components/layout/user/edit-user/edit-user";
+import { EditUser } from "@/components/layout/user/forms/edit-user/edit-user";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

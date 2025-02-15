@@ -1,13 +1,13 @@
 /* eslint-disable react/display-name */
-import { forwardRef } from 'react';
+import { forwardRef } from "react";
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from '@/components/ui/select';
-import { FieldError } from 'react-hook-form';
+} from "@/components/ui/select";
+import { FieldError } from "react-hook-form";
 
 export interface ISelect {
   value: string;
@@ -23,10 +23,11 @@ interface ISelectProps {
   onBlur?: (event: React.FocusEvent<HTMLButtonElement>) => void;
   name?: string;
   error?: FieldError;
+  disabled?: boolean;
 }
 
 export const SelectComponent = forwardRef<HTMLSelectElement, ISelectProps>(
-  ({ label, options, placeholder, onChange, error }, ref) => {
+  ({ label, options, placeholder, onChange, error, disabled }, ref) => {
     return (
       <div className="flex flex-col">
         <label
@@ -37,6 +38,7 @@ export const SelectComponent = forwardRef<HTMLSelectElement, ISelectProps>(
         </label>
         <Select onValueChange={onChange}>
           <SelectTrigger
+            disabled={disabled}
             ref={ref}
             className="border-[1px] border-background-light rounded-md p-2 w-full h-[43px] focus-visible:border-primary-dark outline-none text-base text-background-light/50 placeholder:text-background-light/50 focus:ring-0"
           >

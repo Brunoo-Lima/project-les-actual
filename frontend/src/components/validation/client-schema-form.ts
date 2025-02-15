@@ -10,7 +10,7 @@ export const ClientSchemaForm = yup.object().shape({
   dateOfBirth: yup.string().required("Data de nascimento é obrigatória"),
   cpf: yup.string().required("CPF é obrigatório"),
   gender: yup.string().required("Gênero é obrigatório"),
-
+  status: yup.string().optional(),
   email: yup.string().required("Email é obrigatório"),
   password: yup
     .string()

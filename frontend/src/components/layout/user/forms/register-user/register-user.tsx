@@ -39,7 +39,7 @@ export function RegisterUser() {
   const fieldArrays = {
     addresses: useFieldArray({ control, name: "addresses" }),
     phones: useFieldArray({ control, name: "phones" }),
-    crediCards: useFieldArray({ control, name: "creditCards" }),
+    creditCards: useFieldArray({ control, name: "creditCards" }),
   };
 
   const onSubmit: SubmitHandler<IClientSchemaForm> = (data) => {
@@ -160,20 +160,20 @@ export function RegisterUser() {
         <div className="flex flex-col gap-y-4">
           <h2 className="text-lg font-semibold my-4">Cartão de crédito</h2>
 
-          {fieldArrays.crediCards.fields.map((card, index) => (
+          {fieldArrays.creditCards.fields.map((card, index) => (
             <CreditCardFormUser
               key={card.id}
               index={index}
               register={register}
               errors={errors.creditCards?.[index] || {}}
               control={control}
-              removeCreditCard={() => fieldArrays.crediCards.remove(index)}
+              removeCreditCard={() => fieldArrays.creditCards.remove(index)}
             />
           ))}
 
           <ButtonGeneral
             text="Adicionar cartão de crédito"
-            onClick={() => fieldArrays.crediCards.append(emptyCreditCard)}
+            onClick={() => fieldArrays.creditCards.append(emptyCreditCard)}
             className="bg-emerald-400 hover:bg-emerald-700 w-60"
           />
         </div>

@@ -11,6 +11,7 @@ import {
   FieldError,
   UseFormRegister,
 } from "react-hook-form";
+import { SectionType } from "../edit-user/edit-user";
 
 interface ICreditCardFormUserProps {
   register: UseFormRegister<IClientSchemaForm>;
@@ -18,6 +19,8 @@ interface ICreditCardFormUserProps {
   control: Control<IClientSchemaForm>;
   removeCreditCard: () => void;
   index: number;
+  editSection?: SectionType;
+  section?: string;
 }
 
 export function CreditCardFormUser({
@@ -26,6 +29,8 @@ export function CreditCardFormUser({
   control,
   removeCreditCard,
   index,
+  editSection,
+  section,
 }: ICreditCardFormUserProps) {
   return (
     <div className="flex flex-col gap-y-4 border-[0.5px] border-gray-600 rounded-md p-4">
@@ -45,6 +50,7 @@ export function CreditCardFormUser({
             onBlur={field.onBlur}
             name={field.name}
             ref={field.ref}
+            disabled={editSection !== section}
             error={fieldState.error}
           />
         )}
@@ -55,12 +61,14 @@ export function CreditCardFormUser({
         placeholder="Digite o número do cartão"
         {...register(`creditCards.${index}.number`)}
         error={errors.number}
+        disabled={editSection !== section}
       />
       <Input
         label="Nome impresso"
         placeholder="Digite o nome"
         {...register(`creditCards.${index}.namePrinted`)}
         error={errors.namePrinted}
+        disabled={editSection !== section}
       />
 
       <div className="grid grid-cols-2 gap-4">
@@ -69,18 +77,21 @@ export function CreditCardFormUser({
           placeholder="Digite o cvv"
           {...register(`creditCards.${index}.cvv`)}
           error={errors.cvv}
+          disabled={editSection !== section}
         />
         <Input
           label="Data de validade"
           placeholder="Digite a data de validade"
           {...register(`creditCards.${index}.dateExpired`)}
           error={errors.dateExpired}
+          disabled={editSection !== section}
         />
       </div>
 
       <Checkbox
         label="Preferencial"
         {...register(`creditCards.${index}.preferential`)}
+        disabled={editSection !== section}
       />
 
       <ButtonCancel text="Remover cartão" onClick={removeCreditCard} />

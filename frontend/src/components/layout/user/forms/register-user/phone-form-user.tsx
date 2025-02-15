@@ -10,6 +10,7 @@ import {
   FieldError,
   UseFormRegister,
 } from "react-hook-form";
+import { SectionType } from "../edit-user/edit-user";
 
 interface IPhoneFormUserProps {
   register: UseFormRegister<IClientSchemaForm>;
@@ -17,6 +18,8 @@ interface IPhoneFormUserProps {
   control: Control<IClientSchemaForm>;
   index: number;
   removePhone: () => void;
+  editSection?: SectionType;
+  section?: string;
 }
 
 export function PhoneFormUser({
@@ -25,6 +28,8 @@ export function PhoneFormUser({
   control,
   index,
   removePhone,
+  editSection,
+  section,
 }: IPhoneFormUserProps) {
   return (
     <div className="flex flex-col gap-y-4 border-[0.5px] border-gray-600 rounded-md p-4">
@@ -40,11 +45,13 @@ export function PhoneFormUser({
             label="Fixo"
             value="Fixo"
             {...register(`phones.${index}.typePhone`)}
+            disabled={editSection !== section}
           />
           <Radio
             label="Celular"
             value="Celular"
             {...register(`phones.${index}.typePhone`)}
+            disabled={editSection !== section}
           />
 
           {errors.typePhone && (
@@ -66,6 +73,7 @@ export function PhoneFormUser({
               onChange={onChange}
               ref={ref}
               error={errors.numberPhone}
+              disabled={editSection !== section}
               maxLength={15}
             />
           )}

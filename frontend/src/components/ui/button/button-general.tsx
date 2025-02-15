@@ -1,11 +1,11 @@
-import { ReactNode } from 'react';
+import { ReactNode } from "react";
 
 interface IButtonGeneralProps {
   icon?: ReactNode;
   text: string;
   className?: string;
   onClick?: () => void;
-  type?: 'submit' | 'reset' | 'button';
+  type?: "submit" | "reset" | "button";
 }
 
 export function ButtonGeneral({
@@ -13,7 +13,7 @@ export function ButtonGeneral({
   text,
   className,
   onClick,
-  type = 'button',
+  type = "button",
 }: IButtonGeneralProps) {
   return (
     <button

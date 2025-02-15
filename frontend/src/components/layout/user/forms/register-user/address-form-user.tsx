@@ -18,6 +18,7 @@ import {
   UseFormSetValue,
 } from "react-hook-form";
 import { toast } from "sonner";
+import { SectionType } from "../edit-user/edit-user";
 
 interface IAddressFormUserProps {
   register: UseFormRegister<IClientSchemaForm>;
@@ -26,6 +27,8 @@ interface IAddressFormUserProps {
   index: number;
   removeAddress: () => void;
   setValue: UseFormSetValue<IClientSchemaForm>;
+  editSection?: SectionType;
+  section?: string;
 }
 
 export function AddressFormUser({
@@ -35,6 +38,8 @@ export function AddressFormUser({
   index,
   removeAddress,
   setValue,
+  editSection,
+  section,
 }: IAddressFormUserProps) {
   const handleAddCep = async (
     e: FocusEvent<HTMLInputElement>,
@@ -71,12 +76,14 @@ export function AddressFormUser({
             onChange: (e) => handleAddCep(e, index),
           })}
           error={errors.zipCode}
+          disabled={editSection !== section}
         />
         <Input
           label="Rua"
           placeholder="Digite a rua"
           {...register(`addresses.${index}.street`)}
           error={errors.street}
+          disabled={editSection !== section}
         />
       </div>
 
@@ -93,6 +100,7 @@ export function AddressFormUser({
               onBlur={field.onBlur}
               name={field.name}
               ref={field.ref}
+              disabled={editSection !== section}
               error={fieldState.error}
             />
           )}
@@ -110,6 +118,7 @@ export function AddressFormUser({
               onBlur={field.onBlur}
               name={field.name}
               ref={field.ref}
+              disabled={editSection !== section}
               error={fieldState.error}
             />
           )}
@@ -122,12 +131,14 @@ export function AddressFormUser({
           placeholder="Digite o bairro"
           {...register(`addresses.${index}.neighborhood`)}
           error={errors.neighborhood}
+          disabled={editSection !== section}
         />
         <Input
           label="Número"
           placeholder="Digite o número"
           {...register(`addresses.${index}.number`)}
           error={errors.number}
+          disabled={editSection !== section}
         />
       </div>
 
@@ -137,6 +148,7 @@ export function AddressFormUser({
           placeholder="Digite o cidade"
           {...register(`addresses.${index}.city`)}
           error={errors.city}
+          disabled={editSection !== section}
         />
         <Controller
           control={control}
@@ -150,6 +162,7 @@ export function AddressFormUser({
               onBlur={field.onBlur}
               name={field.name}
               ref={field.ref}
+              disabled={editSection !== section}
               error={fieldState.error}
             />
           )}
@@ -160,6 +173,7 @@ export function AddressFormUser({
           placeholder="Digite o país"
           {...register(`addresses.${index}.country`)}
           error={errors.country}
+          disabled={editSection !== section}
         />
       </div>
 

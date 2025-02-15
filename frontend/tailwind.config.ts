@@ -1,78 +1,85 @@
-import type { Config } from 'tailwindcss';
+import type { Config } from "tailwindcss";
 
 export default {
-  darkMode: ['class'],
+  darkMode: ["class"],
   content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
       colors: {
         primary: {
-          light: 'var(--foreground)',
-          DEFAULT: '#2DD4BF',
-          dark: '#0D9488',
+          light: "var(--foreground)",
+          DEFAULT: "#2DD4BF",
+          dark: "#0D9488",
         },
         background: {
-          light: 'var(--foreground)',
-          DEFAULT: 'var(--background)',
-          dark: '#1F1F21',
+          light: "var(--foreground)",
+          DEFAULT: "var(--background)",
+          dark: "#1F1F21",
         },
 
         error: {
-          light: '#f87171',
-          DEFAULT: ' #ef4444',
-          dark: '#b91c1c',
+          light: "#f87171",
+          DEFAULT: " #ef4444",
+          dark: "#b91c1c",
         },
         success: {
-          light: '#34d399',
-          DEFAULT: '#10B981',
-          dark: '#047857',
+          light: "#34d399",
+          DEFAULT: "#10B981",
+          dark: "#047857",
         },
         textColor: {
-          light: '#ffffff',
-          DEFAULT: '#2DD4BF',
-          dark: '#9ca3af',
+          light: "#ffffff",
+          DEFAULT: "#2DD4BF",
+          dark: "#9ca3af",
         },
-        foreground: 'hsl(var(--foreground))',
+        btnSecondary: {
+          light: "#38BDF8",
+          DEFAULT: "#3b82f6",
+          dark: "#1e40af",
+        },
+
+        foreground: "hsl(var(--foreground))",
         card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
         },
         popover: {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))',
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
         },
         secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
         },
         muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
         },
         destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
         },
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
         chart: {
-          '1': 'hsl(var(--chart-1))',
-          '2': 'hsl(var(--chart-2))',
-          '3': 'hsl(var(--chart-3))',
-          '4': 'hsl(var(--chart-4))',
-          '5': 'hsl(var(--chart-5))',
+          "1": "hsl(var(--chart-1))",
+          "2": "hsl(var(--chart-2))",
+          "3": "hsl(var(--chart-3))",
+          "4": "hsl(var(--chart-4))",
+          "5": "hsl(var(--chart-5))",
         },
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [require("tailwindcss-animate")],
 } satisfies Config;
+
