@@ -1,17 +1,17 @@
-import { Modal } from '@/components/modal';
-import { ButtonCancel } from '@/components/ui/button/button-cancel/button-cancel';
-import { Checkbox } from '@/components/ui/checkbox/checkbox';
-import { Input } from '@/components/ui/input/input';
-import { SelectComponent } from '@/components/ui/select/select';
+import { Modal } from "@/components/modal";
+import { ButtonCancel } from "@/components/ui/button/button-cancel/button-cancel";
+import { Checkbox } from "@/components/ui/checkbox/checkbox";
+import { Input } from "@/components/ui/input/input";
+import { SelectComponent } from "@/components/ui/select/select";
 import {
   CreditCardSchemaForm,
   ICreditCardSchemaForm,
-} from '@/components/validation/credit-card-schema-form';
-import { useCheckout } from '@/hooks/useCheckout';
-import { selectFlagCard } from '@/mocks/select/select';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { toast } from 'sonner';
+} from "@/components/validation/credit-card-schema-form";
+import { useCheckout } from "@/hooks/useCheckout";
+import { selectFlagCard } from "@/mocks/select/select";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 interface IPaymentFormProps {
   onClose: () => void;
@@ -38,7 +38,7 @@ export function PaymentForm({ onClose }: IPaymentFormProps) {
 
     handleAddCreditCardOnOrder(updatedData);
 
-    toast.success('Cartão cadastrado com sucesso!');
+    toast.success("Cartão cadastrado com sucesso!");
     onClose();
   };
 
@@ -56,8 +56,8 @@ export function PaymentForm({ onClose }: IPaymentFormProps) {
             name="flag"
             render={({ field, fieldState }) => (
               <SelectComponent
-                label="Status"
-                placeholder="Selecione o status"
+                label="Bandeira"
+                placeholder="Selecione a bandeira"
                 options={selectFlagCard}
                 onChange={field.onChange}
                 onBlur={field.onBlur}
@@ -71,13 +71,13 @@ export function PaymentForm({ onClose }: IPaymentFormProps) {
           <Input
             label="Número do cartão"
             placeholder="Digite o número do cartão"
-            {...register('number')}
+            {...register("number")}
             error={errors.number}
           />
           <Input
             label="Nome impresso"
             placeholder="Digite o nome"
-            {...register('namePrinted')}
+            {...register("namePrinted")}
             error={errors.namePrinted}
           />
 
@@ -85,18 +85,18 @@ export function PaymentForm({ onClose }: IPaymentFormProps) {
             <Input
               label="CVV"
               placeholder="Digite o cvv"
-              {...register('cvv')}
+              {...register("cvv")}
               error={errors.cvv}
             />
             <Input
               label="Data de validade"
               placeholder="Digite a data de validade"
-              {...register('dateExpired')}
+              {...register("dateExpired")}
               error={errors.dateExpired}
             />
           </div>
 
-          <Checkbox label="Preferencial" {...register('preferential')} />
+          <Checkbox label="Preferencial" {...register("preferential")} />
 
           <div className="flex justify-center gap-4 mt-8">
             <button

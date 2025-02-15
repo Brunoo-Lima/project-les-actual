@@ -31,10 +31,10 @@ export const ClientSchemaForm = yup.object().shape({
     .array()
     .of(AddressSchemaForm)
     .min(1, "Pelo menos um endereço deve ser adicionado"),
-  // creditCards: yup
-  //   .array()
-  //   .of(CreditCardSchemaForm)
-  //   .min(1, "Pelo menos um cartão deve ser adicionado"),
+  creditCards: yup
+    .array()
+    .of(CreditCardSchemaForm)
+    .min(1, "Pelo menos um cartão deve ser adicionado"),
 });
 
 export const emptyClient = {
@@ -42,13 +42,12 @@ export const emptyClient = {
   dateOfBirth: "",
   cpf: "",
   gender: "",
-  typePhone: "",
-  numberPhone: "",
   email: "",
   password: "",
   confirmPassword: "",
+  phones: [],
   addresses: [],
-  // creditCards: [],
+  creditCards: [],
 };
 
 // zipCode: "",
@@ -72,7 +71,7 @@ export const mockClient = {
   email: "lTlQZ@example.com",
   password: "12345678",
   confirmPassword: "12345678",
-  address: [
+  addresses: [
     {
       id: 1,
       identifier: "Casa",
@@ -90,6 +89,24 @@ export const mockClient = {
       delivery: true,
       charge: true,
       identifierDelivery: "Casa",
+    },
+  ],
+  creditCards: [
+    {
+      id: 1,
+      flag: "Visa",
+      number: "5555-5555-5555-5555",
+      cvv: "1230",
+      namePrinted: "Bruno Lima",
+      dateExpired: "12/2030",
+      preferential: true,
+    },
+  ],
+  phones: [
+    {
+      id: 1,
+      typePhone: "Celular",
+      numberPhone: "1234567890",
     },
   ],
 };

@@ -20,6 +20,8 @@ import { AddressFormUser } from "./address-form-user";
 import { addressEmpty } from "@/components/validation/address-schema-form";
 import { PhoneFormUser } from "./phone-form-user";
 import { emptyPhone } from "@/components/validation/phone-schema-form";
+import { emptyCreditCard } from "@/components/validation/credit-card-schema-form";
+import { CreditCardFormUser } from "./credit-card-form-user";
 
 export function RegisterUser() {
   const router = useRouter();
@@ -37,6 +39,7 @@ export function RegisterUser() {
   const fieldArrays = {
     addresses: useFieldArray({ control, name: "addresses" }),
     phones: useFieldArray({ control, name: "phones" }),
+    crediCards: useFieldArray({ control, name: "creditCards" }),
   };
 
   const onSubmit: SubmitHandler<IClientSchemaForm> = (data) => {
@@ -77,7 +80,7 @@ export function RegisterUser() {
         </div>
 
         <div className="flex flex-col gap-y-4">
-          <h2 className="text-lg font-semibold my-4">Endereço</h2>
+          <h2 className="text-lg font-semibold my-4">Telefone</h2>
           {fieldArrays.phones.fields.map((phone, index) => (
             <PhoneFormUser
               key={phone.id}
@@ -154,10 +157,31 @@ export function RegisterUser() {
           />
         </div>
 
+        <div className="flex flex-col gap-y-4">
+          <h2 className="text-lg font-semibold my-4">Cartão de crédito</h2>
+
+          {fieldArrays.crediCards.fields.map((card, index) => (
+            <CreditCardFormUser
+              key={card.id}
+              index={index}
+              register={register}
+              errors={errors.creditCards?.[index] || {}}
+              control={control}
+              removeCreditCard={() => fieldArrays.crediCards.remove(index)}
+            />
+          ))}
+
+          <ButtonGeneral
+            text="Adicionar cartão de crédito"
+            onClick={() => fieldArrays.crediCards.append(emptyCreditCard)}
+            className="bg-emerald-400 hover:bg-emerald-700 w-60"
+          />
+        </div>
+
         <div className="flex gap-4 mt-4">
           <ButtonGeneral text="Cadastrar" type="submit" className="w-full" />
           <ButtonCancel
-            text="Cancelar"
+            text="Limpar"
             className="w-full"
             onClick={() => reset(emptyClient)}
           />
