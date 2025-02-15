@@ -1,6 +1,7 @@
 import * as yup from "yup";
-import { AddressSchemaForm } from "./address-schema.form";
+import { AddressSchemaForm } from "./address-schema-form";
 import { CreditCardSchemaForm } from "./credit-card-schema-form";
+import { PhoneSchemaForm } from "./phone-schema-form";
 
 export type IClientSchemaForm = yup.InferType<typeof ClientSchemaForm>;
 
@@ -9,9 +10,7 @@ export const ClientSchemaForm = yup.object().shape({
   dateOfBirth: yup.string().required("Data de nascimento é obrigatória"),
   cpf: yup.string().required("CPF é obrigatório"),
   gender: yup.string().required("Gênero é obrigatório"),
-  typePhone: yup.string().required("Tipo do telefone é obrigatório"),
-  // ddd: yup.string().required("DDD é obrigatório"),
-  numberPhone: yup.string().required("Número do telefone é obrigatório"),
+
   email: yup.string().required("Email é obrigatório"),
   password: yup
     .string()
@@ -22,6 +21,11 @@ export const ClientSchemaForm = yup.object().shape({
     .required("Confirmação de senha é obrigatória")
     .oneOf([yup.ref("password")], "As senhas devem ser iguais")
     .min(8, "Senha deve ter no mínimo 8 caracteres"),
+
+  phones: yup
+    .array()
+    .of(PhoneSchemaForm)
+    .min(1, "Pelo menos um telefone deve ser adicionado"),
 
   addresses: yup
     .array()

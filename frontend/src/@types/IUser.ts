@@ -11,11 +11,16 @@ export interface IUser {
   dateOfBirth: string;
   status: string;
   gender: string;
-  typePhone: string;
-  phone: string;
+  phone: IPhone[];
   address: IAddress[];
   creditCard: ICreditCard;
   orders: Order[];
+}
+
+export interface IPhone {
+  id: number;
+  typePhone: string;
+  numberPhone: string;
 }
 
 export interface Order {

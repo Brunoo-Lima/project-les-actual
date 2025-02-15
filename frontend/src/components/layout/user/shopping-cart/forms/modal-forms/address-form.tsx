@@ -1,18 +1,18 @@
-import { Modal } from '@/components/modal';
-import { ButtonCancel } from '@/components/ui/button/button-cancel/button-cancel';
-import { ButtonGeneral } from '@/components/ui/button/button-general';
-import { Checkbox } from '@/components/ui/checkbox/checkbox';
-import { Input } from '@/components/ui/input/input';
-import { Textarea } from '@/components/ui/textarea/textarea';
+import { Modal } from "@/components/modal";
+import { ButtonCancel } from "@/components/ui/button/button-cancel/button-cancel";
+import { ButtonGeneral } from "@/components/ui/button/button-general";
+import { Checkbox } from "@/components/ui/checkbox/checkbox";
+import { Input } from "@/components/ui/input/input";
+import { Textarea } from "@/components/ui/textarea/textarea";
 import {
   addressEmpty,
   AddressSchemaForm,
   IAddressSchemaForm,
-} from '@/components/validation/address-schema.form';
-import { useCheckout } from '@/hooks/useCheckout';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { toast } from 'sonner';
+} from "@/components/validation/address-schema-form";
+import { useCheckout } from "@/hooks/useCheckout";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 interface IAddressFormProps {
   onClose: () => void;
@@ -30,10 +30,10 @@ export function AddressForm({ onClose }: IAddressFormProps) {
     resolver: yupResolver(AddressSchemaForm),
   });
 
-  const delivery = watch('delivery');
+  const delivery = watch("delivery");
 
   const onSubmit: SubmitHandler<IAddressSchemaForm> = (data) => {
-    console.log('endereço', data);
+    console.log("endereço", data);
 
     const updatedData = {
       id: Math.random() * 100,
@@ -43,7 +43,7 @@ export function AddressForm({ onClose }: IAddressFormProps) {
     handleAddAddressOnOrder(updatedData);
     onClose();
 
-    toast.success('Endereço cadastrado!');
+    toast.success("Endereço cadastrado!");
   };
 
   return (
@@ -58,7 +58,7 @@ export function AddressForm({ onClose }: IAddressFormProps) {
           <Input
             label="Nome de Identificação"
             placeholder="Digite o nome de identificação"
-            {...register('identifier')}
+            {...register("identifier")}
             error={errors.identifier}
           />
         </div>
@@ -66,13 +66,13 @@ export function AddressForm({ onClose }: IAddressFormProps) {
           <Input
             label="CEP"
             placeholder="Digite o CEP"
-            {...register('zipCode')}
+            {...register("zipCode")}
             error={errors.zipCode}
           />
           <Input
             label="Nome da rua"
             placeholder="Digite o nome da rua"
-            {...register('street')}
+            {...register("street")}
             error={errors.street}
           />
         </div>
@@ -81,13 +81,13 @@ export function AddressForm({ onClose }: IAddressFormProps) {
           <Input
             label="Número"
             placeholder="Digite o número"
-            {...register('number')}
+            {...register("number")}
             error={errors.number}
           />
           <Input
             label="Bairro"
             placeholder="Digite o bairro"
-            {...register('neighborhood')}
+            {...register("neighborhood")}
             error={errors.neighborhood}
           />
         </div>
@@ -96,19 +96,19 @@ export function AddressForm({ onClose }: IAddressFormProps) {
           <Input
             label="Tipo de residência"
             placeholder="Digite a residência"
-            {...register('typeResidence')}
+            {...register("typeResidence")}
             error={errors.typeResidence}
           />
           <Input
             label="Logradouro"
             placeholder="Digite o logradouro"
-            {...register('publicPlace')}
+            {...register("publicPlace")}
             error={errors.publicPlace}
           />
           <Input
             label="Tipo de logradouro"
             placeholder="Digite o logradouro"
-            {...register('typePublicPlace')}
+            {...register("typePublicPlace")}
             error={errors.typePublicPlace}
           />
         </div>
@@ -117,19 +117,19 @@ export function AddressForm({ onClose }: IAddressFormProps) {
           <Input
             label="Cidade"
             placeholder="Digite a cidade"
-            {...register('city')}
+            {...register("city")}
             error={errors.city}
           />
           <Input
             label="Estado"
             placeholder="Digite o estado"
-            {...register('state')}
+            {...register("state")}
             error={errors.state}
           />
           <Input
             label="País"
             placeholder="Digite o país"
-            {...register('country')}
+            {...register("country")}
             error={errors.country}
           />
         </div>
@@ -137,13 +137,13 @@ export function AddressForm({ onClose }: IAddressFormProps) {
         <Textarea
           label="Observação"
           placeholder="Digite a observação"
-          {...register('observation')}
+          {...register("observation")}
           error={errors.observation}
         />
 
         <div className="flex gap-4">
-          <Checkbox label="Cobrança" {...register('charge')} />
-          <Checkbox label="Entrega" {...register('delivery')} />
+          <Checkbox label="Cobrança" {...register("charge")} />
+          <Checkbox label="Entrega" {...register("delivery")} />
         </div>
 
         <div>
@@ -151,7 +151,7 @@ export function AddressForm({ onClose }: IAddressFormProps) {
             <Input
               label="Identificador de entrega"
               placeholder="Digite o identificador de entrega"
-              {...register('identifierDelivery')}
+              {...register("identifierDelivery")}
               error={errors.identifierDelivery}
             />
           )}
