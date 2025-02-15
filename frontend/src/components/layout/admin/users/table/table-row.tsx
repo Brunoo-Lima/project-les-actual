@@ -1,10 +1,14 @@
-import { IUser } from '@/@types/IUser';
-import { EyeIcon, Trash2Icon } from 'lucide-react';
+import { IUser } from "@/@types/IUser";
+import { EyeIcon, PencilIcon, Trash2Icon } from "lucide-react";
 
 interface ITableRowProps {
   user: IUser;
   onOpenDetailsUser: (user: IUser) => void;
   onDeleteUser: (
+    user: IUser,
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => void;
+  onEditStatusUser: (
     user: IUser,
     event: React.MouseEvent<HTMLButtonElement>
   ) => void;
@@ -14,6 +18,7 @@ export function TableRow({
   user,
   onOpenDetailsUser,
   onDeleteUser,
+  onEditStatusUser,
 }: ITableRowProps) {
   return (
     <tr
@@ -32,6 +37,10 @@ export function TableRow({
         <div className="flex items-center gap-x-4">
           <button type="button" onClick={() => onOpenDetailsUser(user)}>
             <EyeIcon size={20} color="#ffffff" />
+          </button>
+
+          <button type="button" onClick={(e) => onEditStatusUser(user, e)}>
+            <PencilIcon size={20} color="#ffffff" />
           </button>
 
           <button type="button" onClick={(e) => onDeleteUser(user, e)}>

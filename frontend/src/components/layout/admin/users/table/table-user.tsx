@@ -1,16 +1,20 @@
-import { IUser } from '@/@types/IUser';
-import { TableRow } from './table-row';
-import { useState } from 'react';
-import { toast } from 'sonner';
+import { JSX, useState } from "react";
+import { IUser } from "@/@types/IUser";
+import { TableRow } from "./table-row";
+import { toast } from "sonner";
+import { ModalStatusUser } from "../modals/modal-status-user";
+import { ModalInfoUser } from "../modals/modal-info-user";
 
 interface ITableUserProps {
   data: IUser[];
   onDeleteUser: (user: number) => void;
 }
 
+type ModalType = "info" | "status" | null;
+
 export function TableUser({ data, onDeleteUser }: ITableUserProps) {
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
-  const [openModalInfoUser, setOpenModalInfoUser] = useState<boolean>(false);
+  const [modalType, setModalType] = useState<ModalType>(null);
 
   const handleDeleteUser = (
     user: IUser,
@@ -18,12 +22,31 @@ export function TableUser({ data, onDeleteUser }: ITableUserProps) {
   ) => {
     event.stopPropagation();
     onDeleteUser(user.id);
-    toast.success('Usuário deletado com sucesso!');
+    toast.success("Usuário deletado com sucesso!");
   };
 
   const handleOpenModalInfoUser = (user: IUser) => {
     setSelectedUser(user);
-    setOpenModalInfoUser(true);
+    setModalType("info");
+  };
+
+  const handleEditStatusUser = (
+    user: IUser,
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.stopPropagation();
+    setSelectedUser(user);
+    setModalType("status");
+  };
+
+  const modalComponent: Record<Exclude<ModalType, null>, JSX.Element> = {
+    status: (
+      <ModalStatusUser onClose={() => setModalType(null)} user={selectedUser} />
+    ),
+
+    info: (
+      <ModalInfoUser onClose={() => setModalType(null)} user={selectedUser} />
+    ),
   };
 
   return (
@@ -47,6 +70,7 @@ export function TableUser({ data, onDeleteUser }: ITableUserProps) {
                 user={user}
                 onOpenDetailsUser={handleOpenModalInfoUser}
                 onDeleteUser={handleDeleteUser}
+                onEditStatusUser={handleEditStatusUser}
               />
             ))}
           </tbody>
@@ -56,6 +80,8 @@ export function TableUser({ data, onDeleteUser }: ITableUserProps) {
           Não há usuários
         </p>
       )}
+
+      {modalType && modalComponent[modalType]}
     </div>
   );
 }

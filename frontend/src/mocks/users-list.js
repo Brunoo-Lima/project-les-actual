@@ -10,6 +10,7 @@ export const usersList = [
     gender: "Masculino",
     typePhone: "Celular",
     phone: "1234567890",
+    status: "Ativo",
     address: {
       identifier: "Casa",
       street: "Rua A",
@@ -77,6 +78,7 @@ export const usersList = [
     cpf: "123.456.789-00",
     typePhone: "Fixo",
     phone: "1234567890",
+    status: "Inativo",
     address: {
       identifier: "Casa",
       street: "Rua A",
