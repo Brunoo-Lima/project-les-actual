@@ -1,9 +1,9 @@
-import { Product } from '@/components/layout/admin/product/product';
-import type { Metadata } from 'next';
+import { Product } from "@/components/layout/admin/product/product";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Cadastrar produtos',
-  description: 'Página de cadastrar produtos',
+  title: "Lista de produtos",
+  description: "Página de lista de produtos",
 };
 
 export default function ProductPage() {

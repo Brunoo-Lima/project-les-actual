@@ -19,6 +19,8 @@ import {
 } from "react-hook-form";
 import { toast } from "sonner";
 import { SectionType } from "../edit-user/edit-user";
+import { Checkbox } from "@/components/ui/checkbox/checkbox";
+import { Textarea } from "@/components/ui/textarea/textarea";
 
 interface IAddressFormUserProps {
   register: UseFormRegister<IClientSchemaForm>;
@@ -176,6 +178,36 @@ export function AddressFormUser({
           disabled={editSection !== section}
         />
       </div>
+
+      <div className="flex gap-4">
+        <Checkbox
+          label="Entrega"
+          {...register(`addresses.${index}.delivery`)}
+          error={errors.delivery}
+          disabled={editSection !== section}
+        />
+        <Checkbox
+          label="Cobrança"
+          {...register(`addresses.${index}.charge`)}
+          error={errors.charge}
+          disabled={editSection !== section}
+        />
+      </div>
+
+      <Input
+        label="Nome endereço de entrega"
+        className="w-52"
+        placeholder="Digite o nome"
+        {...register(`addresses.${index}.identifierDelivery`)}
+        error={errors.identifierDelivery}
+        disabled={editSection !== section}
+      />
+
+      <Textarea
+        label="Observação"
+        placeholder="Digite a observação"
+        {...register(`addresses.${index}.observation`)}
+      />
 
       <div>
         <ButtonCancel text="Remover endereço" onClick={removeAddress} />

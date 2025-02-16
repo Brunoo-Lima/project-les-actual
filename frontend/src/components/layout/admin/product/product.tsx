@@ -38,10 +38,12 @@ export function Product() {
     useState<boolean>(false);
   const [isOpenModalFilter, setIsOpenModalFilter] = useState<boolean>(false);
 
-  const handleDeleteProduct = (productId: number) => {
-    setProducts((prevProducts) =>
-      prevProducts.filter((product) => product.id !== productId)
+  const handleDeleteProduct = (id: number) => {
+    setFilteredData((prevProducts) =>
+      prevProducts.filter((product) => product.id !== id)
     );
+
+    // setProducts(filteredData);
   };
 
   const handleOpenModalNewProduct = () => {

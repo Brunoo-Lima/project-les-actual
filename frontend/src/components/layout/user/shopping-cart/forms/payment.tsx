@@ -1,21 +1,12 @@
-import { ModalBackground } from '@/components/modal/modal-background/modal-background';
-import { useState } from 'react';
-import { PaymentForm } from './modal-forms/payment-form';
-import { Plus } from '@phosphor-icons/react';
-import { CreditCard } from '../ui/credit-card';
-import { useCheckout } from '@/hooks/useCheckout';
+import { ModalBackground } from "@/components/modal/modal-background/modal-background";
+import { useState } from "react";
+import { PaymentForm } from "./modal-forms/payment-form";
+import { Plus } from "@phosphor-icons/react";
+import { CreditCard } from "../ui/credit-card";
+import { useCheckout } from "@/hooks/useCheckout";
 
-// const payments = [
-//   {
-//     id: 1,
-//     flag: 'Visa',
-//     number: '5555-5555-5555-5555',
-//     cvv: '1230',
-//     namePrinted: 'Bruno Lima',
-//     dateExpired: '12/2030',
-//     preferential: true,
-//   },
-// ];
+//TODO: Implementar talvez um sistema de parcelamento
+//TODO: implementar talvez um sistema de cupons, no qual o usuario pode escolher o cupom para pagar e tbm o cartao, tem a opção cupom no começo porém aquele é mais promocional
 
 export function Payment() {
   const { handleSelectCreditCard, cards, selectedCreditCard } = useCheckout();
