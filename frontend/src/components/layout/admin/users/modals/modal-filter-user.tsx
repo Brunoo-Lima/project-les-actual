@@ -3,7 +3,9 @@ import { ButtonCancel } from "@/components/ui/button/button-cancel/button-cancel
 import { ButtonGeneral } from "@/components/ui/button/button-general";
 import { Input } from "@/components/ui/input/input";
 import { SearchInput } from "@/components/ui/search/search";
+import { SelectComponent } from "@/components/ui/select/select";
 import { useFilter } from "@/hooks/useFilter";
+import { selectStatus } from "@/mocks/select/select";
 import { formatDate } from "@/utils/format-date";
 import dayjs from "dayjs";
 
@@ -21,6 +23,7 @@ export function ModalFilterUser({
   const {
     searchName,
     setSearchName,
+    handleChangeStatus,
     selectedDateRegister,
     setSelectedDateRegister,
   } = useFilter();
@@ -52,6 +55,13 @@ export function ModalFilterUser({
           value={selectedDateRegister || ""}
           onChange={handleFormatDate}
         /> */}
+
+        <SelectComponent
+          label="Status"
+          placeholder="Selecione o status"
+          options={selectStatus}
+          onChange={handleChangeStatus}
+        />
 
         <div className="grid grid-cols-2 gap-2">
           <ButtonGeneral

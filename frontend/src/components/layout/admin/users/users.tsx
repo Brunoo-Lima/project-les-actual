@@ -18,6 +18,8 @@ export function Users() {
     setSearchName,
     selectedDateRegister,
     setSelectedDateRegister,
+    selectedStatus,
+    setSelectedStatus,
   } = useFilter();
   const [users, setUsers] = useState<IUser[]>(usersList);
   const [isOpenModalFilter, setIsOpenModalFilter] = useState<boolean>(false);
@@ -28,6 +30,9 @@ export function Users() {
         const matchesName = user.name
           .toLowerCase()
           .includes(searchName.toLowerCase());
+
+        const matchesStatus =
+          !selectedStatus || user.status === selectedStatus.value;
 
         const matchesDate =
           !selectedDateRegister ||
@@ -41,7 +46,7 @@ export function Users() {
           );
 
         console.log("matchesDate", matchesDate);
-        return matchesName && matchesDate;
+        return matchesName && matchesDate && matchesStatus;
       });
 
       setUsers(filtered);
@@ -53,6 +58,7 @@ export function Users() {
   const clearFields = () => {
     setSearchName("");
     setSelectedDateRegister("");
+    setSelectedStatus(null);
     setUsers(usersList);
   };
 
