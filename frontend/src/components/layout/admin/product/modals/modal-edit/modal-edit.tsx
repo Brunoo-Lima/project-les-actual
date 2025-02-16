@@ -1,17 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
-import { useEffect, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { IProduct } from '@/@types/IProduct';
-import { Modal } from '@/components/modal';
-import { ButtonCancel } from '@/components/ui/button/button-cancel/button-cancel';
-import { ButtonGeneral } from '@/components/ui/button/button-general';
-import { Input } from '@/components/ui/input/input';
+import { useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { IProduct } from "@/@types/IProduct";
+import { Modal } from "@/components/modal";
+import { ButtonCancel } from "@/components/ui/button/button-cancel/button-cancel";
+import { ButtonGeneral } from "@/components/ui/button/button-general";
+import { Input } from "@/components/ui/input/input";
 import {
   IProductSchemaForm,
   ProductSchemaForm,
-} from '@/components/validation/product-schema-form';
-import { toast } from 'sonner';
+} from "@/components/validation/product-schema-form";
+import { toast } from "sonner";
 
 interface IModalEditProps {
   product: IProduct | null;
@@ -38,23 +38,23 @@ export function ModalEdit({
 
   useEffect(() => {
     if (product?.image) {
-      setPreviewImage(product.image);
+      setPreviewImage(product.image as any);
     }
   }, [product]);
 
   useEffect(() => {
-    setValue('anime', product?.anime || '');
-    setValue('name', product?.name || '');
-    setValue('category', product?.category || '');
-    setValue('price', product?.price.toString() || '');
-    setValue('stock', product?.stock.toString() || '');
+    setValue("anime", product?.anime || "");
+    setValue("name", product?.name || "");
+    setValue("category", product?.category || "");
+    setValue("price", product?.price.toString() || "");
+    setValue("stock", product?.stock.toString() || "");
   }, [setValue, product]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
     if (file) {
-      setValue('image', file);
+      setValue("image", file);
       setSelectedFile(file);
       setFilename(file.name);
       const reader = new FileReader();
@@ -79,7 +79,7 @@ export function ModalEdit({
     console.log(updatedData);
 
     setSelectedProduct(updatedData);
-    toast.success('Produto editado com sucesso!');
+    toast.success("Produto editado com sucesso!");
 
     onClose();
   };
@@ -105,9 +105,9 @@ export function ModalEdit({
                   src={previewImage}
                   alt="Image Preview"
                   style={{
-                    maxWidth: '100%',
-                    maxHeight: '100%',
-                    objectFit: 'cover',
+                    maxWidth: "100%",
+                    maxHeight: "100%",
+                    objectFit: "cover",
                   }}
                 />
               ) : (
@@ -119,7 +119,7 @@ export function ModalEdit({
               type="file"
               id="inputFile"
               accept="image/*"
-              {...register('image', {
+              {...register("image", {
                 onChange: handleImageUpload,
               })}
               className="hidden"
@@ -141,13 +141,13 @@ export function ModalEdit({
             <Input
               label="Nome do produto"
               placeholder="Digite o nome do produto"
-              {...register('name')}
+              {...register("name")}
               error={errors.name}
             />
             <Input
               label="Nome do anime"
               placeholder="Digite o nome do anime"
-              {...register('anime')}
+              {...register("anime")}
               error={errors.anime}
             />
           </div>
@@ -156,7 +156,7 @@ export function ModalEdit({
             <Input
               label="Preço"
               placeholder="Digite o preço"
-              {...register('price')}
+              {...register("price")}
               error={errors.price}
               className="w-32"
             />
@@ -164,7 +164,7 @@ export function ModalEdit({
             <Input
               label="Estoque"
               placeholder="'2'"
-              {...register('stock')}
+              {...register("stock")}
               className="w-16"
               error={errors.stock}
             />
@@ -172,7 +172,7 @@ export function ModalEdit({
             <Input
               label="Categoria"
               placeholder="Digite a categoria"
-              {...register('category')}
+              {...register("category")}
               error={errors.category}
             />
           </div>

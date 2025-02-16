@@ -14,7 +14,6 @@ import {
 } from "@/components/validation/client-schema-form";
 
 import { usersList } from "@/mocks/users-list";
-import { formatPhone } from "@/utils/mask/format-phone";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
@@ -86,7 +85,7 @@ export function EditUser() {
       // setValue("numberCard", client.creditCard.number);
       // setValue("flag", client.creditCard.flag);
     }
-  }, [reset]);
+  }, [reset, setValue]);
 
   const startEditingSection = (section: typeof editSection) => {
     setEditSection(section);

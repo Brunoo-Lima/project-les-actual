@@ -29,3 +29,5 @@ export const Radio = forwardRef<HTMLInputElement, IRadioProps>(
     );
   }
 );
+
+Radio.displayName = "Radio";

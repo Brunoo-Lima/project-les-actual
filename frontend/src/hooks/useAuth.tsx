@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }: IChildrenProps) => {
       isOpenChatbot,
       setIsOpenChatbot,
     }),
-    [isOpenChatbot, setIsOpenChatbot]
+    [isOpenChatbot, setIsOpenChatbot, handleChangeUser]
   );
 
   return (

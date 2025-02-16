@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { createContext, ReactNode, useContext, useMemo, useState } from 'react';
-import { IAddress } from '@/@types/IAddress';
-import { ICreditCard } from '@/@types/ICreditCard';
-import { IProduct } from '@/@types/IProduct';
-import { IOrder } from '@/@types/IOrder';
-import { toast } from 'sonner';
+import { createContext, ReactNode, useContext, useMemo, useState } from "react";
+import { IAddress } from "@/@types/IAddress";
+import { ICreditCard } from "@/@types/ICreditCard";
+import { IProduct } from "@/@types/IProduct";
+import { IOrder } from "@/@types/IOrder";
+import { toast } from "sonner";
 
 interface ICheckoutContextProps {
   cart: IProduct[];
@@ -45,7 +45,7 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
     total: 0,
     address: null,
     payment: null,
-    status: 'Pendente',
+    status: "Pendente",
     freight: 20,
     coupon: null,
     discountValue: 0,
@@ -80,13 +80,13 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
   const applyCoupon = (coupon: string) => {
     let discount = 0;
 
-    if (coupon === 'PROMO10') {
+    if (coupon === "PROMO10") {
       discount = 10;
-    } else if (coupon === 'DESCONTO20') {
+    } else if (coupon === "DESCONTO20") {
       discount =
         cart.reduce((acc, item) => acc + item.price * item.quantity, 0) * 0.2;
     } else {
-      toast.warning('Cupom inválido!');
+      toast.warning("Cupom inválido!");
       return;
     }
 
@@ -201,6 +201,7 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
       order,
       selectedCreditCard,
       selectedAddress,
+      applyCoupon,
     ]
   );
   return (
