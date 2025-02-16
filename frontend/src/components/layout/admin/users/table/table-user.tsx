@@ -60,6 +60,7 @@ export function TableUser({ data, onDeleteUser }: ITableUserProps) {
               <th className="w-1/5">Email</th>
               <th className="w-1/5">Cadastrado</th>
               <th className="w-1/5">Pedidos</th>
+              <th className="w-1/5">Status</th>
               <th className="w-1/12 pl-4">Ações</th>
             </tr>
           </thead>

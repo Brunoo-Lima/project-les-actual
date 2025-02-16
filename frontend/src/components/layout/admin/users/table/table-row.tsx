@@ -32,6 +32,15 @@ export function TableRow({
       <td>{user.created_at}</td>
 
       <td>{user.orders.length}</td>
+      <td>
+        <p
+          className={`${
+            user.status === "Ativo" ? "bg-green-500" : "bg-red-500"
+          } w-24 px-2 text-center rounded-sm border-none flex items-center justify-center gap-x-2`}
+        >
+          {user.status}
+        </p>
+      </td>
 
       <td>
         <div className="flex items-center gap-x-4">
