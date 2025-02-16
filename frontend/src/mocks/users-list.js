@@ -16,7 +16,7 @@ export const usersList = [
         numberPhone: "1234567890",
       },
     ],
-    address: [
+    addresses: [
       {
         id: 1,
         identifier: "Casa",
