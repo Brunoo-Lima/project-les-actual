@@ -4,4 +4,4 @@ Projeto de laboratório de Engenharia de Software.
 
 ## Documentação
 
-[Documentação](/project-les-actual/frontend/public/docs/DRS_LES_2_2024-atual.pdf)
+[Documentação](/project-les-actual/requisitos/docs/DRS_LES_2_2024-atual.pdf)
