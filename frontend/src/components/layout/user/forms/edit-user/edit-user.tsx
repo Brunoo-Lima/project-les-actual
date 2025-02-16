@@ -68,10 +68,10 @@ export function EditUser() {
       // setValue("password", client.password);
       // setValue("confirmPassword", client.confirmPassword);
 
-      setValue(`phones.0.numberPhone`, formatPhone(client.phone));
-      setValue(`phones.0.typePhone`, client.typePhone);
+      // setValue(`phones.0.numberPhone`, formatPhone(client.phone));
+      // setValue(`phones.0.typePhone`, client.typePhone);
 
-      setValue(`addresses.0.street`, client.address[0].street);
+      // setValue(`addresses.0.street`, client.address[0].street);
       // setValue("number", client.address.number);
       // setValue("neighborhood", client.address.neighborhood);
       // setValue("city", client.address.city);
@@ -232,7 +232,12 @@ export function EditUser() {
           <ButtonGeneral
             text="Adicionar telefone"
             onClick={() => fieldArrays.phones.append(emptyPhone)}
-            className="bg-emerald-400 hover:bg-emerald-700 w-60"
+            disabled={editSection !== "phones"}
+            className={`${
+              editSection !== "phones"
+                ? "opacity-70 hover:opacity-70 cursor-not-allowed"
+                : "hover:bg-emerald-700 "
+            } w-60 bg-emerald-400`}
           />
 
           <ButtonsActions
@@ -263,7 +268,12 @@ export function EditUser() {
           <ButtonGeneral
             text="Adicionar endereço"
             onClick={() => fieldArrays.addresses.append(addressEmpty)}
-            className="bg-emerald-400 hover:bg-emerald-700 w-60"
+            disabled={editSection !== "addresses"}
+            className={`${
+              editSection !== "addresses"
+                ? "opacity-70 hover:opacity-70 cursor-not-allowed"
+                : "hover:bg-emerald-700 "
+            } w-60 bg-emerald-400`}
           />
 
           <ButtonsActions
@@ -294,7 +304,12 @@ export function EditUser() {
           <ButtonGeneral
             text="Adicionar cartão de crédito"
             onClick={() => fieldArrays.creditCards.append(emptyCreditCard)}
-            className="bg-emerald-400 hover:bg-emerald-700 w-60"
+            disabled={editSection !== "creditCards"}
+            className={`${
+              editSection !== "creditCards"
+                ? "opacity-70 hover:opacity-70 cursor-not-allowed"
+                : "hover:bg-emerald-700 "
+            } w-60 bg-emerald-400`}
           />
 
           <ButtonsActions
@@ -307,7 +322,7 @@ export function EditUser() {
         </div>
 
         <div className="flex gap-4 mt-4">
-          <ButtonGeneral text="Cadastrar" type="submit" className="w-full" />
+          <ButtonGeneral text="Salvar" type="submit" className="w-full" />
           <ButtonCancel
             text="Cancelar"
             className="w-full"

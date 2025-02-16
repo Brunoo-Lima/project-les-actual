@@ -11,9 +11,9 @@ export interface IUser {
   dateOfBirth: string;
   status: string;
   gender: string;
-  phone: IPhone[];
-  address: IAddress[];
-  creditCard: ICreditCard;
+  phones: IPhone[];
+  addresses: IAddress[];
+  creditCards: ICreditCard[];
   orders: Order[];
 }
 

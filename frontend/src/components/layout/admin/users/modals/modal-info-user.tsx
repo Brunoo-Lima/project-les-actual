@@ -15,22 +15,39 @@ export function ModalInfoUser({ onClose, user }: IModalInfoUserProps) {
       <Modal.Header title="Informações do usuário" onClick={onClose} />
 
       <Modal.Content className="flex flex-col gap-4 h-[500px] overflow-auto container-modal">
-        <div className="flex justify-between gap-4 *:text-textColor-dark *:text-base *:font-normal ">
+        <div className="flex flex-col gap-4 *:text-textColor-dark *:text-base *:font-normal ">
           <div className="flex flex-col gap-4 ">
             <h2 className="text-lg text-white">Dados pessoais</h2>
             <p>Nome: {user.name}</p>
             <p>Email: {user.email}</p>
             <p>CPF: {user.cpf}</p>
-            <p>Telefone: {`${user.typePhone} - ${user.phone}`}</p>
             <p>Data de nascimento: {user.dateOfBirth}</p>
             <p>Gênero: {user.gender}</p>
             <p>Status: {user.status}</p>
+            <p>Telefones: </p>
+            <div className="flex flex-col gap-4">
+              {user.phones.map((phone, index) => (
+                <div
+                  key={phone.id}
+                  className="flex flex-col gap-4 border border-gray-500 rounded-md p-4"
+                >
+                  <h4>Telefone {index + 1}:</h4>
+                  <p className="text-textColor-dark text-base font-normal ">
+                    {phone.typePhone} - {phone.numberPhone}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="flex flex-col gap-4 ">
             <h2 className="text-lg text-white">Endereço</h2>
-            {user.address.map((address) => (
-              <div key={address.id}>
+            {user.addresses.map((address, index) => (
+              <div
+                key={address.id}
+                className="flex flex-col gap-4 border border-gray-500 rounded-md p-4"
+              >
+                <h4>Endereço {index + 1}:</h4>
                 <p>Nome endereço: {address.identifier}</p>
                 <p>CEP: {address.zipCode}</p>
                 <p>Rua: {address.street}</p>
@@ -41,6 +58,32 @@ export function ModalInfoUser({ onClose, user }: IModalInfoUserProps) {
                 <p>País: {address.country}</p>
                 <p>Tipo de residência: {address.typeResidence}</p>
                 <p>Tipo de logradouro: {address.typePublicPlace}</p>
+                <p>Endereço de cobrança: {address.charge ? "Sim" : "Nao"}</p>
+                <p>Endereço de entrega: {address.delivery ? "Sim" : "Nao"}</p>
+
+                {address.delivery && (
+                  <p>
+                    Nome do endereço de entrega:{address.identifierDelivery}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-col gap-4 ">
+            <h2 className="text-lg text-white">Cartões</h2>
+            {user.creditCards.map((creditCard, index) => (
+              <div
+                key={creditCard.id}
+                className="flex flex-col gap-4 border border-gray-500 rounded-md p-4"
+              >
+                <h4>Cartão {index + 1}:</h4>
+                <p>Bandeira: {creditCard.flag}</p>
+                <p>Número: {creditCard.number}</p>
+                <p>Nome: {creditCard.namePrinted}</p>
+                <p>Cvv: {creditCard.cvv}</p>
+                <p>Validade: {creditCard.dateExpired}</p>
+                <p>Preferencial: {creditCard.preferential ? "Sim" : "Nao"}</p>
               </div>
             ))}
           </div>

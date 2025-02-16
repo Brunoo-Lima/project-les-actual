@@ -6,6 +6,7 @@ interface IButtonGeneralProps {
   className?: string;
   onClick?: () => void;
   type?: "submit" | "reset" | "button";
+  disabled?: boolean;
 }
 
 export function ButtonGeneral({
@@ -14,10 +15,12 @@ export function ButtonGeneral({
   className,
   onClick,
   type = "button",
+  disabled,
 }: IButtonGeneralProps) {
   return (
     <button
       type={type}
+      disabled={disabled}
       onClick={onClick}
       className={`${className} bg-primary text-background p-2 rounded-md flex items-center justify-center gap-2 hover:bg-primary-dark transition duration-300`}
     >

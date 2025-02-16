@@ -8,9 +8,14 @@ export const usersList = [
     created_at: "15/02/2025",
     updated_at: "15/02/2025",
     gender: "Masculino",
-    typePhone: "Celular",
-    phone: "1234567890",
     status: "Ativo",
+    phones: [
+      {
+        id: 1,
+        typePhone: "Fixo",
+        numberPhone: "1234567890",
+      },
+    ],
     address: [
       {
         id: 1,
@@ -30,13 +35,16 @@ export const usersList = [
         identifierDelivery: "Casa",
       },
     ],
-    creditCard: {
-      number: "1234567890123456",
-      expirationDate: "12/2025",
-      cvv: "123",
-      namePrinted: "Bruno Lima",
-      flag: "Visa",
-    },
+    creditCards: [
+      {
+        id: 1,
+        number: "1234567890123456",
+        expirationDate: "12/2025",
+        cvv: "123",
+        namePrinted: "Bruno Lima",
+        flag: "Visa",
+      },
+    ],
     orders: [
       {
         id: 1,
@@ -83,10 +91,15 @@ export const usersList = [
     updated_at: "28/01/2025",
     gender: "Masculino",
     cpf: "123.456.789-00",
-    typePhone: "Fixo",
-    phone: "1234567890",
     status: "Inativo",
-    address: [
+    phones: [
+      {
+        id: 1,
+        typePhone: "Fixo",
+        numberPhone: "1234567890",
+      },
+    ],
+    addresses: [
       {
         id: 1,
         identifier: "Tia",
@@ -105,13 +118,17 @@ export const usersList = [
         identifierDelivery: "Tia",
       },
     ],
-    creditCard: {
-      number: "1234567890123456",
-      expirationDate: "12/2025",
-      cvv: "123",
-      namePrinted: "Bruno Lima",
-      flag: "Visa",
-    },
+    creditCards: [
+      {
+        id: 1,
+        number: "1234567890123456",
+        expirationDate: "12/2025",
+        cvv: "123",
+        namePrinted: "Bruno Lima",
+        flag: "Visa",
+      },
+    ],
+
     orders: [
       {
         id: 1,
