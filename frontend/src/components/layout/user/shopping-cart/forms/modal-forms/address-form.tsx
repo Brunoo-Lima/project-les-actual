@@ -10,7 +10,9 @@ import {
   IAddressSchemaForm,
 } from "@/components/validation/address-schema-form";
 import { useCheckout } from "@/hooks/useCheckout";
+import { getCep } from "@/services/cep";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { FocusEvent } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -26,11 +28,31 @@ export function AddressForm({ onClose }: IAddressFormProps) {
     handleSubmit,
     reset,
     watch,
+    setValue,
   } = useForm<IAddressSchemaForm>({
     resolver: yupResolver(AddressSchemaForm),
   });
 
   const delivery = watch("delivery");
+
+  const handleAddCep = async (e: FocusEvent<HTMLInputElement>) => {
+    const cep = e.target.value.replace(/[^0-9]/g, "");
+
+    try {
+      const data = await getCep(cep);
+
+      if (data) {
+        setValue(`zipCode`, data.cep);
+        setValue(`street`, data.logradouro);
+        setValue(`city`, data.localidade);
+        setValue(`state`, data.uf);
+        setValue("publicPlace", data.complemento);
+        setValue(`neighborhood`, data.bairro);
+      }
+    } catch (error) {
+      toast.warning("CEP inválido");
+    }
+  };
 
   const onSubmit: SubmitHandler<IAddressSchemaForm> = (data) => {
     console.log("endereço", data);
@@ -66,7 +88,9 @@ export function AddressForm({ onClose }: IAddressFormProps) {
           <Input
             label="CEP"
             placeholder="Digite o CEP"
-            {...register("zipCode")}
+            {...register("zipCode", {
+              onBlur: (e) => handleAddCep(e),
+            })}
             error={errors.zipCode}
           />
           <Input

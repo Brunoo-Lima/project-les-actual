@@ -16,8 +16,9 @@ export function Chatbot() {
     setInputValue("");
   };
 
+
   return (
-    <div className="w-[360px] h-[640px] rounded-[1.5625rem] overflow-hidden bg-white fixed right-6 top-20">
+    <div className="w-[360px] h-[640px] rounded-[1.5625rem] overflow-hidden bg-white fixed right-6 -top-20">
       <header className="flex gap-4 items-center justify-center w-full h-[69px] bg-primary-dark">
         <Image
           src={"/img/bot-image.svg"}
