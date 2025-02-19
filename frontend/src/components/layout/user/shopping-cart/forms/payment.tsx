@@ -4,6 +4,7 @@ import { PaymentForm } from "./modal-forms/payment-form";
 import { Plus } from "@phosphor-icons/react";
 import { CreditCard } from "../ui/credit-card";
 import { useCheckout } from "@/hooks/useCheckout";
+// import { Checkbox } from "@/components/ui/checkbox/checkbox";
 
 //TODO: Implementar talvez um sistema de parcelamento
 //TODO: implementar talvez um sistema de cupons, no qual o usuario pode escolher o cupom para pagar e tbm o cartao, tem a opção cupom no começo porém aquele é mais promocional
@@ -23,7 +24,21 @@ export function Payment() {
 
   return (
     <div className="flex flex-col gap-y-4 w-[600px] h-[500px] p-6 border border-gray-700 rounded-lg overflow-hidden">
-      <h2 className="text-lg font-bold">Cartões de crédito cadastrados</h2>
+      <h2 className="text-lg font-bold">Forma de pagamento</h2>
+
+      {/* <div className="space-y-4">
+        <Checkbox label="Cupom de troca" />
+        <Checkbox label="Cartão de crédito" />
+
+
+      </div>
+
+
+      <div>
+        <Input label="Valor do cupom"  />
+
+      </div> */}
+
       <div className="overflow-auto h-[400px] container-address-form flex flex-col gap-4">
         {cards.length > 0 ? (
           cards.map((card) => (

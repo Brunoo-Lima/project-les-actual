@@ -1,10 +1,16 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Tag } from '@phosphor-icons/react';
-import Item from './item/item';
-import { GlobeIcon, LibraryIcon, LogOut, UsersIcon } from 'lucide-react';
-import { Tooltip } from '../ui/tooltip/tooltip';
+import { useState } from "react";
+import { Tag } from "@phosphor-icons/react";
+import Item from "./item/item";
+import {
+  ClipboardListIcon,
+  GlobeIcon,
+  LibraryIcon,
+  LogOut,
+  UsersIcon,
+} from "lucide-react";
+import { Tooltip } from "../ui/tooltip/tooltip";
 
 export function Sidebar() {
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
@@ -31,7 +37,7 @@ export function Sidebar() {
               href="/vendas"
               icon={<Tag size={24} color="#2DD4BF" weight="bold" />}
               text="Vendas"
-              handleMouseEnter={() => handleMouseEnter('sale')}
+              handleMouseEnter={() => handleMouseEnter("sale")}
               handleMouseLeave={handleMouseLeave}
               tooltip="sale"
             />
@@ -41,9 +47,19 @@ export function Sidebar() {
               href="/produto"
               icon={<LibraryIcon size={24} color="#2DD4BF" />}
               text="Produto"
-              handleMouseEnter={() => handleMouseEnter('product')}
+              handleMouseEnter={() => handleMouseEnter("product")}
               handleMouseLeave={handleMouseLeave}
               tooltip="product"
+            />
+
+            <Item
+              activeTooltip={activeTooltip}
+              href="/lista-de-pedidos"
+              icon={<ClipboardListIcon size={24} color="#2DD4BF" />}
+              text="Pedidos"
+              handleMouseEnter={() => handleMouseEnter("orders")}
+              handleMouseLeave={handleMouseLeave}
+              tooltip="orders"
             />
 
             <Item
@@ -51,7 +67,7 @@ export function Sidebar() {
               href="/usuarios"
               icon={<UsersIcon size={24} color="#2DD4BF" />}
               text="Usuários"
-              handleMouseEnter={() => handleMouseEnter('users')}
+              handleMouseEnter={() => handleMouseEnter("users")}
               handleMouseLeave={handleMouseLeave}
               tooltip="users"
             />
@@ -60,13 +76,13 @@ export function Sidebar() {
 
         <div
           className="relative flex flex-col items-center"
-          onMouseEnter={() => handleMouseEnter('logout')}
+          onMouseEnter={() => handleMouseEnter("logout")}
           onMouseLeave={handleMouseLeave}
         >
           <button type="button" className="m-auto w-max">
             <LogOut size={24} color="#2DD4BF" />
           </button>
-          {activeTooltip === 'logout' && <Tooltip text="Sair" />}
+          {activeTooltip === "logout" && <Tooltip text="Sair" />}
         </div>
       </div>
     </div>
