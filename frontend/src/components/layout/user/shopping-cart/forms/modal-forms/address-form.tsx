@@ -3,6 +3,7 @@ import { ButtonCancel } from "@/components/ui/button/button-cancel/button-cancel
 import { ButtonGeneral } from "@/components/ui/button/button-general";
 import { Checkbox } from "@/components/ui/checkbox/checkbox";
 import { Input } from "@/components/ui/input/input";
+import { SelectComponent } from "@/components/ui/select/select";
 import { Textarea } from "@/components/ui/textarea/textarea";
 import {
   addressEmpty,
@@ -10,10 +11,14 @@ import {
   IAddressSchemaForm,
 } from "@/components/validation/address-schema-form";
 import { useCheckout } from "@/hooks/useCheckout";
+import {
+  selectTypePublicPlace,
+  selectTypeResidence,
+} from "@/mocks/select/select";
 import { getCep } from "@/services/cep";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FocusEvent } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 interface IAddressFormProps {
@@ -29,6 +34,7 @@ export function AddressForm({ onClose }: IAddressFormProps) {
     reset,
     watch,
     setValue,
+    control,
   } = useForm<IAddressSchemaForm>({
     resolver: yupResolver(AddressSchemaForm),
   });
@@ -117,23 +123,45 @@ export function AddressForm({ onClose }: IAddressFormProps) {
         </div>
 
         <div className="grid grid-cols-3 gap-4">
-          <Input
-            label="Tipo de residência"
-            placeholder="Digite a residência"
-            {...register("typeResidence")}
-            error={errors.typeResidence}
+          <Controller
+            name="typeResidence"
+            control={control}
+            render={({ field, fieldState }) => (
+              <SelectComponent
+                label="Tipo de residência"
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                error={fieldState.error}
+                name={field.name}
+                ref={field.ref}
+                placeholder="Selecione um tipo de residência"
+                options={selectTypeResidence}
+              />
+            )}
           />
+
+          <Controller
+            name="typePublicPlace"
+            control={control}
+            render={({ field, fieldState }) => (
+              <SelectComponent
+                label="Tipo de logradouro"
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                error={fieldState.error}
+                name={field.name}
+                ref={field.ref}
+                placeholder="Selecione um tipo de logradouro"
+                options={selectTypePublicPlace}
+              />
+            )}
+          />
+
           <Input
             label="Logradouro"
             placeholder="Digite o logradouro"
             {...register("publicPlace")}
             error={errors.publicPlace}
-          />
-          <Input
-            label="Tipo de logradouro"
-            placeholder="Digite o logradouro"
-            {...register("typePublicPlace")}
-            error={errors.typePublicPlace}
           />
         </div>
 

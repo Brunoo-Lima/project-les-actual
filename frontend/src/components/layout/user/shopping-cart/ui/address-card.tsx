@@ -1,6 +1,6 @@
-import { IAddress } from '@/@types/IAddress';
-import { CheckIcon } from 'lucide-react';
-import React from 'react';
+import { IAddress } from "@/@types/IAddress";
+import { CheckIcon } from "lucide-react";
+import React from "react";
 
 interface IAddressCardProps {
   address: IAddress;
@@ -17,15 +17,16 @@ export function AddressCard({
     <div
       key={address.id}
       onClick={() => onSelectedAddress(address)}
-      className={`grid grid-cols-3 bg-background rounded-md border p-4 cursor-pointer relative`}
+      className={`grid grid-cols-3 bg-background rounded-md border p-4 cursor-pointer relative       ${
+        isSelected ? "border-primary-dark" : "border-primary-light"
+      }`}
     >
       {isSelected && (
         <small
-          className={`absolute right-2 bottom-1 bg-primary-dark text-primary-light pl-2 pr-1 rounded-md flex justify-center items-center gap-1    ${
-            isSelected ? 'border-primary-dark' : 'border-primary-light'
-          }`}
+          className={`absolute right-2 bottom-1 bg-primary-dark text-primary-light size-5 rounded-full flex justify-center items-center gap-1 
+            ${isSelected ? "border-primary-dark" : "border-primary-light"}`}
         >
-          Selecionado <CheckIcon size={16} />
+          <CheckIcon size={16} />
         </small>
       )}
 
