@@ -1,17 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
-import { useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Modal } from '@/components/modal';
-import { ButtonCancel } from '@/components/ui/button/button-cancel/button-cancel';
-import { ButtonGeneral } from '@/components/ui/button/button-general';
-import { Input } from '@/components/ui/input/input';
+import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Modal } from "@/components/modal";
+import { ButtonCancel } from "@/components/ui/button/button-cancel/button-cancel";
+import { ButtonGeneral } from "@/components/ui/button/button-general";
+import { Input } from "@/components/ui/input/input";
 import {
   IProductSchemaForm,
   ProductSchemaForm,
-} from '@/components/validation/product-schema-form';
-import { IProduct } from '@/@types/IProduct';
-import { toast } from 'sonner';
+} from "@/components/validation/product-schema-form";
+import { IProduct } from "@/@types/IProduct";
+import { toast } from "sonner";
 
 interface IModalRegisterProps {
   onClose: () => void;
@@ -34,7 +34,7 @@ export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
     const file = event.target.files?.[0];
 
     if (file) {
-      setValue('image', file);
+      setValue("image", file);
       setFilename(file.name);
 
       const reader = new FileReader();
@@ -53,11 +53,11 @@ export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
       id: Math.ceil(Math.random() * 10000),
       price: +data.price,
       stock: +data.stock,
-      status: 'Ativo',
+      status: "Ativo",
     };
 
     setProducts((prevProducts) => [...prevProducts, updatedData]);
-    toast.success('Produto cadastrado com sucesso!');
+    toast.success("Produto cadastrado com sucesso!");
 
     onClose();
   };
@@ -68,7 +68,7 @@ export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
 
       <Modal.Content>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
-          <div className="mb-2 flex gap-3 ">
+          <div className="mb-2 flex gap-3 space-y-2">
             <label
               htmlFor="inputFile"
               className="w-[200px] h-[250px] inline-block px-3 py-5 border border-primary-light rounded-md cursor-pointer"
@@ -78,9 +78,9 @@ export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
                   src={previewImage}
                   alt="Image Preview"
                   style={{
-                    maxWidth: '100%',
-                    maxHeight: '100%',
-                    objectFit: 'cover',
+                    maxWidth: "100%",
+                    maxHeight: "100%",
+                    objectFit: "cover",
                   }}
                 />
               ) : (
@@ -91,7 +91,7 @@ export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
             <input
               type="file"
               accept="image/*"
-              {...(register('image'),
+              {...(register("image"),
               {
                 onChange: handleImageUpload,
               })}
@@ -113,41 +113,96 @@ export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
           <div className="row">
             <input type="hidden" />
             <Input
+              className="border border-gray-600"
               label="Nome do produto"
               placeholder="Digite o nome do produto"
-              {...register('name')}
+              {...register("name")}
               error={errors.name}
             />
             <Input
-              label="Nome do anime"
-              placeholder="Digite o nome do anime"
-              {...register('anime')}
-              error={errors.anime}
+              className="border border-gray-600"
+              label="Nome do universo"
+              placeholder="Digite o nome do universo"
+              {...register("universe")}
+              error={errors.universe}
             />
           </div>
 
-          <div className="flex flex-row">
+          <div className="row">
+            <Input
+              className="border border-gray-600"
+              label="Material"
+              placeholder="Digite o nome do material"
+              {...register("material")}
+              error={errors.material}
+            />
+
+            <Input
+              className="border border-gray-600"
+              label="Marca"
+              placeholder="Digite o nome da marca"
+              {...register("brand")}
+              error={errors.brand}
+            />
+          </div>
+
+          <div className="row-2">
             <Input
               label="Preço"
               placeholder="Digite o preço"
-              {...register('price')}
+              {...register("price")}
               error={errors.price}
-              className="w-32"
+              className="w-32 border border-gray-600"
             />
 
             <Input
               label="Estoque"
-              placeholder="'2'"
-              {...register('stock')}
-              className="w-16"
-              error={errors.stock}
+              placeholder="0"
+              {...register("stock.quantity")}
+              className="w-16 border border-gray-600"
+              error={errors.stock?.quantity}
             />
 
             <Input
+              className="border border-gray-600"
               label="Categoria"
               placeholder="Digite a categoria"
-              {...register('category')}
+              {...register("category")}
               error={errors.category}
+            />
+          </div>
+
+          <div className="grid grid-cols-4">
+            <Input
+              className="w-20 border border-gray-600"
+              label="Peso"
+              placeholder="5"
+              {...register("weight")}
+              error={errors.weight}
+            />
+
+            <Input
+              className="w-20 border border-gray-600"
+              label="Altura"
+              placeholder="5"
+              {...register("height")}
+              error={errors.height}
+            />
+
+            <Input
+              className="w-20 border border-gray-600"
+              label="Largura"
+              placeholder="5"
+              {...register("width")}
+              error={errors.width}
+            />
+
+            <Input
+              className="w-20 border border-gray-600"
+              label="Profundidade"
+              placeholder="5"
+              {...register("depth")}
+              error={errors.depth}
             />
           </div>
 
