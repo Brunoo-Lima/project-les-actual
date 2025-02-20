@@ -102,12 +102,12 @@ model CreditCard {
 model Product {
   id String @id @default(uuid())
   name String @unique
-  description String
+  description String?
   image String
   price Decimal
 
   brand String
-  universe String[]
+  universe String
   material String
 
   weight Decimal
@@ -126,7 +126,7 @@ model Product {
   category String
 
   orderItems OrderItem[]
-    pricingGroup PricingGroup? @relation(fields: [pricingGroupId], references: [id])
+  pricingGroup PricingGroup? @relation(fields: [pricingGroupId], references: [id])
   pricingGroupId String?
 
   cartItem CartItem[]
