@@ -55,7 +55,7 @@ export function PhoneFormUser({
           />
 
           {errors.typePhone && (
-            <small className="text-error text-xs mt-1">
+            <small className="text-error text-sm mt-1">
               {errors.typePhone.message}
             </small>
           )}

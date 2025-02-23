@@ -152,7 +152,9 @@ export function EditUser() {
               />
             </div>
 
-            <span className="text-sm text-error">{errors.gender?.message}</span>
+            <span className="text-sm text-error mt-1">
+              {errors.gender?.message}
+            </span>
           </div>
 
           <div>

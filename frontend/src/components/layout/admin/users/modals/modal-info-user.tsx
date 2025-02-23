@@ -11,7 +11,7 @@ export function ModalInfoUser({ onClose, user }: IModalInfoUserProps) {
   if (!user) return;
 
   return (
-    <Modal.Root className="flex flex-col gap-y-4 w-[900px] h-[500px] p-4 rounded-lg ">
+    <Modal.Root className="flex flex-col gap-y-4 w-[600px] h-[500px] p-4 rounded-lg ">
       <Modal.Header title="Informações do usuário" onClick={onClose} />
 
       <Modal.Content className="flex flex-col gap-4 h-[500px] overflow-auto container-modal">

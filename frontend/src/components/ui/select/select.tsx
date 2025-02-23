@@ -53,7 +53,7 @@ export const SelectComponent = forwardRef<HTMLSelectElement, ISelectProps>(
           </SelectContent>
         </Select>
         {error && (
-          <small className="text-error text-xs mt-1">{error.message}</small>
+          <small className="text-error text-sm mt-1">{error.message}</small>
         )}
       </div>
     );

@@ -39,7 +39,9 @@ export const Input = forwardRef<HTMLInputElement, IInputProps>(
           className={`${className} bg-background-dark p-2 rounded-md text-base`}
           {...rest}
         />
-        {error && <span className="text-sm text-error">{error.message}</span>}
+        {error && (
+          <span className="text-sm text-error mt-1">{error.message}</span>
+        )}
       </div>
     );
   }
