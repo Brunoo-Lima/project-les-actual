@@ -1,6 +1,7 @@
 import { ButtonGeneral } from "@/components/ui/button/button-general";
 import { SectionType } from "./edit-user";
 import { CheckIcon, PencilIcon } from "lucide-react";
+import { Button } from "@/components/ui/button/button";
 
 interface IButtonsActionsProps {
   editSection: SectionType;
@@ -20,7 +21,7 @@ export function ButtonsActions({
   return (
     <div className="flex gap-2">
       {editSection === section ? (
-        <ButtonGeneral
+        <Button
           text="Salvar"
           type="button"
           className="bg-blue-700 hover:bg-blue-700/80 w-28 text-white"
@@ -28,7 +29,7 @@ export function ButtonsActions({
           icon={<CheckIcon size={20} />}
         />
       ) : (
-        <ButtonGeneral
+        <Button
           text="Editar"
           type="button"
           className="bg-blue-700 hover:bg-blue-700/80 w-28 text-white "
@@ -37,7 +38,7 @@ export function ButtonsActions({
         />
       )}
 
-      <ButtonGeneral
+      <Button
         className="bg-emerald-800 hover:bg-emerald-800/80 text-white w-44"
         text={textButtonSection}
         type="button"
