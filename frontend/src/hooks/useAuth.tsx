@@ -8,6 +8,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { toast } from "sonner";
 
 export type TypeUser = "ADMIN" | "USER";
 
@@ -16,7 +17,12 @@ interface IAuthContextProps {
   user: TypeUser;
   setUser: React.Dispatch<React.SetStateAction<TypeUser>>;
   logout: () => void;
-  login: (option: "ADMIN" | "USER") => Promise<void>;
+  login: (
+    email: string,
+    password: string,
+    option: "ADMIN" | "USER"
+  ) => Promise<void>;
+  // isAuthenticated: boolean;
 }
 
 interface IChildrenProps {
@@ -34,13 +40,29 @@ export const AuthProvider = ({ children }: IChildrenProps) => {
     router.push("/");
   }, [router]);
 
-  const login = async (option: "ADMIN" | "USER") => {
-    if (option === "ADMIN") {
-      setUser("ADMIN");
-      router.push("/vendas");
-    } else {
-      setUser("USER");
-      router.push("/produtos");
+  const login = async (
+    email: string,
+    password: string,
+    option: "ADMIN" | "USER"
+  ) => {
+    try {
+      if (!email || !password) {
+        toast.error("Email ou senha incorretos!");
+      }
+
+      if (email && password) {
+        toast.success("Logado com sucesso!");
+      }
+
+      if (option === "ADMIN") {
+        setUser("ADMIN");
+        // router.push("/vendas");
+      } else {
+        setUser("USER");
+        // router.push("/produtos");
+      }
+    } catch (error) {
+      toast.error("Algo deu errado");
     }
   };
 

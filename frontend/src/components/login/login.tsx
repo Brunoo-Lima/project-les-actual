@@ -20,12 +20,12 @@ export function Login() {
 
   return (
     <section className="flex flex-col items-center justify-center h-screen">
-      <div className="flex flex-col border border-background-dark rounded-md h-[400px] w-[500px]">
+      <div className="flex flex-col border border-background-dark rounded-md min-h-[400px] w-[500px]">
         <div className="flex mb-6">
           <ButtonOptionLogin
             type="button"
             onClick={() => handleChangeOption("USER")}
-            text="Usuário"
+            text="Cliente"
             className={` ${
               option === "USER" &&
               "bg-primary text-background rounded-tl-md font-bold"
