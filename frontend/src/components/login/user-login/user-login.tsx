@@ -1,13 +1,17 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { ButtonLogin } from '@/components/ui/button/button-login/button-login';
-import { Input } from '@/components/ui/input/input';
-import { TitleLogin } from '@/components/ui/title/title-login/title-login';
-import { useRouter } from 'next/navigation';
+import Link from "next/link";
+import { ButtonLogin } from "@/components/ui/button/button-login/button-login";
+import { Input } from "@/components/ui/input/input";
+import { TitleLogin } from "@/components/ui/title/title-login/title-login";
+import { useUseAuth } from "@/hooks/useAuth";
 
 export function UserLogin() {
-  const router = useRouter();
+  const { login } = useUseAuth();
+
+  const onSubmit = async () => {
+    await login("USER");
+  };
 
   return (
     <div className="flex flex-col gap-y-4 items-center">
@@ -22,16 +26,12 @@ export function UserLogin() {
         />
       </div>
 
-      <ButtonLogin
-        type="button"
-        text="Entrar"
-        onClick={() => router.push('/produtos')}
-      />
+      <ButtonLogin type="button" text="Entrar" onClick={onSubmit} />
 
       <p className="text-sm -my-1">
-        Não tem conta?{' '}
+        Não tem conta?{" "}
         <Link
-          href={'/registrar'}
+          href={"/registrar"}
           className="text-primary font-semibold transition duration-300 hover:text-primary-dark"
         >
           Clique aqui

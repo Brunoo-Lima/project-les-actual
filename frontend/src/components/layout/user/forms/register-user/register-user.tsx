@@ -45,14 +45,14 @@ export function RegisterUser() {
   const onSubmit: SubmitHandler<IClientSchemaForm> = (data) => {
     console.log(data);
 
-    router.push("/produtos");
+    router.push("/");
 
     toast.success("Usuário cadastrado com sucesso!");
   };
 
   return (
-    <div className="min-h-screen py-8">
-      <TitlePage title="Cadastro de usuário" />
+    <section className="min-h-screen py-8 px-8 mx-auto w-[1300px]">
+      <TitlePage title="Cadastro de cliente" />
 
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -197,6 +197,6 @@ export function RegisterUser() {
           </button>
         </div>
       </form>
-    </div>
+    </section>
   );
 }

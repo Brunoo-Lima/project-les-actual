@@ -2,31 +2,30 @@
 
 import { Footer } from "@/components/footer/footer";
 import { HeaderUser } from "../header-user/header-user";
-import { AuthProvider, useUseAuth } from "@/hooks/useAuth";
+import { AuthProvider } from "@/hooks/useAuth";
 import { ButtonRedirectLogin } from "@/components/ui/button/button-redirect-login";
 import { ButtonChatbot } from "@/components/chatbot/button-chatbot";
 import { Chatbot } from "@/components/chatbot/chatbot";
+import { useState } from "react";
 
 export function LayoutUser({ children }: { children: React.ReactNode }) {
-  const { handleChangeUser, isOpenChatbot, setIsOpenChatbot } = useUseAuth();
+  const [isOpenChatbot, setIsOpenChatbot] = useState<boolean>(false);
 
   return (
     <>
-      <HeaderUser />
       <AuthProvider>
+        <HeaderUser />
         <main className="container mx-auto py-8 px-12 relative">
           {children}
 
-          <ButtonRedirectLogin
-            handleChangeUser={() => handleChangeUser("ADMIN")}
-          />
+          <ButtonRedirectLogin />
 
           {isOpenChatbot && <Chatbot />}
 
           <ButtonChatbot onClick={() => setIsOpenChatbot(!isOpenChatbot)} />
         </main>
+        <Footer />
       </AuthProvider>
-      <Footer />
     </>
   );
 }

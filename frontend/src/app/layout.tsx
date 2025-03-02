@@ -14,8 +14,8 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
-  title: "Página Inicial",
-  description: "Página Inicial do site",
+  title: "Login",
+  description: "Página de login",
 };
 
 export default function RootLayout({

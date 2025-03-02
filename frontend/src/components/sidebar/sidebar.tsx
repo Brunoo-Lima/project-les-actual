@@ -11,8 +11,10 @@ import {
   UsersIcon,
 } from "lucide-react";
 import { Tooltip } from "../ui/tooltip/tooltip";
+import { useUseAuth } from "@/hooks/useAuth";
 
 export function Sidebar() {
+  const { logout } = useUseAuth();
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
 
   const handleMouseEnter = (tooltip: string) => {
@@ -78,6 +80,7 @@ export function Sidebar() {
           className="relative flex flex-col items-center"
           onMouseEnter={() => handleMouseEnter("logout")}
           onMouseLeave={handleMouseLeave}
+          onClick={logout}
         >
           <button type="button" className="m-auto w-max">
             <LogOut size={24} color="#2DD4BF" />

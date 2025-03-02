@@ -1,12 +1,16 @@
-'use client';
+"use client";
 
-import { ButtonLogin } from '@/components/ui/button/button-login/button-login';
-import { Input } from '@/components/ui/input/input';
-import { TitleLogin } from '@/components/ui/title/title-login/title-login';
-import { useRouter } from 'next/navigation';
+import { ButtonLogin } from "@/components/ui/button/button-login/button-login";
+import { Input } from "@/components/ui/input/input";
+import { TitleLogin } from "@/components/ui/title/title-login/title-login";
+import { useUseAuth } from "@/hooks/useAuth";
 
 export function AdminLogin() {
-  const router = useRouter();
+  const { login } = useUseAuth();
+
+  const onSubmit = async () => {
+    await login("ADMIN");
+  };
 
   return (
     <div className="flex flex-col items-center gap-y-4">
@@ -21,11 +25,7 @@ export function AdminLogin() {
         />
       </div>
 
-      <ButtonLogin
-        type="button"
-        text="Entrar"
-        onClick={() => router.push('/vendas')}
-      />
+      <ButtonLogin type="button" text="Entrar" onClick={onSubmit} />
     </div>
   );
 }

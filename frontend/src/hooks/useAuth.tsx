@@ -1,12 +1,22 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { createContext, useContext, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
+
+export type TypeUser = "ADMIN" | "USER";
 
 interface IAuthContextProps {
-  handleChangeUser: (selected: "ADMIN" | "USER") => void;
-  isOpenChatbot: boolean;
-  setIsOpenChatbot: React.Dispatch<React.SetStateAction<boolean>>;
+  handleChangeUser: () => void;
+  user: TypeUser;
+  setUser: React.Dispatch<React.SetStateAction<TypeUser>>;
+  logout: () => void;
+  login: (option: "ADMIN" | "USER") => Promise<void>;
 }
 
 interface IChildrenProps {
@@ -17,23 +27,42 @@ export const AuthContext = createContext({} as IAuthContextProps);
 
 export const AuthProvider = ({ children }: IChildrenProps) => {
   const router = useRouter();
-  const [isOpenChatbot, setIsOpenChatbot] = useState<boolean>(false);
+  const [user, setUser] = useState<TypeUser>("USER");
 
-  const handleChangeUser = (selected: "ADMIN" | "USER") => {
-    if (selected === "ADMIN") {
+  const logout = useCallback(() => {
+    setUser("USER");
+    router.push("/");
+  }, [router]);
+
+  const login = async (option: "ADMIN" | "USER") => {
+    if (option === "ADMIN") {
+      setUser("ADMIN");
       router.push("/vendas");
     } else {
+      setUser("USER");
       router.push("/produtos");
+    }
+  };
+
+  const handleChangeUser = () => {
+    if (user === "ADMIN") {
+      setUser("USER");
+      router.replace("/produtos");
+    } else {
+      setUser("ADMIN");
+      router.replace("/vendas");
     }
   };
 
   const contextValue = useMemo(
     () => ({
       handleChangeUser,
-      isOpenChatbot,
-      setIsOpenChatbot,
+      logout,
+      user,
+      setUser,
+      login,
     }),
-    [isOpenChatbot, setIsOpenChatbot, handleChangeUser]
+    [handleChangeUser, logout, user, setUser, login]
   );
 
   return (

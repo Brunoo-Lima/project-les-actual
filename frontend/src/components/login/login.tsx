@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { AdminLogin } from './admin-login/admin-login';
-import { UserLogin } from './user-login/user-login';
-import { ButtonOptionLogin } from '../ui/button/button-option-login';
+import { useEffect, useState } from "react";
+import { AdminLogin } from "./admin-login/admin-login";
+import { UserLogin } from "./user-login/user-login";
+import { ButtonOptionLogin } from "../ui/button/button-option-login";
 
 export function Login() {
-  const [option, setOption] = useState<'ADMIN' | 'USER' | null>(null);
+  const [option, setOption] = useState<"ADMIN" | "USER">("USER");
 
   useEffect(() => {
-    setOption('USER');
+    setOption("USER");
   }, []);
 
-  const handleChangeOption = (option: 'ADMIN' | 'USER') => {
+  const handleChangeOption = (option: "ADMIN" | "USER") => {
     setOption(option);
   };
 
@@ -24,26 +24,26 @@ export function Login() {
         <div className="flex mb-6">
           <ButtonOptionLogin
             type="button"
-            onClick={() => handleChangeOption('USER')}
+            onClick={() => handleChangeOption("USER")}
             text="Usuário"
             className={` ${
-              option === 'USER' &&
-              'bg-primary text-background rounded-tl-md font-bold'
+              option === "USER" &&
+              "bg-primary text-background rounded-tl-md font-bold"
             }`}
           />
 
           <ButtonOptionLogin
             type="button"
-            onClick={() => handleChangeOption('ADMIN')}
+            onClick={() => handleChangeOption("ADMIN")}
             text="Administrador"
             className={`${
-              option === 'ADMIN' && 'bg-primary text-background font-bold'
+              option === "ADMIN" && "bg-primary text-background font-bold"
             }`}
           />
         </div>
 
         <div className="p-4">
-          {option === 'ADMIN' ? <AdminLogin /> : <UserLogin />}
+          {option === "ADMIN" ? <AdminLogin /> : <UserLogin />}
         </div>
       </div>
     </section>
