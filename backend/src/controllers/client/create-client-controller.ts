@@ -1,13 +1,14 @@
 import { Request, Response } from 'express';
-import { CreateUserService } from '../../services/user/create-user-service';
+import { CreateClientService } from '../../services/client/create-client-service';
 import { IUser } from '../../types/IUser';
 
-class CreateUserController {
+class CreateClientController {
   async handle(req: Request, res: Response) {
     const {
       name,
       email,
       password,
+      confirmPassword,
       cpf,
       dateOfBirth,
       gender,
@@ -16,11 +17,13 @@ class CreateUserController {
       creditCards,
     }: IUser = req.body;
 
-    const createUserService = new CreateUserService();
-    const createUser = await createUserService.execute({
+    const createClientService = new CreateClientService();
+
+    const createClient = await createClientService.execute({
       name,
       email,
       password,
+      confirmPassword,
       cpf,
       dateOfBirth,
       gender,
@@ -29,8 +32,8 @@ class CreateUserController {
       creditCards,
     });
 
-    res.json(createUser);
+    return res.status(201).json(createClient);
   }
 }
 
-export { CreateUserController };
+export { CreateClientController };
