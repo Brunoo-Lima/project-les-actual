@@ -10,13 +10,13 @@ class DetailClientService {
 
   async execute(user_id: string) {
     if (!user_id) {
-      throw new Error('ID do usuário é obrigatório');
+      throw new Error('ID do cliente é obrigatório');
     }
 
     const client = await this.detailClientDb.detailClient(user_id);
 
     if (!client) {
-      throw new Error('Usuário não encontrado');
+      throw new Error('Cliente não encontrado');
     }
 
     return client;
