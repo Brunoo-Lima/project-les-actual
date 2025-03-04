@@ -16,6 +16,7 @@ class CreateProductDb {
     height,
     weight,
     width,
+    quantity,
   }: IProduct) {
     return await prismaClient.product.create({
       data: {
@@ -33,6 +34,11 @@ class CreateProductDb {
         weight,
         width,
         isAvailable: true,
+        stock: {
+          create: {
+            quantity: quantity,
+          },
+        },
       },
       select: {
         id: true,
@@ -50,6 +56,11 @@ class CreateProductDb {
         height: true,
         weight: true,
         width: true,
+        stock: {
+          select: {
+            quantity: true,
+          },
+        },
       },
     });
   }

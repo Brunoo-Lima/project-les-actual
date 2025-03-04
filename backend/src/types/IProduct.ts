@@ -13,6 +13,7 @@ export interface IProduct {
   height: number;
   width: number;
   depth: number;
+  quantity: number;
 
   isAvailable: boolean;
   inactiveReason?: string;

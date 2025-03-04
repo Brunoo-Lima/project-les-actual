@@ -17,7 +17,8 @@ class CreateProductController {
       height,
       weight,
       width,
-    }: IProduct = req.body;
+      'stock.quantity': stockQuantity,
+    } = req.body;
 
     if (!req.file) {
       return res.status(400).json({ error: 'Nenhuma imagem enviada.' });
@@ -27,6 +28,8 @@ class CreateProductController {
     const imageUrl = `${req.protocol}://${req.get('host')}/images/${
       req.file.filename
     }`;
+
+    const quantity = stockQuantity ? parseInt(stockQuantity, 10) : 0;
 
     const createProductService = new CreateProductService();
 
@@ -45,6 +48,7 @@ class CreateProductController {
       height,
       weight,
       width,
+      quantity,
     });
 
     return res.status(201).json(createProduct);

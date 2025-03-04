@@ -25,6 +25,7 @@ class CreateProductService {
     height,
     weight,
     width,
+    quantity,
   }: IProduct) {
     await this.validationService.validateNameProduct(name);
 
@@ -44,6 +45,7 @@ class CreateProductService {
         height,
         weight,
         width,
+        quantity,
       });
 
       return { product };
