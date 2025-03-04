@@ -121,7 +121,7 @@ model Product {
   created_at DateTime? @default(now())
   updated_at DateTime? @updatedAt
 
-  stock Stock? @relation(fields: [stockId], references: [id], onDelete: SetNull)
+  stock Stock? @relation(fields: [stockId], references: [id], onDelete: Cascade)
   stockId  String? @unique
   category String
 
