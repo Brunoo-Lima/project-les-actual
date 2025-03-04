@@ -2,12 +2,13 @@ import { prismaClient } from '../../config/prisma-client/prisma-client';
 import { IUser } from '../../types/IUser';
 
 class ClientValidationService {
-  async validateEmail(email: string): Promise<void> {
+  async validateEmail(email: string, user_id?: string): Promise<void> {
     if (!email) throw new Error('Email não cadastrado!');
 
     const userAlreadyExists = await prismaClient.user.findFirst({
       where: {
         email,
+        id: { not: user_id },
       },
     });
 
@@ -31,10 +32,11 @@ class ClientValidationService {
     }
   }
 
-  async validateCPF(cpf: string): Promise<void> {
+  async validateCPF(cpf: string, user_id?: string): Promise<void> {
     const userAlreadyExists = await prismaClient.user.findFirst({
       where: {
         cpf,
+        id: { not: user_id },
       },
     });
 

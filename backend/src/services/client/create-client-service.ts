@@ -36,10 +36,11 @@ class CreateClientService {
     const passwordHash = await hash(password, 8);
 
     try {
-      const user = await this.createClientDb.createClient({
+      const client = await this.createClientDb.createClient({
         name,
         email,
         password: passwordHash,
+        confirmPassword,
         cpf,
         dateOfBirth,
         gender,
@@ -48,7 +49,7 @@ class CreateClientService {
         creditCards,
       });
 
-      return { user };
+      return { client };
     } catch (error) {
       console.error('Erro ao criar o cliente:', error);
       throw new Error('Erro ao criar o cliente!');

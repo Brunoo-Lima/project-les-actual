@@ -12,17 +12,7 @@ class CreateClientDb {
     addresses,
     phones,
     creditCards,
-  }: {
-    name: string;
-    email: string;
-    password: string;
-    cpf: string;
-    dateOfBirth: string;
-    gender: string;
-    addresses: IUser['addresses'];
-    phones: IUser['phones'];
-    creditCards: IUser['creditCards'];
-  }) {
+  }: IUser) {
     return await prismaClient.user.create({
       data: {
         name,
