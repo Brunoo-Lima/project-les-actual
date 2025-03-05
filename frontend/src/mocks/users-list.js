@@ -27,6 +27,7 @@ export const usersList = [
         state: "SP",
         country: "Brasil",
         zipCode: "08695065",
+        publicPlace: "A",
         typeResidence: "Casa",
         typePublicPlace: "Rua",
         delivery: true,
@@ -39,10 +40,11 @@ export const usersList = [
       {
         id: 1,
         number: "1234567890123456",
-        expirationDate: "12/2025",
+        dateExpired: "12/2025",
         cvv: "123",
         namePrinted: "Bruno Lima",
         flag: "Visa",
+        preferential: true,
       },
     ],
     orders: [
@@ -110,6 +112,7 @@ export const usersList = [
         state: "SP",
         country: "Brasil",
         zipCode: "08695035",
+        publicPlace: "A",
         typeResidence: "Casa",
         typePublicPlace: "Rua",
         delivery: true,
@@ -122,10 +125,11 @@ export const usersList = [
       {
         id: 1,
         number: "1234567890123456",
-        expirationDate: "12/2025",
+        dateExpired: "12/2025",
         cvv: "123",
         namePrinted: "Bruno Lima",
         flag: "Visa",
+        preferential: true,
       },
     ],
 

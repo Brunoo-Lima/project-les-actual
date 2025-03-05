@@ -12,6 +12,8 @@ import {
   ProductSchemaForm,
 } from "@/components/validation/product-schema-form";
 import { toast } from "sonner";
+import { useData } from "@/hooks/useData";
+import { Textarea } from "@/components/ui/textarea/textarea";
 
 interface IModalEditProps {
   product: IProduct | null;
@@ -25,8 +27,8 @@ export function ModalEdit({
   setSelectedProduct,
 }: IModalEditProps) {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [filename, setFilename] = useState<string | null>(null);
+  const { setProducts } = useData();
   const {
     register,
     formState: { errors },
@@ -43,19 +45,27 @@ export function ModalEdit({
   }, [product]);
 
   useEffect(() => {
-    setValue("anime", product?.anime || "");
+    setValue("brand", product?.brand || "");
     setValue("name", product?.name || "");
     setValue("category", product?.category || "");
-    setValue("price", product?.price.toString() || "");
-    setValue("stock", product?.stock.toString() || "");
+    setValue("price", product?.price || 0);
+    setValue("quantity", product?.quantity || 0);
+    setValue("description", product?.description || "");
+    setValue("material", product?.material || "");
+    setValue("weight", product?.weight || 0);
+    setValue("height", product?.height || 0);
+    setValue("width", product?.width || 0);
+    setValue("depth", product?.depth || 0);
+    setValue("universe", product?.universe || "");
+    setValue("inactiveReason", product?.inactiveReason || "");
+    setValue("isAvailable", product?.isAvailable || false);
   }, [setValue, product]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
     if (file) {
-      setValue("image", file);
-      setSelectedFile(file);
+      setValue("image", file.name);
       setFilename(file.name);
       const reader = new FileReader();
       reader.onload = (e: any) => {
@@ -65,20 +75,24 @@ export function ModalEdit({
     }
   };
 
-  //Nao ta funcionando corretamente
   const onSubmit: SubmitHandler<IProductSchemaForm> = (
     data: IProductSchemaForm
   ) => {
-    const updatedData: Partial<IProduct> = {
+    const updatedData: IProduct = {
       ...data,
-      id: Math.ceil(Math.random() * 10000),
+      id: product?.id as string,
       price: +data.price,
-      stock: +data.stock,
+      quantity: +data.quantity,
+      image: data.image || (filename as string),
+      description: data.description || (product?.description as any),
     };
 
-    console.log(updatedData);
-
     setSelectedProduct(updatedData);
+
+    setProducts((prevProducts) =>
+      prevProducts.map((p) => (p.id === product?.id ? updatedData : p))
+    );
+
     toast.success("Produto editado com sucesso!");
 
     onClose();
@@ -88,14 +102,14 @@ export function ModalEdit({
 
   return (
     <Modal.Root className="flex flex-col gap-y-4 w-[600px] h-[600px] p-4 rounded-lg overflow-auto container-modal">
-      <Modal.Header title="Editar Produto" onClick={onClose} />
+      <Modal.Header title="Editar produto" onClick={onClose} />
 
       <Modal.Content>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col gap-4 "
+          className="flex flex-col  gap-4"
         >
-          <div className="mb-2 flex gap-3 ">
+          <div className="mb-2 flex gap-3 space-y-2">
             <label
               htmlFor="inputFile"
               className="w-[200px] h-[250px] inline-block px-3 py-5 border border-primary-light rounded-md cursor-pointer"
@@ -117,11 +131,12 @@ export function ModalEdit({
 
             <input
               type="file"
-              id="inputFile"
               accept="image/*"
-              {...register("image", {
+              {...(register("image"),
+              {
                 onChange: handleImageUpload,
               })}
+              id="inputFile"
               className="hidden"
             />
 
@@ -139,37 +154,60 @@ export function ModalEdit({
           <div className="row">
             <input type="hidden" />
             <Input
+              className="border border-gray-600"
               label="Nome do produto"
               placeholder="Digite o nome do produto"
               {...register("name")}
               error={errors.name}
             />
             <Input
-              label="Nome do anime"
-              placeholder="Digite o nome do anime"
-              {...register("anime")}
-              error={errors.anime}
+              className="border border-gray-600"
+              label="Nome do universo"
+              placeholder="Digite o nome do universo"
+              {...register("universe")}
+              error={errors.universe}
             />
           </div>
 
-          <div className="flex flex-row">
+          <div className="row">
             <Input
-              label="Preço"
-              placeholder="Digite o preço"
-              {...register("price")}
-              error={errors.price}
-              className="w-32"
+              className="border border-gray-600"
+              label="Material"
+              placeholder="Digite o nome do material"
+              {...register("material")}
+              error={errors.material}
             />
 
             <Input
-              label="Estoque"
-              placeholder="'2'"
-              {...register("stock")}
-              className="w-16"
-              error={errors.stock}
+              className="border border-gray-600"
+              label="Marca"
+              placeholder="Digite o nome da marca"
+              {...register("brand")}
+              error={errors.brand}
             />
+          </div>
+
+          <div className="row">
+            <div className="row">
+              <Input
+                label="Preço"
+                placeholder="Digite o preço"
+                {...register("price")}
+                error={errors.price}
+                className="w-32 border border-gray-600"
+              />
+
+              <Input
+                label="Estoque"
+                placeholder="0"
+                {...register("quantity")}
+                className="w-16 border border-gray-600"
+                error={errors?.quantity}
+              />
+            </div>
 
             <Input
+              className="border border-gray-600"
               label="Categoria"
               placeholder="Digite a categoria"
               {...register("category")}
@@ -177,8 +215,48 @@ export function ModalEdit({
             />
           </div>
 
+          <div className="grid grid-cols-4">
+            <Input
+              className="w-20 border border-gray-600"
+              label="Peso"
+              placeholder="5"
+              {...register("weight")}
+              error={errors.weight}
+            />
+
+            <Input
+              className="w-20 border border-gray-600"
+              label="Altura"
+              placeholder="5"
+              {...register("height")}
+              error={errors.height}
+            />
+
+            <Input
+              className="w-20 border border-gray-600"
+              label="Largura"
+              placeholder="5"
+              {...register("width")}
+              error={errors.width}
+            />
+
+            <Input
+              className="w-20 border border-gray-600"
+              label="Profundidade"
+              placeholder="5"
+              {...register("depth")}
+              error={errors.depth}
+            />
+          </div>
+
+          <Textarea
+            label="Descrição"
+            {...register("description")}
+            error={errors.description}
+          />
+
           <div className="flex justify-center items-center gap-4 mt-3">
-            <ButtonGeneral type="submit" text="Cadastrar" className="w-48" />
+            <ButtonGeneral type="submit" text="Salvar" className="w-48" />
             <ButtonCancel text="Cancelar" onClick={onClose} />
           </div>
         </form>

@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { createContext, ReactNode, useContext, useMemo, useState } from 'react';
-import { IProduct } from '@/@types/IProduct';
-import { productListRegister } from '@/mocks/product-list-register';
+import { createContext, ReactNode, useContext, useMemo, useState } from "react";
+import { IProduct } from "@/@types/IProduct";
+import { productList } from "./../mocks/product-list";
 
 interface IDataContextProps {
   products: IProduct[] | [];
@@ -16,9 +16,7 @@ interface IDataProviderProps {
 export const DataContext = createContext({} as IDataContextProps);
 
 export const DataProvider = ({ children }: IDataProviderProps) => {
-  const [products, setProducts] = useState<IProduct[] | []>(
-    productListRegister
-  );
+  const [products, setProducts] = useState<IProduct[] | []>(productList);
 
   const contextValue = useMemo(
     () => ({

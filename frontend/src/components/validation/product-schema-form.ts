@@ -3,9 +3,7 @@ import * as yup from "yup";
 export type IProductSchemaForm = yup.InferType<typeof ProductSchemaForm>;
 
 export const ProductSchemaForm = yup.object().shape({
-  image: yup.mixed().test("required", "A imagem é obrigatória", (value) => {
-    return value instanceof File;
-  }),
+  image: yup.string().required("A imagem é obrigatória"),
   name: yup.string().required("O nome é obrigatório"),
   description: yup.string().optional(),
 
@@ -18,14 +16,12 @@ export const ProductSchemaForm = yup.object().shape({
   universe: yup.string().required("O universo é obrigatório"),
   material: yup.string().required("O material é obrigatório"),
 
-  stock: yup.object().shape({
-    quantity: yup
-      .number()
-      .typeError("A quantidade deve ser um número")
-      .integer("A quantidade deve ser um número inteiro")
-      .min(0, "A quantidade não pode ser negativa")
-      .required("A quantidade é obrigatória"),
-  }),
+  quantity: yup
+    .number()
+    .typeError("A quantidade deve ser um número")
+    .integer("A quantidade deve ser um número inteiro")
+    .min(0, "A quantidade não pode ser negativa")
+    .required("A quantidade é obrigatória"),
 
   weight: yup
     .number()

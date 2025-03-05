@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { JSX, useState } from 'react';
-import { TableRow } from './table-row';
-import { ModalBackground } from '@/components/modal/modal-background/modal-background';
-import { ModalStatus } from '../modals/modal-status/modal-status';
-import { ModalInfo } from '../modals/modal-info/modal-info';
-import { IProduct } from '@/@types/IProduct';
-import { toast } from 'sonner';
-import { ModalEdit } from '../modals/modal-edit/modal-edit';
+import { JSX, useState } from "react";
+import { TableRow } from "./table-row";
+import { ModalBackground } from "@/components/modal/modal-background/modal-background";
+import { ModalStatus } from "../modals/modal-status/modal-status";
+import { ModalInfo } from "../modals/modal-info/modal-info";
+import { IProduct } from "@/@types/IProduct";
+import { toast } from "sonner";
+import { ModalEdit } from "../modals/modal-edit/modal-edit";
 
 interface ITableProps {
   data: IProduct[];
   onDeleteProduct: (product: number) => void;
 }
 
-type ModalType = 'status' | 'edit' | 'info' | null;
+type ModalType = "status" | "edit" | "info" | null;
 
 export function Table({ data, onDeleteProduct }: ITableProps) {
   const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
@@ -25,8 +25,8 @@ export function Table({ data, onDeleteProduct }: ITableProps) {
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.stopPropagation();
-    onDeleteProduct(product.id);
-    toast.success('Produto deletado com sucesso!');
+    onDeleteProduct(+product.id);
+    toast.success("Produto deletado com sucesso!");
   };
 
   const handleOpenModalEditStatusProduct = (
@@ -35,12 +35,12 @@ export function Table({ data, onDeleteProduct }: ITableProps) {
   ) => {
     event.stopPropagation();
     setSelectedProduct(product);
-    setModalType('status');
+    setModalType("status");
   };
 
   const handleOpenModalInfoProduct = (product: IProduct) => {
     setSelectedProduct(product);
-    setModalType('info');
+    setModalType("info");
   };
 
   const handleOpenModalEditProduct = (
@@ -49,7 +49,7 @@ export function Table({ data, onDeleteProduct }: ITableProps) {
   ) => {
     event.stopPropagation();
     setSelectedProduct(product);
-    setModalType('edit');
+    setModalType("edit");
   };
 
   const modalComponent: Record<Exclude<ModalType, null>, JSX.Element> = {

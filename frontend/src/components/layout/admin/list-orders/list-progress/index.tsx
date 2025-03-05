@@ -1,5 +1,5 @@
 export function ListProgress() {
-  let progress = "EM ANDAMENTO";
+  const progress = "EM ANDAMENTO";
 
   return (
     <div>
@@ -36,4 +36,3 @@ export function ListProgress() {
     </div>
   );
 }
-

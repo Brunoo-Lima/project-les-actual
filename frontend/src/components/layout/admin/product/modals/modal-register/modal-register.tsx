@@ -12,6 +12,7 @@ import {
 } from "@/components/validation/product-schema-form";
 import { IProduct } from "@/@types/IProduct";
 import { toast } from "sonner";
+import { Textarea } from "@/components/ui/textarea/textarea";
 
 interface IModalRegisterProps {
   onClose: () => void;
@@ -34,7 +35,7 @@ export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
     const file = event.target.files?.[0];
 
     if (file) {
-      setValue("image", file);
+      setValue("image", file.name);
       setFilename(file.name);
 
       const reader = new FileReader();
@@ -45,15 +46,17 @@ export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
     }
   };
 
+  //Solução pra imagem até implementar o backend
   const onSubmit: SubmitHandler<IProductSchemaForm> = (
     data: IProductSchemaForm
   ) => {
     const updatedData: IProduct = {
       ...data,
-      id: Math.ceil(Math.random() * 10000),
+      id: Math.ceil(Math.random() * 10000).toString(),
       price: +data.price,
-      stock: +data.stock,
-      status: "Ativo",
+      quantity: +data.quantity,
+      image: previewImage || (filename as string),
+      description: data.description || (data?.description as any),
     };
 
     setProducts((prevProducts) => [...prevProducts, updatedData]);
@@ -67,7 +70,7 @@ export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
       <Modal.Header title="Novo Produto" onClick={onClose} />
 
       <Modal.Content>
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           <div className="mb-2 flex gap-3 space-y-2">
             <label
               htmlFor="inputFile"
@@ -146,22 +149,24 @@ export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
             />
           </div>
 
-          <div className="row-2">
-            <Input
-              label="Preço"
-              placeholder="Digite o preço"
-              {...register("price")}
-              error={errors.price}
-              className="w-32 border border-gray-600"
-            />
+          <div className="row">
+            <div className="row">
+              <Input
+                label="Preço"
+                placeholder="Digite o preço"
+                {...register("price")}
+                error={errors.price}
+                className="w-32 border border-gray-600"
+              />
 
-            <Input
-              label="Estoque"
-              placeholder="0"
-              {...register("stock.quantity")}
-              className="w-16 border border-gray-600"
-              error={errors.stock?.quantity}
-            />
+              <Input
+                label="Estoque"
+                placeholder="0"
+                {...register("quantity")}
+                className="w-16 border border-gray-600"
+                error={errors?.quantity}
+              />
+            </div>
 
             <Input
               className="border border-gray-600"
@@ -205,6 +210,12 @@ export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
               error={errors.depth}
             />
           </div>
+
+          <Textarea
+            label="Descrição"
+            {...register("description")}
+            error={errors.description}
+          />
 
           <div className="flex justify-center items-center gap-4 mt-3">
             <ButtonGeneral type="submit" text="Cadastrar" className="w-48" />

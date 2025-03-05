@@ -5,7 +5,7 @@ import { Card } from "./card/card";
 import { useData } from "@/hooks/useData";
 import { useFilter } from "@/hooks/useFilter";
 import { IProduct } from "@/@types/IProduct";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { TitlePage } from "@/components/ui/title/title-page/title-page";
 import { ModalBackground } from "@/components/modal/modal-background/modal-background";
 import { ModalLogs } from "./modal-logs";
@@ -15,6 +15,10 @@ export function Products() {
   const [isOpenModalLog, setIsOpenModalLog] = useState<boolean>(false);
   const { searchName, setSearchName } = useFilter();
   const [filteredData, setFilteredData] = useState<IProduct[]>(products);
+
+  useEffect(() => {
+    setFilteredData(products);
+  }, [products]);
 
   const handleSearchProducts = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchName(e.target.value);

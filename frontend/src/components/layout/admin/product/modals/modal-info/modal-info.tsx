@@ -1,8 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
-import { IProduct } from '@/@types/IProduct';
-import { Modal } from '@/components/modal';
-import { ButtonCancel } from '@/components/ui/button/button-cancel/button-cancel';
-import { FormatValue } from '@/utils/format-value';
+import { IProduct } from "@/@types/IProduct";
+import { Modal } from "@/components/modal";
+import { ButtonCancel } from "@/components/ui/button/button-cancel/button-cancel";
+import { FormatValue } from "@/utils/format-value";
 
 interface IModalInfoProps {
   onClose: () => void;
@@ -12,17 +12,6 @@ interface IModalInfoProps {
 export function ModalInfo({ onClose, product }: IModalInfoProps) {
   if (!product) return;
 
-  let imageSrc: string;
-
-  // Verifica se a imagem é um objeto Blob (arquivo)
-  if (product.image instanceof Blob) {
-    imageSrc = URL.createObjectURL(product.image);
-  } else {
-    imageSrc = product.image || '';
-  }
-
-  console.log('product', product);
-
   return (
     <Modal.Root className="flex flex-col gap-y-4 w-[600px] h-[400px] p-4 rounded-lg overflow-auto container-modal">
       <Modal.Header title="Informações do produto" onClick={onClose} />
@@ -31,14 +20,22 @@ export function ModalInfo({ onClose, product }: IModalInfoProps) {
         <div className="flex justify-between gap-4">
           <div className="flex flex-col gap-4 *:text-textColor-dark *:text-base *:font-normal">
             <p>Nome: {product.name}</p>
-            <p>Anime: {product.anime}</p>
+            <p>Descrição: {product.description || "Sem descrição"}</p>
+            <p>Categoria: {product.category}</p>
             <p>Preço: {FormatValue(product.price)}</p>
-            <p>Estoque: {product.stock}</p>
-            <p>Status: {product.status}</p>
+            <p>Estoque: {product.quantity}</p>
+            <p>Marca: {product.brand}</p>
+            <p>Material: {product.material}</p>
+            <p>Universe: {product.universe}</p>
+            <p>Peso: {product.weight}</p>
+            <p>Largura: {product.width}</p>
+            <p>Altura: {product.height}</p>
+            <p>Profundidade: {product.depth}</p>
+            <p>Status: {product.isAvailable ? "Disponível" : "Indisponível"}</p>
           </div>
 
           <div className="w-[200px] h-auto mr-4">
-            <img src={imageSrc} alt={product.name} />
+            <img src={product.image} alt={product.name} />
           </div>
         </div>
 

@@ -34,7 +34,7 @@ export function Orders() {
         total: order.total,
       };
 
-      setOrders((prevOrders) => [newOrder, ...prevOrders]);
+      setOrders((prevOrders) => [newOrder, ...prevOrders] as any);
     }
   }, [order]);
 
@@ -55,7 +55,10 @@ export function Orders() {
           >
             <div className="flex flex-col gap-y-4 w-full h-[250px] overflow-auto relative z-1 container-address-form">
               {item.items.map((product) => (
-                <CardOrder key={`${item.id}-${product.id}`} item={product} />
+                <CardOrder
+                  key={`${item.id}-${product.id}`}
+                  item={product as any}
+                />
               ))}
             </div>
 
@@ -95,7 +98,7 @@ export function Orders() {
                 Pedido: {item.delivery}
               </p>
 
-              <ButtonsActions item={item} />
+              <ButtonsActions item={item as any} />
 
               <div className="absolute bottom-0 left-0">
                 <p>Total do pedido:</p>

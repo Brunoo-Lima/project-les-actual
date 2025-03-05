@@ -7,6 +7,7 @@ import { ButtonRedirectLogin } from "@/components/ui/button/button-redirect-logi
 import { ButtonChatbot } from "@/components/chatbot/button-chatbot";
 import { Chatbot } from "@/components/chatbot/chatbot";
 import { useState } from "react";
+import { DataProvider } from "@/hooks/useData";
 
 export function LayoutUser({ children }: { children: React.ReactNode }) {
   const [isOpenChatbot, setIsOpenChatbot] = useState<boolean>(false);
@@ -14,17 +15,19 @@ export function LayoutUser({ children }: { children: React.ReactNode }) {
   return (
     <>
       <AuthProvider>
-        <HeaderUser />
-        <main className="container mx-auto py-8 px-12 relative">
-          {children}
+        <DataProvider>
+          <HeaderUser />
+          <main className="container mx-auto py-8 px-12 relative">
+            {children}
 
-          <ButtonRedirectLogin />
+            <ButtonRedirectLogin />
 
-          {isOpenChatbot && <Chatbot />}
+            {isOpenChatbot && <Chatbot />}
 
-          <ButtonChatbot onClick={() => setIsOpenChatbot(!isOpenChatbot)} />
-        </main>
-        <Footer />
+            <ButtonChatbot onClick={() => setIsOpenChatbot(!isOpenChatbot)} />
+          </main>
+          <Footer />
+        </DataProvider>
       </AuthProvider>
     </>
   );

@@ -1,12 +1,23 @@
 export interface IProduct {
-  id: number;
+  id: string;
   name: string;
-  anime: string;
+  description: string;
+  image: string;
   price: number;
-  stock: number;
   category: string;
-  image: File | null;
+
+  brand: string;
+  universe: string;
+  material: string;
+
+  weight: number;
+  height: number;
+  width: number;
+  depth: number;
   quantity: number;
-  status?: string;
-  delivery?: string;
+
+  isAvailable: boolean;
+  inactiveReason?: string;
+
+  pricingGroupId?: string;
 }

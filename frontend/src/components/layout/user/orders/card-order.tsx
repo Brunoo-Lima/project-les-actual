@@ -11,7 +11,7 @@ export function CardOrder({ item }: ICardOrderProps) {
     <div className="flex gap-x-4 border-b border-b-gray-400 pb-4">
       <div className="size-16 flex items-center justify-center">
         <Image
-          src={item.image}
+          src={item.image || ""}
           width={64}
           height={64}
           alt=""

@@ -1,5 +1,5 @@
-import { IProduct } from '@/@types/IProduct';
-import { EyeIcon, PencilIcon, Trash2Icon } from 'lucide-react';
+import { IProduct } from "@/@types/IProduct";
+import { EyeIcon, PencilIcon, Trash2Icon } from "lucide-react";
 
 interface ITableRowProps {
   product: IProduct;
@@ -38,16 +38,18 @@ export function TableRow({
           type="button"
           onClick={(event) => onEditStatusProduct(product, event)}
           className={`${
-            product.status === 'Ativo' ? 'bg-green-500' : 'bg-red-500'
+            product.isAvailable ? "bg-green-500" : "bg-red-500"
           } w-24 px-2 text-center rounded-sm border-none flex items-center justify-center gap-x-2`}
         >
-          <p className="font-semibold text-base">{product.status}</p>
+          <p className="font-semibold text-base">
+            {product.isAvailable ? "Ativo" : "Inativo"}
+          </p>
 
           <PencilIcon size={16} color="#ffffff" />
         </button>
       </td>
 
-      <td>{product.stock}</td>
+      <td>{product.quantity}</td>
 
       <td>
         <div className="flex items-center gap-x-4">

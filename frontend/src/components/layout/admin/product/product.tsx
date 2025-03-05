@@ -2,10 +2,9 @@
 
 import { TitlePage } from "@/components/ui/title/title-page/title-page";
 import { Table } from "./table/table";
-import { productListRegister } from "@/mocks/product-list-register";
 import { PlusIcon } from "lucide-react";
 import { ButtonGeneral } from "@/components/ui/button/button-general";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ModalBackground } from "@/components/modal/modal-background/modal-background";
 import { ModalRegister } from "./modals/modal-register/modal-register";
 import { useData } from "@/hooks/useData";
@@ -16,14 +15,11 @@ import { toast } from "sonner";
 
 export function Product() {
   const {
-    isSearching,
-    setIsSearching,
     searchName,
     setSearchName,
     selectedStatus,
     selectedPrice,
     setSelectedStatus,
-    selectedProfilePurchase,
     setSelectedProfilePurchase,
     setSelectedPrice,
     selectedCategory,
@@ -40,11 +36,13 @@ export function Product() {
 
   const handleDeleteProduct = (id: number) => {
     setFilteredData((prevProducts) =>
-      prevProducts.filter((product) => product.id !== id)
+      prevProducts.filter((product) => product.id !== id.toString())
     );
-
-    // setProducts(filteredData);
   };
+
+  useEffect(() => {
+    setFilteredData(products);
+  }, [products]);
 
   const handleOpenModalNewProduct = () => {
     setIsOpenModalNewProduct(true);
@@ -63,14 +61,17 @@ export function Product() {
           .includes(searchName.toLowerCase());
 
         const matchesStatus =
-          !selectedStatus || client.status === selectedStatus.value;
+          !selectedStatus || client.isAvailable === true
+            ? "Ativo"
+            : "Inativo" === selectedStatus.value;
 
         const matchesCategory =
           !selectedCategory || client.category === selectedCategory.value;
 
         const matchesPrice = !selectedPrice || client.price <= selectedPrice;
 
-        const matchesStock = !selectedStock || client.stock <= +selectedStock;
+        const matchesStock =
+          !selectedStock || client.quantity <= +selectedStock;
 
         return (
           matchesName &&
