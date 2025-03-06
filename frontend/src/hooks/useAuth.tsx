@@ -37,6 +37,8 @@ export const AuthProvider = ({ children }: IChildrenProps) => {
 
   const logout = useCallback(() => {
     setUser("USER");
+    localStorage.removeItem("@token:access");
+    localStorage.removeItem("@user:data");
     router.push("/");
   }, [router]);
 
@@ -48,18 +50,22 @@ export const AuthProvider = ({ children }: IChildrenProps) => {
     try {
       if (!email || !password) {
         toast.error("Email ou senha incorretos!");
+        return;
       }
 
       if (email && password) {
         toast.success("Logado com sucesso!");
       }
 
+      const userData = { email, password, role: option };
+      localStorage.setItem("@user:data", JSON.stringify(userData));
+
       if (option === "ADMIN") {
         setUser("ADMIN");
-        // router.push("/vendas");
+        localStorage.setItem("@token:access", "ADMIN");
       } else {
         setUser("USER");
-        // router.push("/produtos");
+        localStorage.setItem("@token:access", "USER");
       }
     } catch (error) {
       toast.error("Algo deu errado");

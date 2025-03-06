@@ -13,6 +13,19 @@ import {
 } from "@/components/validation/login-schema-form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useFormStatus } from "react-dom";
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <ButtonLogin
+      type="submit"
+      text={pending ? "Carregando..." : "Entrar"}
+      disabled={pending}
+    />
+  );
+}
 
 export function UserLogin() {
   const { login } = useUseAuth();
@@ -60,7 +73,7 @@ export function UserLogin() {
           error={errors.password}
         />
 
-        <ButtonLogin type="submit" text="Entrar" />
+        <SubmitButton />
       </form>
 
       <p className="text-sm -my-1">
