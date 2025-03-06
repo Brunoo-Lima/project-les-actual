@@ -9,6 +9,7 @@ class CreateClientDb {
     cpf,
     dateOfBirth,
     gender,
+    status,
     addresses,
     phones,
     creditCards,
@@ -21,6 +22,7 @@ class CreateClientDb {
         cpf,
         dateOfBirth: new Date(dateOfBirth),
         gender,
+        status,
         addresses: {
           createMany: {
             data: addresses.map((address) => ({
@@ -70,6 +72,7 @@ class CreateClientDb {
         cpf: true,
         dateOfBirth: true,
         gender: true,
+        status: true,
         addresses: true,
         phones: true,
         creditCards: true,

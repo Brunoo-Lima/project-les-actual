@@ -4,6 +4,7 @@ import { DetailClientController } from '../controllers/client/detail-client-cont
 import { DeleteClientController } from '../controllers/client/delete-client-controller';
 import { UpdateClientController } from '../controllers/client/update-client-controller';
 import { ListClientController } from '../controllers/client/list-client-controller';
+import { UpdateStatusClientController } from '../controllers/client/update-status-client-controller';
 
 const clientRoutes = Router();
 
@@ -27,9 +28,14 @@ clientRoutes.delete('/client', async (req, res) => {
   await deleteClientController.handle(req, res);
 });
 
-clientRoutes.put('/client', async (req, res) => {
+clientRoutes.patch('/client', async (req, res) => {
   const updateClientController = new UpdateClientController();
   await updateClientController.handle(req, res);
+});
+
+clientRoutes.patch('/statusClient', async (req, res) => {
+  const updateStatusClientController = new UpdateStatusClientController();
+  await updateStatusClientController.handle(req, res);
 });
 
 export { clientRoutes };

@@ -16,6 +16,9 @@ export interface IUser {
   orders?: IOrder[];
   exchangeCoupon?: string[];
   cart?: ICart;
+
+  status: boolean;
+  inactiveReason?: string;
 }
 
 export interface IPhone {

@@ -15,6 +15,7 @@ class CreateClientController {
       addresses,
       phones,
       creditCards,
+      status = true,
     }: IUser = req.body;
 
     const createClientService = new CreateClientService();
@@ -30,6 +31,7 @@ class CreateClientController {
       addresses,
       phones,
       creditCards,
+      status,
     });
 
     return res.status(201).json(createClient);

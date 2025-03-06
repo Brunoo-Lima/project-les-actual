@@ -7,6 +7,8 @@ CREATE TABLE "users" (
     "gender" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
+    "status" BOOLEAN NOT NULL DEFAULT true,
+    "inactiveReason" TEXT,
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
 

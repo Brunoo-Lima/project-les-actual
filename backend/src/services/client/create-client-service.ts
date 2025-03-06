@@ -24,6 +24,7 @@ class CreateClientService {
     addresses = [],
     phones = [],
     creditCards = [],
+    status = true,
   }: IUser) {
     await this.validationService.validateEmail(email);
     await this.validationService.validateCPF(cpf);
@@ -47,6 +48,7 @@ class CreateClientService {
         addresses,
         phones,
         creditCards,
+        status,
       });
 
       return { client };
