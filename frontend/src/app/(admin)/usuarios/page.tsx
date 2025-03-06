@@ -8,7 +8,13 @@ export const metadata: Metadata = {
 };
 
 export default async function UsersPage() {
-  const usersList = await getListUsers();
+  // const usersList = await getListUsers();
+
+  // const clients = await getListClient();
+
+  // console.log("usersList", clients);
+
+  // console.log("usersList", usersList);
 
   // return <Users usersList={usersList} />;
   return <Users />;

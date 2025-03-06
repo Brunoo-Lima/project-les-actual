@@ -2,7 +2,6 @@ import { IAddress } from "@/@types/IAddress";
 import { ICreditCard } from "@/@types/ICreditCard";
 import { IOrder } from "@/@types/IOrder";
 import { IPhone } from "@/@types/IUser";
-import axios from "axios";
 
 export interface ICart {
   id: string;
@@ -27,19 +26,28 @@ interface IUser {
 
 export const getListClient = async () => {
   try {
-    const { data, status } = await axios.get("/http://localhost:3333/client");
+    const response = await fetch("http://localhost:3333/clients", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-    if (!data || status !== 200) {
-      throw new Error("Algo deu errado");
+    if (!response.ok) {
+      throw new Error(`Algo deu errado na requisição: ${response.statusText}`);
     }
 
+    const data = await response.json();
+
+    console.log("data", data);
+
     if (!data.length) {
-      throw new Error("error");
+      throw new Error("Nenhum cliente encontrado!");
     }
 
     return data;
   } catch (error) {
-    console.error("Error");
+    console.error("Error", error);
+    throw error;
   }
 };
-

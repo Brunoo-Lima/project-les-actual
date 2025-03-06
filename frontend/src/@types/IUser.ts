@@ -1,20 +1,29 @@
 import { IAddress } from "./IAddress";
+import { ICart } from "./ICart";
 import { ICreditCard } from "./ICreditCard";
 
 export interface IUser {
   id: number;
+  // id: string;
   name: string;
   email: string;
+  password: string;
+  confirmPassword: string;
   cpf: string;
-  created_at: string;
-  updated_at: string;
   dateOfBirth: string;
-  status: string;
   gender: string;
   phones: IPhone[];
   addresses: IAddress[];
   creditCards: ICreditCard[];
-  orders: Order[];
+  orders?: Order[];
+  exchangeCoupon?: string[];
+  cart?: ICart;
+
+  status: boolean;
+  inactiveReason?: string;
+
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface IPhone {

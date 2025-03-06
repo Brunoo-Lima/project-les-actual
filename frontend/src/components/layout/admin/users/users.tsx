@@ -3,7 +3,7 @@
 import { TitlePage } from "@/components/ui/title/title-page/title-page";
 import { TableUser } from "./table/table-user";
 import { IUser } from "@/@types/IUser";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { usersList } from "./../../../../mocks/users-list";
 import { ButtonGeneral } from "@/components/ui/button/button-general";
 import { ModalBackground } from "@/components/modal/modal-background/modal-background";
@@ -11,11 +11,6 @@ import { ModalFilterUser } from "./modals/modal-filter-user";
 import { useFilter } from "@/hooks/useFilter";
 import { toast } from "sonner";
 import dayjs from "dayjs";
-import { useData } from "@/hooks/useData";
-
-interface IUsersProps {
-  usersList: IUser[];
-}
 
 export function Users() {
   const {
@@ -26,13 +21,8 @@ export function Users() {
     selectedStatus,
     setSelectedStatus,
   } = useFilter();
-  const { users, setUsers } = useData();
-  // const [users, setUsers] = useState<IUser[]>(usersList);
+  const [users, setUsers] = useState<IUser[]>(usersList);
   const [isOpenModalFilter, setIsOpenModalFilter] = useState<boolean>(false);
-
-  useEffect(() => {
-    setUsers(users);
-  }, [users]);
 
   const applyFilters = async () => {
     try {
@@ -42,7 +32,9 @@ export function Users() {
           .includes(searchName.toLowerCase());
 
         const matchesStatus =
-          !selectedStatus || user.status === selectedStatus.value;
+          !selectedStatus || user.status
+            ? "Ativo"
+            : "Inativo" === selectedStatus.value;
 
         const matchesDate =
           !selectedDateRegister ||

@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "@/hooks/useAuth";
-import { Toaster } from "sonner";
-import { DataProvider } from "@/hooks/useData";
-import { CheckoutProvider } from "@/hooks/useCheckout";
-import { FilterProvider } from "@/hooks/useFilter";
+import Providers from "@/components/providers/providers";
 
 const roboto = Roboto({
   weight: ["400", "500", "700"],
@@ -26,17 +22,7 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body className={` ${roboto.className} ${roboto.variable} antialiased`}>
-        <AuthProvider>
-          <FilterProvider>
-            <CheckoutProvider>
-              <DataProvider>
-                {children}
-                <Toaster richColors />
-              </DataProvider>
-            </CheckoutProvider>
-          </FilterProvider>
-        </AuthProvider>
-        <div id="modal-root" />
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
