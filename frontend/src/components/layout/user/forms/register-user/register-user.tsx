@@ -22,9 +22,12 @@ import { PhoneFormUser } from "./phone-form-user";
 import { emptyPhone } from "@/components/validation/phone-schema-form";
 import { emptyCreditCard } from "@/components/validation/credit-card-schema-form";
 import { CreditCardFormUser } from "./credit-card-form-user";
+import { useData } from "@/hooks/useData";
+import { IUser } from "@/@types/IUser";
 
 export function RegisterUser() {
   const router = useRouter();
+  const { setUsers, users } = useData();
   const {
     register,
     formState: { errors },
@@ -43,7 +46,15 @@ export function RegisterUser() {
   };
 
   const onSubmit: SubmitHandler<IClientSchemaForm> = (data) => {
+    const updatedData: Partial<IUser> = {
+      ...data,
+      id: Math.ceil(Math.random() * 100),
+    };
+
+    setUsers((prevUsers) => [...prevUsers, updatedData]);
+
     console.log(data);
+    console.log("user", users);
 
     router.push("/");
 

@@ -1,10 +1,15 @@
-import { Users } from '@/components/layout/admin/users/users';
-import type { Metadata } from 'next';
+import { getListUsers } from "@/actions/getListUsers";
+import { Users } from "@/components/layout/admin/users/users";
+import { getListClient } from "@/services/list-client";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Usuários',
+  title: "Usuários",
 };
 
-export default function UsersPage() {
+export default async function UsersPage() {
+  const usersList = await getListUsers();
+
+  // return <Users usersList={usersList} />;
   return <Users />;
 }

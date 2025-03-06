@@ -25,6 +25,7 @@ import { addressEmpty } from "@/components/validation/address-schema-form";
 import { CreditCardFormUser } from "../register-user/credit-card-form-user";
 import { emptyCreditCard } from "@/components/validation/credit-card-schema-form";
 import { ButtonsActions } from "./buttons-actions";
+import { formatPhone } from "@/utils/mask/format-phone";
 
 export type SectionType =
   | "addresses"
@@ -64,11 +65,9 @@ export function EditUser() {
       setValue("status", client.status);
       // setValue("dateOfBirth", client.dateOfBirth);
       setValue("dateOfBirth", "1990-01-01");
+
       // setValue("password", client.password);
       // setValue("confirmPassword", client.confirmPassword);
-
-      // setValue(`phones.0.numberPhone`, formatPhone(client.phone));
-      // setValue(`phones.0.typePhone`, client.typePhone);
 
       // setValue(`addresses.0.street`, client.address[0].street);
       // setValue("number", client.address.number);
