@@ -8,7 +8,7 @@ class UpdateAddressDb {
     addressData: Partial<IAddress>
   ) {
     return await prismaClient.address.update({
-      where: { id: user_id },
+      where: { id: address_id },
       data: {
         zipCode: addressData.zipCode,
         typeResidence: addressData.typeResidence,
@@ -25,6 +25,7 @@ class UpdateAddressDb {
         charge: addressData.charge,
         identifier: addressData.identifier,
         identifierDelivery: addressData.identifierDelivery,
+        userId: user_id,
       },
     });
   }

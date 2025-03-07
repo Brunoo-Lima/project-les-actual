@@ -15,6 +15,8 @@ class DetailClientDb {
         dateOfBirth: true,
         email: true,
         password: true,
+        status: true,
+        inactiveReason: true,
         phones: true,
         creditCards: true,
         addresses: true,

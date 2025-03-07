@@ -1,23 +1,23 @@
-import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
+import { ErrorRequestHandler, Request, Response, NextFunction } from 'express';
 
-const errorHandler: ErrorRequestHandler = (
+function errorHandler(
   err: Error,
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+) {
   if (err instanceof Error) {
-    res.status(400).json({
-      // Todo erro externo a aplicação cai nesse if
+    // Erros conhecidos (ex: erros de validação)
+    return res.status(400).json({
       error: err.message,
     });
   }
 
-  res.status(500).json({
-    // Erros internos retonam 500
+  // Erros desconhecidos (ex: erros internos do servidor)
+  return res.status(500).json({
     status: 'error',
     message: 'Internal Server Error',
   });
-};
+}
 
 export default errorHandler;

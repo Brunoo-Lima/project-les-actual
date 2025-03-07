@@ -11,6 +11,6 @@ app.use(cors());
 
 app.use(routes);
 
-app.use(errorHandler);
+app.use(errorHandler as any);
 
 export default app;
