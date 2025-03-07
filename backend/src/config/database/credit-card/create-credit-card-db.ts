@@ -5,18 +5,15 @@ import { prismaClient } from '../../prisma-client/prisma-client';
 
 class CreateCreditCardDb {
   async createCreditCard(user_id: string, creditCardData: ICreditCard) {
-    return await prismaClient.user.update({
-      where: { id: user_id },
+    return await prismaClient.creditCard.create({
       data: {
-        creditCards: {
-          createMany: {
-            data: creditCardData,
-          },
-        },
-      },
-      select: {
-        id: true,
-        addresses: true,
+        number: creditCardData.number,
+        dateExpired: new Date(creditCardData.dateExpired),
+        cvv: creditCardData.cvv,
+        namePrinted: creditCardData.namePrinted,
+        flag: creditCardData.flag,
+        preferential: creditCardData.preferential,
+        userId: user_id,
       },
     });
   }

@@ -35,21 +35,6 @@ class AddressValidationService {
       }
     }
   }
-
-  async updateExistingAddresses(user_id: string, addresses: IAddress[]) {
-    for (const addr of addresses) {
-      await prismaClient.address.updateMany({
-        where: {
-          userId: user_id,
-          id: addr.id,
-        },
-        data: {
-          charge: addr.charge,
-          delivery: addr.delivery,
-        },
-      });
-    }
-  }
 }
 
 export { AddressValidationService };
