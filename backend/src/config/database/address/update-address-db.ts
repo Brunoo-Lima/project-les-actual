@@ -7,15 +7,24 @@ class UpdateAddressDb {
     address_id: string,
     addressData: Partial<IAddress>
   ) {
-    return await prismaClient.user.update({
+    return await prismaClient.address.update({
       where: { id: user_id },
       data: {
-        addresses: {
-          updateMany: {
-            where: { id: address_id },
-            data: addressData,
-          },
-        },
+        zipCode: addressData.zipCode,
+        typeResidence: addressData.typeResidence,
+        neighborhood: addressData.neighborhood,
+        number: addressData.number,
+        typePublicPlace: addressData.typePublicPlace,
+        publicPlace: addressData.publicPlace,
+        street: addressData.street,
+        city: addressData.city,
+        state: addressData.state,
+        country: addressData.country,
+        observation: addressData.observation,
+        delivery: addressData.delivery,
+        charge: addressData.charge,
+        identifier: addressData.identifier,
+        identifierDelivery: addressData.identifierDelivery,
       },
     });
   }

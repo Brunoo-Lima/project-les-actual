@@ -43,5 +43,5 @@ export interface IAddress {
   delivery: boolean;
   charge: boolean;
   identifier: string;
-  identifierDelivery: string;
+  identifierDelivery?: string;
 }

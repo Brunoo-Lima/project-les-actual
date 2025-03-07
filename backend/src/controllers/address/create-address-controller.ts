@@ -5,16 +5,16 @@ import { CreateAddressService } from '../../services/address/create-address-serv
 class CreateAddressController {
   async handle(req: Request, res: Response) {
     const user_id = req.query.user_id as string;
-    const addressData: { addresses: IAddress[] } = req.body;
+    const addressData: IAddress = req.body;
 
     const createAddressService = new CreateAddressService();
 
-    const createAddress = await createAddressService.execute(
+    const address = await createAddressService.execute(
       user_id as string,
       addressData
     );
 
-    return res.status(201).json({ user: createAddress });
+    return res.status(201).json(address);
   }
 }
 

@@ -1,24 +1,26 @@
 import { IAddress } from '../../../types/IUser';
 import { prismaClient } from '../../prisma-client/prisma-client';
 
-//Criar endereço
-
-//melhorar pois nao ta correto ainda, objeto ta estranho
-
 class CreateAddressDb {
-  async createAddress(user_id: string, addressData: { addresses: IAddress[] }) {
-    return await prismaClient.user.update({
-      where: { id: user_id },
+  async createAddress(user_id: string, address: IAddress) {
+    return await prismaClient.address.create({
       data: {
-        addresses: {
-          createMany: {
-            data: addressData.addresses,
-          },
-        },
-      },
-      select: {
-        id: true,
-        addresses: true,
+        zipCode: address.zipCode,
+        typeResidence: address.typeResidence,
+        neighborhood: address.neighborhood,
+        number: address.number,
+        typePublicPlace: address.typePublicPlace,
+        publicPlace: address.publicPlace,
+        street: address.street,
+        city: address.city,
+        state: address.state,
+        country: address.country,
+        observation: address.observation,
+        delivery: address.delivery,
+        charge: address.charge,
+        identifier: address.identifier,
+        identifierDelivery: address.identifierDelivery,
+        userId: user_id,
       },
     });
   }

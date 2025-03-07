@@ -14,122 +14,120 @@ datasource db {
 }
 
 model User {
-  id String @id @default(uuid())
-  name String
-  cpf String @unique
+  id          String   @id @default(uuid())
+  name        String
+  cpf         String   @unique
   dateOfBirth DateTime
-  gender String
-  email String @unique
-  password String
+  gender      String
+  email       String   @unique
+  password    String
 
-  status Boolean @default(true)
+  status         Boolean @default(true)
   inactiveReason String?
 
   created_at DateTime? @default(now())
   updated_at DateTime? @updatedAt
 
-  phones Phone[]
-  addresses Address[]
+  phones      Phone[]
+  addresses   Address[]
   creditCards CreditCard[]
 
-  order Order[]
+  order          Order[]
   exchangeCoupon ExchangeCoupon[]
 
   cart Cart?
 
   @@map("users")
-
 }
 
 model Phone {
-  id String @id @default(uuid())
-  number String 
-  type String
-  
+  id     String @id @default(uuid())
+  number String
+  type   String
+
   userId String
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("phones")
 }
 
 model Address {
-  id String @id @default(uuid())
-  zipCode String
-  number String
-  street String
-  typePublicPlace String
-  publicPlace String?
-  typeResidence String
-  neighborhood String
-  city String
-  state String
-  country String
-  delivery Boolean
-  charge Boolean
-  identifierDelivery String
-  identifier String?
-  observation String?
+  id                 String  @id @default(uuid())
+  zipCode            String
+  number             String
+  street             String
+  typePublicPlace    String
+  publicPlace        String?
+  typeResidence      String
+  neighborhood       String
+  city               String
+  state              String
+  country            String
+  delivery           Boolean
+  charge             Boolean
+  identifierDelivery String?
+  identifier         String
+  observation        String?
 
   created_at DateTime? @default(now())
   updated_at DateTime? @updatedAt
 
   userId String
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-   orders Order[]
+  orders Order[]
 
   @@map("addresses")
-
 }
 
 model CreditCard {
-  id String @id @default(uuid())
-  flag String
-  number String
-  namePrinted String
-  cvv String
-  dateExpired DateTime
+  id           String   @id @default(uuid())
+  flag         String
+  number       String
+  namePrinted  String
+  cvv          String
+  dateExpired  DateTime
   preferential Boolean
 
   created_at DateTime? @default(now())
   updated_at DateTime? @updatedAt
 
   userId String
-  user User @relation(fields: [userId],references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   orders OrderPayment[]
-  @@map("creditCards")
 
+  @@map("creditCards")
 }
 
 model Product {
-  id String @id @default(uuid())
-  name String @unique
+  id          String  @id @default(uuid())
+  name        String  @unique
   description String?
-  image String
-  price Decimal
+  image       String
+  price       Decimal
 
-  brand String
+  brand    String
   universe String
   material String
 
   weight Decimal
   height Decimal
-  width Decimal 
-  depth Decimal 
+  width  Decimal
+  depth  Decimal
 
-  isAvailable Boolean @default(true)
+  isAvailable    Boolean @default(true)
   inactiveReason String?
 
   created_at DateTime? @default(now())
   updated_at DateTime? @updatedAt
 
-  stock Stock? @relation(fields: [stockId], references: [id], onDelete: Cascade)
+  stock    Stock?  @relation(fields: [stockId], references: [id], onDelete: Cascade)
   stockId  String? @unique
   category String
 
-  orderItems OrderItem[]
-  pricingGroup PricingGroup? @relation(fields: [pricingGroupId], references: [id])
+  orderItems     OrderItem[]
+  pricingGroup   PricingGroup? @relation(fields: [pricingGroupId], references: [id])
   pricingGroupId String?
 
   cartItem CartItem[]
@@ -138,10 +136,10 @@ model Product {
 }
 
 model PricingGroup {
-  id String @id @default(uuid())
-  name String @unique
-  description String? 
-  discount Decimal?
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  discount    Decimal?
 
   created_at DateTime? @default(now())
 
@@ -164,9 +162,9 @@ model Stock {
 }
 
 model Cart {
-  id String @id @default(uuid())
+  id     String @id @default(uuid())
   userId String @unique
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   items CartItem[]
 
@@ -177,17 +175,17 @@ model Cart {
 }
 
 model CartItem {
-  id String @id @default(uuid())
+  id     String @id @default(uuid())
   cartId String
-  cart Cart @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  cart   Cart   @relation(fields: [cartId], references: [id], onDelete: Cascade)
 
   productId String
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   quantity Int @default(1)
 
-  added_at DateTime @default(now()) 
-  expires_at DateTime? 
+  added_at   DateTime  @default(now())
+  expires_at DateTime?
 
   isExpired Boolean @default(false)
 
@@ -195,36 +193,35 @@ model CartItem {
 }
 
 model OrderItem {
-  id String @id @default(uuid())
-  quantity Int
-  price Decimal
+  id        String  @id @default(uuid())
+  quantity  Int
+  price     Decimal
   productId String
-  orderId String
-
+  orderId   String
 
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  order Order @relation(fields: [orderId],references: [id], onDelete: Cascade)
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@map("order_items")
 }
 
 model Order {
-  id String @id @default(uuid())
-  userId String
-  total Decimal
-  status String
-  freight Decimal
-  coupon String?
+  id            String   @id @default(uuid())
+  userId        String
+  total         Decimal
+  status        String
+  freight       Decimal
+  coupon        String?
   discountValue Decimal?
 
   created_at DateTime? @default(now())
   updated_at DateTime? @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items OrderItem[]
-  address Address? @relation(fields: [addressId], references: [id], onDelete: SetNull)
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     OrderItem[]
+  address   Address?       @relation(fields: [addressId], references: [id], onDelete: SetNull)
   addressId String?
-  payments OrderPayment[]
+  payments  OrderPayment[]
 
   exchangeCoupon ExchangeCoupon[]
 
@@ -232,35 +229,31 @@ model Order {
 }
 
 model OrderPayment {
-  id String @id @default(uuid())
-  orderId String
-  creditCardId  String
-  amount Decimal
+  id           String  @id @default(uuid())
+  orderId      String
+  creditCardId String
+  amount       Decimal
 
-  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  order   Order      @relation(fields: [orderId], references: [id], onDelete: Cascade)
   payment CreditCard @relation(fields: [creditCardId], references: [id], onDelete: Cascade)
 
   @@map("order_payments")
 }
 
-
-
-
 model ExchangeCoupon {
-  id String @id @default(uuid())
-  code String @unique
-  value Decimal
-  status String @default("active")
+  id         String   @id @default(uuid())
+  code       String   @unique
+  value      Decimal
+  status     String   @default("active")
   expiration DateTime
 
   created_at DateTime? @default(now())
 
   userId String
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   orderId String
-  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@map("exchange_coupons")
-
 }
