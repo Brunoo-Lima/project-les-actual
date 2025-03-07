@@ -13,9 +13,6 @@ class UpdateClientController {
       cpf,
       dateOfBirth,
       gender,
-      addresses,
-      phones,
-      creditCards,
     }: Partial<IUser> = req.body;
 
     const updateClientService = new UpdateClientService();
@@ -28,9 +25,6 @@ class UpdateClientController {
       cpf,
       dateOfBirth,
       gender,
-      addresses,
-      phones,
-      creditCards,
     });
 
     return res.status(201).json(updateClient);

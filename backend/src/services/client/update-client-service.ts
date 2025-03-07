@@ -34,18 +34,6 @@ class UpdateClientService {
       await this.validationService.validateCPF(data.cpf, user_id);
     }
 
-    if (data.addresses) {
-      this.validationService.validateAddress(data.addresses);
-    }
-
-    if (data.phones) {
-      this.validationService.validatePhones(data.phones);
-    }
-
-    if (data.creditCards) {
-      this.validationService.validateCreditCards(data.creditCards);
-    }
-
     if (data.password) {
       this.validationService.validatePassword(data.password as string);
     }
