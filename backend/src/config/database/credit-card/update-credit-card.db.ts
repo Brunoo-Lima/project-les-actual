@@ -7,15 +7,18 @@ class UpdateCreditCardDb {
     creditCard_id: string,
     creditCardData: Partial<ICreditCard>
   ) {
-    return await prismaClient.user.update({
-      where: { id: user_id },
+    return await prismaClient.creditCard.update({
+      where: { id: creditCard_id },
       data: {
-        creditCards: {
-          updateMany: {
-            where: { id: creditCard_id },
-            data: creditCardData,
-          },
-        },
+        number: creditCardData.number,
+        dateExpired: creditCardData.dateExpired
+          ? new Date(creditCardData.dateExpired)
+          : undefined,
+        cvv: creditCardData.cvv,
+        namePrinted: creditCardData.namePrinted,
+        flag: creditCardData.flag,
+        preferential: creditCardData.preferential,
+        userId: user_id,
       },
     });
   }
