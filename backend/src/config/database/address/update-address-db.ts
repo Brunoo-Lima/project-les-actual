@@ -10,7 +10,7 @@ class UpdateAddressDb {
     return await prismaClient.address.update({
       where: { id: address_id },
       data: {
-        zipCode: addressData.zipCode,
+        zipCode: addressData.zipCode || undefined,
         typeResidence: addressData.typeResidence,
         neighborhood: addressData.neighborhood,
         number: addressData.number,

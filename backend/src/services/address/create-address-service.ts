@@ -16,7 +16,8 @@ class CreateAddressService {
       throw new Error('ID do cliente é obrigatório');
     }
 
-    await this.validationService.validateAddress(user_id, address);
+    await this.validationService.validateZipCode(address.zipCode, user_id);
+    await this.validationService.validateAddress(user_id, address, address.id);
 
     try {
       const createAddress = await this.createAddressDb.createAddress(

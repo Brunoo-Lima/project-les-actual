@@ -15,6 +15,18 @@ class ClientValidationService {
     if (userAlreadyExists) throw new Error('Cliente já existe!');
   }
 
+  async validateZipCode(zipCode: string): Promise<void> {
+    const isAlreadyExistsZipCode = await prismaClient.user.findFirst({
+      where: {
+        addresses: { some: { zipCode } },
+      },
+    });
+
+    if (isAlreadyExistsZipCode) {
+      throw new Error('CEP já cadastrado');
+    }
+  }
+
   validatePassword = (password: string) => {
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;

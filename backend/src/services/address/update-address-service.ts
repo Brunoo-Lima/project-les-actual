@@ -36,9 +36,11 @@ class UpdateAddressService {
       throw new Error('Endereço não encontrado para o usuário especificado.');
     }
 
+    await this.validationService.validateZipCode(address.zipCode, user_id);
     await this.validationService.validateAddress(
       user_id,
-      addressData as IAddress
+      addressData as IAddress,
+      address_id
     );
 
     try {
