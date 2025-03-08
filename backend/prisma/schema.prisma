@@ -232,7 +232,7 @@ model OrderPayment {
   id           String  @id @default(uuid())
   orderId      String
   creditCardId String
-  amount       Decimal
+  amount       Decimal  // Valor pago com este cartão de crédito
 
   order   Order      @relation(fields: [orderId], references: [id], onDelete: Cascade)
   payment CreditCard @relation(fields: [creditCardId], references: [id], onDelete: Cascade)
