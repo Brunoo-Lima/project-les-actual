@@ -5,18 +5,11 @@ import { prismaClient } from '../../prisma-client/prisma-client';
 
 class CreatePhoneDb {
   async createPhone(user_id: string, iphoneData: IPhone) {
-    return await prismaClient.user.update({
-      where: { id: user_id },
+    return await prismaClient.phone.create({
       data: {
-        phones: {
-          createMany: {
-            data: iphoneData,
-          },
-        },
-      },
-      select: {
-        id: true,
-        phones: true,
+        number: iphoneData.number,
+        type: iphoneData.type,
+        userId: user_id,
       },
     });
   }
