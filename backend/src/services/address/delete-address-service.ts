@@ -1,16 +1,23 @@
 import { DeleteAddressDb } from '../../config/database/address/delete-address-db';
+import { AddressValidationService } from '../../validations/address/address-validation-service';
 
 class DeleteAddressService {
   private deleteAddressDb: DeleteAddressDb;
+  private validationService: AddressValidationService;
+
+  //fazer validação de endereço, no qual nao pode apagar um endereço que ta como true o delivery/charge
 
   constructor() {
     this.deleteAddressDb = new DeleteAddressDb();
+    this.validationService = new AddressValidationService();
   }
 
-  async execute(address_id: string) {
+  async execute(address_id: string, user_id: string) {
     if (!address_id) {
       throw new Error('ID do endereço não encontrado!');
     }
+
+    await this.validationService.canDeleteAddress(user_id, address_id);
 
     try {
       const address = await this.deleteAddressDb.deleteAddress(address_id);

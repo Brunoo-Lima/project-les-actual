@@ -75,6 +75,45 @@ class AddressValidationService {
       );
     }
   }
+
+  async canDeleteAddress(
+    user_id: string,
+    address_id: string
+  ): Promise<boolean> {
+    const addressToDelete = await prismaClient.address.findUnique({
+      where: { id: address_id },
+    });
+
+    // Verifica se o endereço existe
+    if (!addressToDelete) {
+      throw new Error('Endereço não encontrado.');
+    }
+
+    // Verifica se o endereço pertence ao usuário
+    if (addressToDelete.userId !== user_id) {
+      throw new Error('Endereço não pertence ao usuário.');
+    }
+
+    if (addressToDelete.delivery || addressToDelete.charge) {
+      const userAddresses = await prismaClient.address.findMany({
+        where: { userId: user_id },
+      });
+
+      // Verifica se existe outro endereço com delivery ou charge como true
+      const hasOtherAddressWithDeliveryOrCharge = userAddresses.some(
+        (addr) => (addr.delivery || addr.charge) && addr.id !== address_id
+      );
+
+      // Se não houver outro endereço com delivery ou charge como true, não permite a exclusão
+      if (!hasOtherAddressWithDeliveryOrCharge) {
+        throw new Error(
+          'Não é possível apagar este endereço, pois ele é o único com delivery ou charge como true.'
+        );
+      }
+    }
+
+    return true;
+  }
 }
 
 export { AddressValidationService };
