@@ -5,17 +5,14 @@ class UpdatePhoneDb {
   async updatePhone(
     user_id: string,
     phone_id: string,
-    iphoneData: Partial<IPhone>
+    phoneData: Partial<IPhone>
   ) {
-    return await prismaClient.user.update({
-      where: { id: user_id },
+    return await prismaClient.phone.update({
+      where: { id: phone_id },
       data: {
-        phones: {
-          updateMany: {
-            where: { id: phone_id },
-            data: iphoneData,
-          },
-        },
+        number: phoneData.number || undefined,
+        type: phoneData.type,
+        userId: user_id,
       },
     });
   }

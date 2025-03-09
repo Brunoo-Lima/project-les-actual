@@ -11,15 +11,23 @@ class CreatePhoneService {
     this.validationPhone = new PhoneValidation();
   }
 
-  async execute(user_id: string, iphoneData: IPhone) {
+  async execute(user_id: string, phoneData: IPhone) {
     if (!user_id) {
       throw new Error('ID do cliente é obrigatório');
     }
 
-    await this.validationPhone.validateNumberPhone(iphoneData.number);
+    await this.validationPhone.validateNumberPhone(phoneData.number);
+
+    const validationResult = this.validationPhone.validateNumber(
+      phoneData.number
+    );
+
+    if (!validationResult.isValid) {
+      throw new Error('Número de telefone inválido.');
+    }
 
     try {
-      const phone = await this.createPhoneDb.createPhone(user_id, iphoneData);
+      const phone = await this.createPhoneDb.createPhone(user_id, phoneData);
 
       return { phone };
     } catch (error) {

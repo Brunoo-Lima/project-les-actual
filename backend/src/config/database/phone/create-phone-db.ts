@@ -4,11 +4,11 @@ import { prismaClient } from '../../prisma-client/prisma-client';
 //cria telefone
 
 class CreatePhoneDb {
-  async createPhone(user_id: string, iphoneData: IPhone) {
+  async createPhone(user_id: string, phoneData: IPhone) {
     return await prismaClient.phone.create({
       data: {
-        number: iphoneData.number,
-        type: iphoneData.type,
+        number: phoneData.number,
+        type: phoneData.type,
         userId: user_id,
       },
     });
