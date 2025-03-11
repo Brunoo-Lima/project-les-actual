@@ -51,7 +51,8 @@ export const ProductSchemaForm = yup.object().shape({
 export type IStatusSchemaForm = yup.InferType<typeof StatusSchemaForm>;
 
 export const StatusSchemaForm = yup.object().shape({
-  status: yup.string().required("O status é obrigatório"),
+  status: yup.boolean().required("O status é obrigatório"),
+  inactiveReason: yup.string().required("A justificativa é obrigatória"),
 });
 
 // export type ICouponSchemaForm = yup.InferType<typeof CouponSchemaForm>;

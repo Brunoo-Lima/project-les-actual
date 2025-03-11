@@ -10,6 +10,9 @@ import { toast } from "sonner";
 import { SelectComponent } from "@/components/ui/select/select";
 import { IUser } from "@/@types/IUser";
 import { selectStatus } from "@/mocks/select/select";
+import { Textarea } from "@/components/ui/textarea/textarea";
+import { updateStatusClient } from "@/services/client";
+import { revalidateTag } from "next/cache";
 
 interface IModalStatusUserProps {
   onClose: () => void;
@@ -17,25 +20,33 @@ interface IModalStatusUserProps {
 }
 
 export function ModalStatusUser({ onClose, user }: IModalStatusUserProps) {
-  const { control, handleSubmit } = useForm<IStatusSchemaForm>({
+  const {
+    control,
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<IStatusSchemaForm>({
     resolver: yupResolver(StatusSchemaForm),
   });
-  const handleSaveStatus: SubmitHandler<IStatusSchemaForm> = (data: {
-    status: string;
-  }) => {
-    const updatedData = {
-      status: data.status,
-    };
+  const handleSaveStatus: SubmitHandler<IStatusSchemaForm> = async (
+    data: IStatusSchemaForm
+  ) => {
+    try {
+      await updateStatusClient(user?.id as string, data);
 
-    console.log("data", updatedData);
-    toast.success("Status atualizado com sucesso!");
-    onClose();
+      // revalidateTag("statusClient");
+
+      toast.success("Status atualizado com sucesso!");
+      onClose();
+    } catch (error) {
+      toast.error("Erro ao atualizar status!");
+    }
   };
 
   if (!user) return;
 
   return (
-    <Modal.Root className="flex flex-col gap-y-4 w-[400px] h-[250px] p-4 rounded-lg overflow-auto container-modal">
+    <Modal.Root className="flex flex-col gap-y-4 w-[400px] h-[350px] p-4 rounded-lg overflow-auto container-modal">
       <Modal.Header title="Status do usuário" onClick={onClose} />
 
       <Modal.Content>
@@ -51,13 +62,19 @@ export function ModalStatusUser({ onClose, user }: IModalStatusUserProps) {
                 label="Status"
                 placeholder="Selecione o status"
                 options={selectStatus}
-                onChange={field.onChange}
+                onChange={(value) => field.onChange(value === "Ativo")}
                 onBlur={field.onBlur}
                 name={field.name}
                 ref={field.ref}
                 error={fieldState.error}
               />
             )}
+          />
+
+          <Textarea
+            label="Justificativa"
+            {...register("inactiveReason")}
+            error={errors.inactiveReason}
           />
 
           <ButtonGeneral type="submit" text="Salvar" className="mt-4" />

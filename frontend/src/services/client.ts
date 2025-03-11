@@ -1,4 +1,5 @@
 import { IUser } from "@/@types/IUser";
+import { revalidatePath } from "next/cache";
 
 export const createClient = async (user: IUser) => {
   try {
@@ -68,3 +69,33 @@ export const detailClient = async (id: string) => {
   }
 };
 
+export const updateStatusClient = async (
+  id: string,
+  user: Pick<IUser, "status" | "inactiveReason">
+) => {
+  try {
+    const response = await fetch(
+      `http://localhost:3333/statusClient?user_id=${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+        // next: {
+        //   tags: ["statusClient"],
+        // },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Algo deu errado na requisição: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Erro ao atualizar status do cliente!", error);
+    throw new Error("Erro ao atualizar status do cliente");
+  }
+};
