@@ -12,6 +12,7 @@ import { useFilter } from "@/hooks/useFilter";
 import { toast } from "sonner";
 import dayjs from "dayjs";
 import { getListClient } from "@/services/list-client";
+import { deleteClient } from "@/services/client";
 
 export function Users() {
   const {
@@ -84,8 +85,13 @@ export function Users() {
     setUsers(users);
   };
 
-  const handleDeleteUser = (id: string) => {
-    setUsers((prev) => prev.filter((user) => user.id !== id));
+  const handleDeleteUser = async (id: string) => {
+    try {
+      await deleteClient(id);
+      setUsers((prev) => prev.filter((user) => user.id !== id));
+    } catch (error) {
+      toast.error("Erro ao deletar");
+    }
   };
 
   if (!users.length) return;
