@@ -1,5 +1,6 @@
 "use client";
 
+import { fetchLogin } from "@/services/login";
 import { useRouter } from "next/navigation";
 import {
   createContext,
@@ -10,7 +11,7 @@ import {
 } from "react";
 import { toast } from "sonner";
 
-export type TypeUser = "ADMIN" | "USER";
+export type TypeUser = "ADMIN" | "CLIENT";
 
 interface IAuthContextProps {
   handleChangeUser: () => void;
@@ -20,7 +21,7 @@ interface IAuthContextProps {
   login: (
     email: string,
     password: string,
-    option: "ADMIN" | "USER"
+    option: "ADMIN" | "CLIENT"
   ) => Promise<void>;
   // isAuthenticated: boolean;
 }
@@ -33,10 +34,10 @@ export const AuthContext = createContext({} as IAuthContextProps);
 
 export const AuthProvider = ({ children }: IChildrenProps) => {
   const router = useRouter();
-  const [user, setUser] = useState<TypeUser>("USER");
+  const [user, setUser] = useState<TypeUser>("CLIENT");
 
   const logout = useCallback(() => {
-    setUser("USER");
+    setUser("CLIENT");
     localStorage.removeItem("@token:access");
     localStorage.removeItem("@user:data");
     router.push("/");
@@ -45,10 +46,12 @@ export const AuthProvider = ({ children }: IChildrenProps) => {
   const login = async (
     email: string,
     password: string,
-    option: "ADMIN" | "USER"
+    option: "ADMIN" | "CLIENT"
   ) => {
     try {
-      if (!email || !password) {
+      const user = await fetchLogin(email, password, option);
+
+      if (!user) {
         toast.error("Email ou senha incorretos!");
         return;
       }
@@ -57,15 +60,16 @@ export const AuthProvider = ({ children }: IChildrenProps) => {
         toast.success("Logado com sucesso!");
       }
 
-      const userData = { email, password, role: option };
-      localStorage.setItem("@user:data", JSON.stringify(userData));
+      localStorage.setItem("@user:data", JSON.stringify(user));
 
       if (option === "ADMIN") {
         setUser("ADMIN");
+        router.push("/vendas");
         localStorage.setItem("@token:access", "ADMIN");
       } else {
-        setUser("USER");
-        localStorage.setItem("@token:access", "USER");
+        setUser("CLIENT");
+        router.push("/produtos");
+        localStorage.setItem("@token:access", "CLIENT");
       }
     } catch (error) {
       toast.error("Algo deu errado");
@@ -74,7 +78,7 @@ export const AuthProvider = ({ children }: IChildrenProps) => {
 
   const handleChangeUser = () => {
     if (user === "ADMIN") {
-      setUser("USER");
+      setUser("CLIENT");
       router.replace("/produtos");
     } else {
       setUser("ADMIN");

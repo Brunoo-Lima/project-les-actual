@@ -31,7 +31,7 @@ export function AdminLogin() {
     try {
       await login(email, password, "ADMIN");
 
-      router.push("/vendas");
+      // router.push("/vendas");
     } catch (error) {
       toast.error("Email ou senha incorretos!");
     }

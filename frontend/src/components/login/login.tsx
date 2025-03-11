@@ -6,13 +6,13 @@ import { UserLogin } from "./user-login/user-login";
 import { ButtonOptionLogin } from "../ui/button/button-option-login";
 
 export function Login() {
-  const [option, setOption] = useState<"ADMIN" | "USER">("USER");
+  const [option, setOption] = useState<"ADMIN" | "CLIENT">("CLIENT");
 
   useEffect(() => {
-    setOption("USER");
+    setOption("CLIENT");
   }, []);
 
-  const handleChangeOption = (option: "ADMIN" | "USER") => {
+  const handleChangeOption = (option: "ADMIN" | "CLIENT") => {
     setOption(option);
   };
 
@@ -24,10 +24,10 @@ export function Login() {
         <div className="flex mb-6">
           <ButtonOptionLogin
             type="button"
-            onClick={() => handleChangeOption("USER")}
+            onClick={() => handleChangeOption("CLIENT")}
             text="Cliente"
             className={` ${
-              option === "USER" &&
+              option === "CLIENT" &&
               "bg-primary text-background rounded-tl-md font-bold"
             }`}
           />

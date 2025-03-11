@@ -34,6 +34,9 @@ export function ModalStatusUser({ onClose, user }: IModalStatusUserProps) {
     try {
       await updateStatusClient(user?.id as string, data);
 
+      //mudar dps
+      await fetch("/api/status/revalidate", { method: "POST" });
+
       // revalidateTag("statusClient");
 
       toast.success("Status atualizado com sucesso!");

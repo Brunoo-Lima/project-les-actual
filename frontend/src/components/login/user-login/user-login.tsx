@@ -43,9 +43,9 @@ export function UserLogin() {
     password,
   }: ILoginSchemaUser) => {
     try {
-      await login(email, password, "USER");
+      await login(email, password, "CLIENT");
 
-      router.push("/produtos");
+      // router.push("/produtos");
     } catch (error) {
       toast.error("Email ou senha incorretos!");
     }

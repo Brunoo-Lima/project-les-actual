@@ -13,7 +13,6 @@ import {
   mockClient,
 } from "@/components/validation/client-schema-form";
 
-import { usersList } from "@/mocks/users-list";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
@@ -27,6 +26,7 @@ import { emptyCreditCard } from "@/components/validation/credit-card-schema-form
 import { ButtonsActions } from "./buttons-actions";
 import { formatPhone } from "@/utils/mask/format-phone";
 import { useData } from "@/hooks/useData";
+import { detailClient } from "@/services/client";
 
 export type SectionType =
   | "addresses"
@@ -37,7 +37,7 @@ export type SectionType =
 
 export function EditUser() {
   const router = useRouter();
-  const { setUsers, users } = useData();
+  const { setUsers } = useData();
   const {
     register,
     formState: { errors },
@@ -57,35 +57,9 @@ export function EditUser() {
   };
 
   useEffect(() => {
-    const client = usersList.filter((user) => user.id === 1)[0];
-
-    if (client) {
-      setValue("name", client.name);
-      setValue("cpf", client.cpf);
-      setValue("email", client.email);
-      setValue("gender", client.gender);
-      setValue("status", client.status);
-      // setValue("dateOfBirth", client.dateOfBirth);
-      setValue("dateOfBirth", "1990-01-01");
-
-      // setValue("password", client.password);
-      // setValue("confirmPassword", client.confirmPassword);
-
-      // setValue(`addresses.0.street`, client.address[0].street);
-      // setValue("number", client.address.number);
-      // setValue("neighborhood", client.address.neighborhood);
-      // setValue("city", client.address.city);
-      // setValue("state", client.address.state);
-      // setValue("country", client.address.country);
-      // setValue("zipCode", client.address.zipCode);
-      // setValue("typeResidence", client.address.typeResidence);
-      // setValue("typePublicPlace", client.address.typePublicPlace);
-      // setValue("namePrinted", client.creditCard.namePrinted);
-      // setValue("cvv", client.creditCard.cvv);
-      // setValue("expirationDate", client.creditCard.expirationDate);
-      // setValue("numberCard", client.creditCard.number);
-      // setValue("flag", client.creditCard.flag);
-    }
+    // const fetchClient = async () => {
+    //   const client = await detailClient()
+    // }
   }, [reset, setValue]);
 
   const startEditingSection = (section: typeof editSection) => {
