@@ -27,6 +27,7 @@ export interface IUser {
 }
 
 export interface IPhone {
+  id: string;
   type: string;
   number: string;
 }

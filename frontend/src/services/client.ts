@@ -46,3 +46,25 @@ export const deleteClient = async (id: string) => {
   }
 };
 
+export const detailClient = async (id: string) => {
+  try {
+    const response = await fetch(`http://localhost:3333/client?user_id=${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Algo deu errado na requisição: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error("Erro ao trazer dados do cliente!");
+    throw new Error("Erro ao trazer dados do  cliente");
+  }
+};
+

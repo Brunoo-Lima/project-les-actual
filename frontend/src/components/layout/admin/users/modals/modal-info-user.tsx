@@ -4,12 +4,10 @@ import { ButtonCancel } from "@/components/ui/button/button-cancel/button-cancel
 
 interface IModalInfoUserProps {
   onClose: () => void;
-  user: IUser | null;
+  user: IUser;
 }
 
 export function ModalInfoUser({ onClose, user }: IModalInfoUserProps) {
-  if (!user) return;
-
   return (
     <Modal.Root className="flex flex-col gap-y-4 w-[600px] h-[500px] p-4 rounded-lg ">
       <Modal.Header title="Informações do usuário" onClick={onClose} />
@@ -23,17 +21,17 @@ export function ModalInfoUser({ onClose, user }: IModalInfoUserProps) {
             <p>CPF: {user.cpf}</p>
             <p>Data de nascimento: {user.dateOfBirth}</p>
             <p>Gênero: {user.gender}</p>
-            <p>Status: {user.status}</p>
+            <p>Status: {user.status ? "Ativo" : "Inativo"}</p>
             <p>Telefones: </p>
             <div className="flex flex-col gap-4">
-              {user.phones.map((phone, index) => (
+              {user.phones?.map((phone, index) => (
                 <div
-                  key={phone.id}
+                  key={index}
                   className="flex flex-col gap-4 border border-gray-500 rounded-md p-4"
                 >
                   <h4>Telefone {index + 1}:</h4>
                   <p className="text-textColor-dark text-base font-normal ">
-                    {phone.typePhone} - {phone.numberPhone}
+                    {phone.type} - {phone.number}
                   </p>
                 </div>
               ))}
@@ -42,7 +40,7 @@ export function ModalInfoUser({ onClose, user }: IModalInfoUserProps) {
 
           <div className="flex flex-col gap-4 ">
             <h2 className="text-lg text-white">Endereço</h2>
-            {user.addresses.map((address, index) => (
+            {user.addresses?.map((address, index) => (
               <div
                 key={address.id}
                 className="flex flex-col gap-4 border border-gray-500 rounded-md p-4"
@@ -72,7 +70,7 @@ export function ModalInfoUser({ onClose, user }: IModalInfoUserProps) {
 
           <div className="flex flex-col gap-4 ">
             <h2 className="text-lg text-white">Cartões</h2>
-            {user.creditCards.map((creditCard, index) => (
+            {user.creditCards?.map((creditCard, index) => (
               <div
                 key={creditCard.id}
                 className="flex flex-col gap-4 border border-gray-500 rounded-md p-4"

@@ -4,6 +4,7 @@ import { TableRow } from "./table-row";
 import { toast } from "sonner";
 import { ModalStatusUser } from "../modals/modal-status-user";
 import { ModalInfoUser } from "../modals/modal-info-user";
+import { detailClient } from "@/services/client";
 
 interface ITableUserProps {
   data: IUser[];
@@ -25,9 +26,15 @@ export function TableUser({ data, onDeleteUser }: ITableUserProps) {
     toast.success("Usuário deletado com sucesso!");
   };
 
-  const handleOpenModalInfoUser = (user: IUser) => {
-    setSelectedUser(user);
+  const handleOpenModalInfoUser = async (user: IUser) => {
     setModalType("info");
+    setSelectedUser(user);
+
+    try {
+      await detailClient(user.id);
+    } catch (error) {
+      toast.error("Erro ao buscar dados do cliente");
+    }
   };
 
   const handleEditStatusUser = (
