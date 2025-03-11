@@ -26,12 +26,16 @@ export function TableUser({ data, onDeleteUser }: ITableUserProps) {
     toast.success("Usuário deletado com sucesso!");
   };
 
-  const handleOpenModalInfoUser = async (user: IUser) => {
+  const handleOpenModalInfoUser = async (
+    user: IUser,
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.stopPropagation();
     setModalType("info");
-    setSelectedUser(user);
-
     try {
-      await detailClient(user.id);
+      const data = await detailClient(user.id);
+
+      setSelectedUser(data);
     } catch (error) {
       toast.error("Erro ao buscar dados do cliente");
     }

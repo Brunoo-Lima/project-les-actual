@@ -4,10 +4,12 @@ import { ButtonCancel } from "@/components/ui/button/button-cancel/button-cancel
 
 interface IModalInfoUserProps {
   onClose: () => void;
-  user: IUser;
+  user: IUser | null;
 }
 
 export function ModalInfoUser({ onClose, user }: IModalInfoUserProps) {
+  if (!user) return;
+
   return (
     <Modal.Root className="flex flex-col gap-y-4 w-[600px] h-[500px] p-4 rounded-lg ">
       <Modal.Header title="Informações do usuário" onClick={onClose} />

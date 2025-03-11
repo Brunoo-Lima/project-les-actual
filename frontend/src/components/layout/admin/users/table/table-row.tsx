@@ -3,7 +3,10 @@ import { EyeIcon, PencilIcon, Trash2Icon } from "lucide-react";
 
 interface ITableRowProps {
   user: IUser;
-  onOpenDetailsUser: (user: IUser) => void;
+  onOpenDetailsUser: (
+    user: IUser,
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => void;
   onDeleteUser: (
     user: IUser,
     event: React.MouseEvent<HTMLButtonElement>
@@ -21,10 +24,7 @@ export function TableRow({
   onEditStatusUser,
 }: ITableRowProps) {
   return (
-    <tr
-      className="rounded-lg bg-background-dark h-14 text-left hover:brightness-110 cursor-pointer"
-      onClick={() => onOpenDetailsUser(user)}
-    >
+    <tr className="rounded-lg bg-background-dark h-14 text-left hover:brightness-110 cursor-pointer">
       <td className="pl-2">{user.id}</td>
       <td>{user.name}</td>
       <td>{user.email}</td>
@@ -44,7 +44,7 @@ export function TableRow({
 
       <td>
         <div className="flex items-center gap-x-4">
-          <button type="button" onClick={() => onOpenDetailsUser(user)}>
+          <button type="button" onClick={(e) => onOpenDetailsUser(user, e)}>
             <EyeIcon size={20} color="#ffffff" />
           </button>
 

@@ -4,7 +4,6 @@ import { TitlePage } from "@/components/ui/title/title-page/title-page";
 import { TableUser } from "./table/table-user";
 import { IUser } from "@/@types/IUser";
 import { useEffect, useState } from "react";
-import { usersList } from "./../../../../mocks/users-list";
 import { ButtonGeneral } from "@/components/ui/button/button-general";
 import { ModalBackground } from "@/components/modal/modal-background/modal-background";
 import { ModalFilterUser } from "./modals/modal-filter-user";
