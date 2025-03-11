@@ -3,7 +3,7 @@
 import { TitlePage } from "@/components/ui/title/title-page/title-page";
 import { TableUser } from "./table/table-user";
 import { IUser } from "@/@types/IUser";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usersList } from "./../../../../mocks/users-list";
 import { ButtonGeneral } from "@/components/ui/button/button-general";
 import { ModalBackground } from "@/components/modal/modal-background/modal-background";
@@ -11,6 +11,7 @@ import { ModalFilterUser } from "./modals/modal-filter-user";
 import { useFilter } from "@/hooks/useFilter";
 import { toast } from "sonner";
 import dayjs from "dayjs";
+import { getListClient } from "@/services/list-client";
 
 export function Users() {
   const {
@@ -21,8 +22,27 @@ export function Users() {
     selectedStatus,
     setSelectedStatus,
   } = useFilter();
-  const [users, setUsers] = useState<IUser[]>(usersList);
+  const [users, setUsers] = useState<IUser[]>([]);
+  const [loading, setLoading] = useState(false);
   const [isOpenModalFilter, setIsOpenModalFilter] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchClients = async () => {
+      setLoading(true);
+
+      try {
+        const client = await getListClient();
+
+        setUsers(client);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchClients();
+  }, []);
 
   const applyFilters = async () => {
     try {
@@ -61,12 +81,14 @@ export function Users() {
     setSearchName("");
     setSelectedDateRegister("");
     setSelectedStatus(null);
-    setUsers(usersList);
+    setUsers(users);
   };
 
   const handleDeleteUser = (id: number) => {
     setUsers((prev) => prev.filter((user) => user.id !== id));
   };
+
+  if (!users.length) return;
 
   return (
     <section className="h-screen">
@@ -80,7 +102,11 @@ export function Users() {
         />
       </article>
 
-      <TableUser data={users} onDeleteUser={handleDeleteUser} />
+      {loading ? (
+        <p>Carregando</p>
+      ) : (
+        <TableUser data={users} onDeleteUser={handleDeleteUser} />
+      )}
 
       {isOpenModalFilter && (
         <ModalBackground>

@@ -26,6 +26,7 @@ import { CreditCardFormUser } from "../register-user/credit-card-form-user";
 import { emptyCreditCard } from "@/components/validation/credit-card-schema-form";
 import { ButtonsActions } from "./buttons-actions";
 import { formatPhone } from "@/utils/mask/format-phone";
+import { useData } from "@/hooks/useData";
 
 export type SectionType =
   | "addresses"
@@ -36,6 +37,7 @@ export type SectionType =
 
 export function EditUser() {
   const router = useRouter();
+  const { setUsers, users } = useData();
   const {
     register,
     formState: { errors },
@@ -94,6 +96,8 @@ export function EditUser() {
 
   const onSubmit: SubmitHandler<IClientSchemaForm> = (data) => {
     console.log(data);
+
+    setUsers((prevUsers) => [...prevUsers, data]);
 
     router.push("/produtos");
 
