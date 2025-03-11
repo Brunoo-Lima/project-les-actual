@@ -7,7 +7,7 @@ import { ModalInfoUser } from "../modals/modal-info-user";
 
 interface ITableUserProps {
   data: IUser[];
-  onDeleteUser: (user: number) => void;
+  onDeleteUser: (id: string) => void;
 }
 
 type ModalType = "info" | "status" | null;

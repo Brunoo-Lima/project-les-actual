@@ -84,7 +84,7 @@ export function Users() {
     setUsers(users);
   };
 
-  const handleDeleteUser = (id: number) => {
+  const handleDeleteUser = (id: string) => {
     setUsers((prev) => prev.filter((user) => user.id !== id));
   };
 

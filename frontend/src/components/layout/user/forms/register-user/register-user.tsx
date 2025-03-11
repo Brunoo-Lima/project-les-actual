@@ -23,11 +23,11 @@ import { emptyPhone } from "@/components/validation/phone-schema-form";
 import { emptyCreditCard } from "@/components/validation/credit-card-schema-form";
 import { CreditCardFormUser } from "./credit-card-form-user";
 import { useData } from "@/hooks/useData";
-import { IUser } from "@/@types/IUser";
+import { createClient } from "@/services/client";
 
 export function RegisterUser() {
   const router = useRouter();
-  const { setUsers, users } = useData();
+  const { setUsers } = useData();
   const {
     register,
     formState: { errors },
@@ -45,20 +45,26 @@ export function RegisterUser() {
     creditCards: useFieldArray({ control, name: "creditCards" }),
   };
 
-  const onSubmit: SubmitHandler<IClientSchemaForm> = (data) => {
-    const updatedData: Partial<IUser> = {
-      ...data,
-      id: Math.ceil(Math.random() * 100),
-    };
+  const onSubmit: SubmitHandler<IClientSchemaForm> = async (
+    data: IClientSchemaForm
+  ) => {
+    try {
+      const formattedData: any = {
+        ...data,
+        phones: data.phones ?? [],
+      };
 
-    setUsers((prevUsers) => [...prevUsers, updatedData]);
+      const updatedData = await createClient(formattedData);
 
-    console.log(data);
-    console.log("user", users);
+      setUsers((prevUsers) => [...prevUsers, updatedData]);
 
-    router.push("/");
+      router.push("/");
 
-    toast.success("Usuário cadastrado com sucesso!");
+      toast.success("Cliente cadastrado com sucesso!");
+    } catch (error) {
+      console.log(error);
+      toast.error("Erro ao criar cliente!");
+    }
   };
 
   return (

@@ -1,10 +1,10 @@
 import { IAddress } from "./IAddress";
 import { ICart } from "./ICart";
 import { ICreditCard } from "./ICreditCard";
+import { IOrder } from "./IOrder";
 
 export interface IUser {
-  id: number;
-  // id: string;
+  id: string;
   name: string;
   email: string;
   password: string;
@@ -15,7 +15,7 @@ export interface IUser {
   phones: IPhone[];
   addresses: IAddress[];
   creditCards: ICreditCard[];
-  orders?: Order[];
+  orders?: IOrder[];
   exchangeCoupon?: string[];
   cart?: ICart;
 
@@ -27,9 +27,8 @@ export interface IUser {
 }
 
 export interface IPhone {
-  id: number;
-  typePhone: string;
-  numberPhone: string;
+  type: string;
+  number: string;
 }
 
 export interface Order {

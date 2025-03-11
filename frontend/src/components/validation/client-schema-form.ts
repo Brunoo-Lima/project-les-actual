@@ -66,8 +66,6 @@ export const mockClient = {
   dateOfBirth: "1990-01-01",
   cpf: "12345678900",
   gender: "Masculino",
-  typePhone: "Celular",
-  numberPhone: "123456789",
   email: "lTlQZ@example.com",
   password: "12345678",
   confirmPassword: "12345678",
@@ -105,8 +103,8 @@ export const mockClient = {
   phones: [
     {
       id: 1,
-      typePhone: "Celular",
-      numberPhone: "1234567890",
+      type: "Celular",
+      number: "1234567890",
     },
   ],
 };

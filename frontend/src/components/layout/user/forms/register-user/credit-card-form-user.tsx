@@ -81,6 +81,7 @@ export function CreditCardFormUser({
         />
         <Input
           label="Data de validade"
+          type="date"
           placeholder="Digite a data de validade"
           {...register(`creditCards.${index}.dateExpired`)}
           error={errors.dateExpired}

@@ -8,13 +8,15 @@ import {
   Control,
   Controller,
   FieldError,
+  FieldErrors,
   UseFormRegister,
 } from "react-hook-form";
 import { SectionType } from "../edit-user/edit-user";
+import { IPhoneSchemaForm } from "@/components/validation/phone-schema-form";
 
 interface IPhoneFormUserProps {
   register: UseFormRegister<IClientSchemaForm>;
-  errors: Partial<Record<keyof IPhone, FieldError>>;
+  errors: any;
   control: Control<IClientSchemaForm>;
   index: number;
   removePhone: () => void;
@@ -44,25 +46,25 @@ export function PhoneFormUser({
           <Radio
             label="Fixo"
             value="Fixo"
-            {...register(`phones.${index}.typePhone`)}
+            {...register(`phones.${index}.type`)}
             disabled={editSection !== section}
           />
           <Radio
             label="Celular"
             value="Celular"
-            {...register(`phones.${index}.typePhone`)}
+            {...register(`phones.${index}.type`)}
             disabled={editSection !== section}
           />
 
-          {errors.typePhone && (
+          {errors.type && (
             <small className="text-error text-sm mt-1">
-              {errors.typePhone.message}
+              {errors.type.message}
             </small>
           )}
         </div>
 
         <Controller
-          name={`phones.${index}.numberPhone`}
+          name={`phones.${index}.number`}
           control={control}
           render={({ field: { onChange, value, ref } }) => (
             <Input
@@ -72,7 +74,7 @@ export function PhoneFormUser({
               value={formatPhone(value)}
               onChange={onChange}
               ref={ref}
-              error={errors.numberPhone}
+              error={errors.number}
               disabled={editSection !== section}
               maxLength={15}
             />
