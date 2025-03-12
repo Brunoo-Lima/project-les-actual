@@ -22,7 +22,7 @@ import { SectionType } from "../edit-user/edit-user";
 import { Checkbox } from "@/components/ui/checkbox/checkbox";
 import { Textarea } from "@/components/ui/textarea/textarea";
 
-interface IAddressFormUserProps {
+interface IAddressFormUserEditProps {
   register: UseFormRegister<IClientSchemaForm>;
   errors: Partial<Record<keyof IAddress, FieldError>>;
   control: Control<IClientSchemaForm>;
@@ -33,7 +33,7 @@ interface IAddressFormUserProps {
   section?: string;
 }
 
-export function AddressFormUser({
+export function AddressFormUserEdit({
   register,
   errors,
   control,
@@ -42,7 +42,7 @@ export function AddressFormUser({
   setValue,
   editSection,
   section,
-}: IAddressFormUserProps) {
+}: IAddressFormUserEditProps) {
   // const handleAddCep = async (
   //   e: FocusEvent<HTMLInputElement>,
   //   index: number
@@ -211,7 +211,9 @@ export function AddressFormUser({
 
       <div>
         <ButtonCancel text="Remover endereço" onClick={removeAddress} />
+        <button>Editar</button>
       </div>
     </div>
   );
 }
+

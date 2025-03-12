@@ -21,12 +21,14 @@ import { PhoneFormUser } from "../register-user/phone-form-user";
 import { emptyPhone } from "@/components/validation/phone-schema-form";
 import { AddressFormUser } from "../register-user/address-form-user";
 import { addressEmpty } from "@/components/validation/address-schema-form";
-import { CreditCardFormUser } from "../register-user/credit-card-form-user";
 import { emptyCreditCard } from "@/components/validation/credit-card-schema-form";
 import { ButtonsActions } from "./buttons-actions";
 import { formatPhone } from "@/utils/mask/format-phone";
 import { useData } from "@/hooks/useData";
 import { detailClient } from "@/services/client";
+import { PersonalUser } from "./personal-user";
+import { AddressFormUserEdit } from "./address-form-user-edit";
+import { CreditCardFormUserEdit } from "./credit-card-form-user-edit";
 
 export type SectionType =
   | "addresses"
@@ -82,116 +84,9 @@ export function EditUser() {
     <section className="min-h-screen py-8">
       <TitlePage title="Editar meus dados" />
 
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="w-[900px] flex flex-col gap-y-4"
-      >
-        <Input
-          label="Nome"
-          placeholder="Digite o nome"
-          {...register("name")}
-          error={errors.name}
-          disabled={editSection !== "personal"}
-        />
-        <div className="grid grid-cols-2 gap-4">
-          <Input
-            label="CPF"
-            placeholder="Digite o CPF"
-            {...register("cpf")}
-            error={errors.cpf}
-            disabled={editSection !== "personal"}
-          />
-          <Input
-            type="date"
-            label="Data de nascimento"
-            {...register("dateOfBirth")}
-            error={errors.dateOfBirth}
-            disabled={editSection !== "personal"}
-          />
-        </div>
+      <PersonalUser />
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="">Gênero</label>
-
-            <div>
-              <Radio
-                label="Masculino"
-                value="Masculino"
-                {...register("gender")}
-                disabled={editSection !== "personal"}
-              />
-              <Radio
-                label="Feminino"
-                value="Feminino"
-                {...register("gender")}
-                disabled={editSection !== "personal"}
-              />
-            </div>
-
-            <span className="text-sm text-error mt-1">
-              {errors.gender?.message}
-            </span>
-          </div>
-
-          <div>
-            <p className="block text-sm font-medium text-white">
-              Status do cliente
-            </p>
-
-            <Radio
-              label="Ativo"
-              value="Ativo"
-              {...register("status")}
-              disabled={editSection !== "personal"}
-            />
-            <Radio
-              label="Inativo"
-              value="Inativo"
-              {...register("status")}
-              disabled={editSection !== "personal"}
-            />
-            {errors.status && (
-              <span className="text-red-600 text-sm">
-                {errors.status.message}
-              </span>
-            )}
-          </div>
-        </div>
-
-        <Input
-          label="Email"
-          placeholder="Digite o email"
-          {...register("email")}
-          error={errors.email}
-          disabled={editSection !== "personal"}
-        />
-
-        <div className="grid grid-cols-2 gap-4">
-          <Input
-            label="Senha"
-            placeholder="Digite a senha"
-            {...register("password")}
-            error={errors.password}
-            disabled={editSection !== "personal"}
-          />
-          <Input
-            label="Confirme a senha"
-            placeholder="Digite a senha novamente"
-            {...register("confirmPassword")}
-            error={errors.confirmPassword}
-            disabled={editSection !== "personal"}
-          />
-        </div>
-
-        <ButtonsActions
-          textButtonSection="Salvar dados pessoais"
-          editSection={editSection}
-          startEditingSection={startEditingSection}
-          stopEditingSection={stopEditingSection}
-          section="personal"
-        />
-
+      <div className="w-[900px] flex flex-col gap-y-4">
         <div className="flex flex-col gap-y-4">
           <h2 className="text-lg font-semibold my-4">Telefone</h2>
           {fieldArrays.phones.fields.map((phone, index) => (
@@ -227,10 +122,12 @@ export function EditUser() {
           />
         </div>
 
+        {/* <AddressFormUserEdit /> */}
+
         <div className="flex flex-col gap-y-4">
           <h2 className="text-lg font-semibold my-4">Endereço</h2>
           {fieldArrays.addresses.fields.map((address, index) => (
-            <AddressFormUser
+            <AddressFormUserEdit
               key={address.id}
               index={index}
               register={register}
@@ -267,7 +164,7 @@ export function EditUser() {
           <h2 className="text-lg font-semibold my-4">Cartão de crédito</h2>
 
           {fieldArrays.creditCards.fields.map((card, index) => (
-            <CreditCardFormUser
+            <CreditCardFormUserEdit
               key={card.id}
               index={index}
               register={register}
@@ -315,7 +212,7 @@ export function EditUser() {
             Mock Cliente
           </button>
         </div>
-      </form>
+      </div>
     </section>
   );
 }
