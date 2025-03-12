@@ -5,8 +5,6 @@ class DeleteAddressService {
   private deleteAddressDb: DeleteAddressDb;
   private validationService: AddressValidationService;
 
-  //fazer validação de endereço, no qual nao pode apagar um endereço que ta como true o delivery/charge
-
   constructor() {
     this.deleteAddressDb = new DeleteAddressDb();
     this.validationService = new AddressValidationService();
