@@ -15,6 +15,8 @@ interface ITableRowProps {
     user: IUser,
     event: React.MouseEvent<HTMLButtonElement>
   ) => void;
+
+  onEditUser: (user: IUser, event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export function TableRow({
@@ -22,6 +24,7 @@ export function TableRow({
   onOpenDetailsUser,
   onDeleteUser,
   onEditStatusUser,
+  onEditUser,
 }: ITableRowProps) {
   return (
     <tr className="rounded-lg bg-background-dark h-14 text-left hover:brightness-110 cursor-pointer">
@@ -33,13 +36,16 @@ export function TableRow({
 
       <td>{user.orders?.length || 0}</td>
       <td>
-        <p
+        <button
+          type="button"
           className={`${
             user.status ? "bg-green-500" : "bg-red-500"
-          } w-24 px-2 text-center rounded-sm border-none flex items-center justify-center gap-x-2`}
+          } w-24 px-2 text-center rounded-sm border-none flex items-center justify-between gap-x-2`}
+          onClick={(e) => onEditStatusUser(user, e)}
         >
-          {user.status ? "Ativo" : "Inativo"}
-        </p>
+          <p>{user.status ? "Ativo" : "Inativo"}</p>
+          <PencilIcon size={18} color="#ffffff" />
+        </button>
       </td>
 
       <td>
@@ -48,7 +54,7 @@ export function TableRow({
             <EyeIcon size={20} color="#ffffff" />
           </button>
 
-          <button type="button" onClick={(e) => onEditStatusUser(user, e)}>
+          <button type="button" onClick={(e) => onEditUser(user, e)}>
             <PencilIcon size={20} color="#ffffff" />
           </button>
 

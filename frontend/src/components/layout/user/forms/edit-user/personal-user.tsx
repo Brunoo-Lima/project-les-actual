@@ -1,24 +1,61 @@
+import { IUser } from "@/@types/IUser";
 import { Input } from "@/components/ui/input/input";
 import { Radio } from "@/components/ui/radio/radio";
 import {
   ClientSchemaForm,
   IClientSchemaForm,
 } from "@/components/validation/client-schema-form";
+import { updateClient } from "@/services/client";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { SectionType } from "./edit-user";
+import { useEffect } from "react";
 
-export function PersonalUser() {
+interface IPersonalUserProps {
+  clientData: IUser | null;
+  editSection: SectionType;
+  startEditingSection: (section: SectionType) => void;
+  stopEditingSection: () => void;
+}
+
+export function PersonalUser({
+  clientData,
+  editSection,
+  startEditingSection,
+  stopEditingSection,
+}: IPersonalUserProps) {
   const {
     register,
     formState: { errors },
     handleSubmit,
+    setValue,
   } = useForm<IClientSchemaForm>({
     resolver: yupResolver(ClientSchemaForm),
   });
 
-  const onSubmit = async (data) => {
+  useEffect(() => {
+    if (clientData) {
+      setValue("name", clientData.name);
+      setValue("email", clientData.email);
+      setValue("cpf", clientData.cpf);
+      setValue("dateOfBirth", clientData.dateOfBirth);
+      setValue("gender", clientData.gender);
+      setValue("status", clientData.status ? "Ativo" : "Inativo");
+      setValue("password", clientData.password);
+    }
+  }, [clientData, setValue]);
+
+  const onSubmit: SubmitHandler<Partial<IClientSchemaForm>> = async (data) => {
     try {
-      console.log(data);
+      // const updatedData: Partial<IUser> = {
+      //   ...data,
+      // };
+
+      // if (clientData.id) {
+      //   await updateClient(clientData.id, updatedData);
+      // }
+
+      stopEditingSection();
     } catch (error) {
       console.error(error);
     }
@@ -107,15 +144,6 @@ export function PersonalUser() {
 
       <button>Editar</button>
       <button>Salvar dados</button>
-
-      {/* <ButtonsActions
-              textButtonSection="Salvar dados pessoais"
-              editSection={editSection}
-              startEditingSection={startEditingSection}
-              stopEditingSection={stopEditingSection}
-              section="personal"
-            /> */}
     </form>
   );
 }
-

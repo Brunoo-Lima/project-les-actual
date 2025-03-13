@@ -6,13 +6,16 @@ export const createCreditCard = async (
   creditCard: ICreditCard
 ) => {
   try {
-    const response = await fetch(`${api}/credit-card?user_id=${user_id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(creditCard),
-    });
+    const response = await fetch(
+      `http://localhost:3333/credit-card?user_id=${user_id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(creditCard),
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`Algo deu errado na requisição - ${response.status}`);
@@ -33,7 +36,7 @@ export const updateCreditCard = async (
 ) => {
   try {
     const response = await fetch(
-      `${api}/address?user_id=${user_id}&creditCard_id=${creditCard_id}`,
+      `http://localhost:3333/address?user_id=${user_id}&creditCard_id=${creditCard_id}`,
       {
         method: "PATCH",
         headers: {
@@ -61,7 +64,7 @@ export const deleteCreditCard = async (
 ) => {
   try {
     const response = await fetch(
-      `${api}/credit-card?creditCard_id=${creditCard_id}&user_id=${user_id}`,
+      `http://localhost:3333/credit-card?creditCard_id=${creditCard_id}&user_id=${user_id}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -78,4 +81,3 @@ export const deleteCreditCard = async (
     throw new Error("Erro ao deletar cartão!");
   }
 };
-

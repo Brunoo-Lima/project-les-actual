@@ -3,13 +3,16 @@ import api from "./api";
 
 export const createAddress = async (user_id: string, address: IAddress) => {
   try {
-    const response = await fetch(`${api}/address?user_id=${user_id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(address),
-    });
+    const response = await fetch(
+      `http://localhost:3333/address?user_id=${user_id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(address),
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`Algo deu errado na requisição - ${response.status}`);
@@ -30,7 +33,7 @@ export const updateAddress = async (
 ) => {
   try {
     const response = await fetch(
-      `${api}/address?user_id=${user_id}&address_id=${address_id}`,
+      `http://localhost:3333/address?user_id=${user_id}&address_id=${address_id}`,
       {
         method: "PATCH",
         headers: {
@@ -55,7 +58,7 @@ export const updateAddress = async (
 export const deleteAddress = async (address_id: string, user_id: string) => {
   try {
     const response = await fetch(
-      `${api}/address?address_id=${address_id}&user_id=${user_id}`,
+      `http://localhost:3333/address?address_id=${address_id}&user_id=${user_id}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -72,4 +75,3 @@ export const deleteAddress = async (address_id: string, user_id: string) => {
     throw new Error("Erro ao deletar endereço!");
   }
 };
-

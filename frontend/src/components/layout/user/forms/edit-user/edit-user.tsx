@@ -3,32 +3,18 @@
 import { useEffect, useState } from "react";
 import { ButtonCancel } from "@/components/ui/button/button-cancel/button-cancel";
 import { ButtonGeneral } from "@/components/ui/button/button-general";
-import { Input } from "@/components/ui/input/input";
-import { Radio } from "@/components/ui/radio/radio";
 import { TitlePage } from "@/components/ui/title/title-page/title-page";
-import {
-  ClientSchemaForm,
-  emptyClient,
-  IClientSchemaForm,
-  mockClient,
-} from "@/components/validation/client-schema-form";
 
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useRouter } from "next/navigation";
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { PhoneFormUser } from "../register-user/phone-form-user";
-import { emptyPhone } from "@/components/validation/phone-schema-form";
-import { AddressFormUser } from "../register-user/address-form-user";
-import { addressEmpty } from "@/components/validation/address-schema-form";
-import { emptyCreditCard } from "@/components/validation/credit-card-schema-form";
-import { ButtonsActions } from "./buttons-actions";
+
 import { formatPhone } from "@/utils/mask/format-phone";
-import { useData } from "@/hooks/useData";
 import { detailClient } from "@/services/client";
 import { PersonalUser } from "./personal-user";
 import { AddressFormUserEdit } from "./address-form-user-edit";
 import { CreditCardFormUserEdit } from "./credit-card-form-user-edit";
+import { IUser } from "@/@types/IUser";
+import { PhoneFormUserEdit } from "./phone-form-user-edit";
 
 export type SectionType =
   | "addresses"
@@ -38,31 +24,28 @@ export type SectionType =
   | null;
 
 export function EditUser() {
+  const { id } = useParams();
   const router = useRouter();
-  const { setUsers } = useData();
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    control,
-    reset,
-    setValue,
-  } = useForm<IClientSchemaForm>({
-    resolver: yupResolver(ClientSchemaForm),
-  });
+  const [loading, setLoading] = useState<boolean>(true);
   const [editSection, setEditSection] = useState<SectionType>(null);
-
-  const fieldArrays = {
-    addresses: useFieldArray({ control, name: "addresses" }),
-    phones: useFieldArray({ control, name: "phones" }),
-    creditCards: useFieldArray({ control, name: "creditCards" }),
-  };
+  const [client, setClient] = useState<IUser | null>(null);
 
   useEffect(() => {
-    // const fetchClient = async () => {
-    //   const client = await detailClient()
-    // }
-  }, [reset, setValue]);
+    if (id) {
+      const fetchClient = async () => {
+        try {
+          const data = await detailClient(id as string);
+
+          setClient(data);
+        } catch (error) {
+          toast.error("Erro ao buscar dados do usuário");
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchClient();
+    }
+  }, [id]);
 
   const startEditingSection = (section: typeof editSection) => {
     setEditSection(section);
@@ -70,147 +53,63 @@ export function EditUser() {
 
   const stopEditingSection = () => setEditSection(null);
 
-  const onSubmit: SubmitHandler<IClientSchemaForm> = (data) => {
-    console.log(data);
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
 
-    setUsers((prevUsers) => [...prevUsers, data]);
-
-    router.push("/produtos");
-
-    toast.success("Usuário editado com sucesso!");
-  };
+  if (!client) {
+    return <div>Usuário nao encontrado</div>;
+  }
 
   return (
     <section className="min-h-screen py-8">
       <TitlePage title="Editar meus dados" />
 
-      <PersonalUser />
+      <PersonalUser
+        clientData={client}
+        editSection={editSection}
+        startEditingSection={startEditingSection}
+        stopEditingSection={stopEditingSection}
+      />
 
       <div className="w-[900px] flex flex-col gap-y-4">
-        <div className="flex flex-col gap-y-4">
-          <h2 className="text-lg font-semibold my-4">Telefone</h2>
-          {fieldArrays.phones.fields.map((phone, index) => (
-            <PhoneFormUser
-              key={phone.id}
-              index={index}
-              register={register}
-              errors={errors.phones?.[index] || {}}
-              control={control}
-              removePhone={() => fieldArrays.phones.remove(index)}
-              editSection={editSection}
-              section="phones"
-            />
-          ))}
+        {/* Telefones */}
+        <PhoneFormUserEdit
+          phones={client.phones || []}
+          userId={client.id}
+          editSection={editSection}
+          startEditingSection={startEditingSection}
+          stopEditingSection={stopEditingSection}
+        />
 
-          <ButtonGeneral
-            text="Adicionar telefone"
-            onClick={() => fieldArrays.phones.append(emptyPhone)}
-            disabled={editSection !== "phones"}
-            className={`${
-              editSection !== "phones"
-                ? "opacity-70 hover:opacity-70 cursor-not-allowed"
-                : "hover:bg-emerald-700 "
-            } w-60 bg-emerald-400`}
-          />
+        {/* Endereços */}
+        <AddressFormUserEdit
+          addresses={client.addresses || []}
+          editSection={editSection}
+          startEditingSection={startEditingSection}
+          stopEditingSection={stopEditingSection}
+        />
 
-          <ButtonsActions
-            textButtonSection="Salvar telefones"
-            editSection={editSection}
-            startEditingSection={startEditingSection}
-            stopEditingSection={stopEditingSection}
-            section="phones"
-          />
-        </div>
-
-        {/* <AddressFormUserEdit /> */}
-
-        <div className="flex flex-col gap-y-4">
-          <h2 className="text-lg font-semibold my-4">Endereço</h2>
-          {fieldArrays.addresses.fields.map((address, index) => (
-            <AddressFormUserEdit
-              key={address.id}
-              index={index}
-              register={register}
-              errors={errors.addresses?.[index] || {}}
-              control={control}
-              setValue={setValue}
-              removeAddress={() => fieldArrays.addresses.remove(index)}
-              editSection={editSection}
-              section="addresses"
-            />
-          ))}
-
-          <ButtonGeneral
-            text="Adicionar endereço"
-            onClick={() => fieldArrays.addresses.append(addressEmpty)}
-            disabled={editSection !== "addresses"}
-            className={`${
-              editSection !== "addresses"
-                ? "opacity-70 hover:opacity-70 cursor-not-allowed"
-                : "hover:bg-emerald-700 "
-            } w-60 bg-emerald-400`}
-          />
-
-          <ButtonsActions
-            textButtonSection="Salvar endereços"
-            editSection={editSection}
-            startEditingSection={startEditingSection}
-            stopEditingSection={stopEditingSection}
-            section="addresses"
-          />
-        </div>
-
-        <div className="flex flex-col gap-y-4">
-          <h2 className="text-lg font-semibold my-4">Cartão de crédito</h2>
-
-          {fieldArrays.creditCards.fields.map((card, index) => (
-            <CreditCardFormUserEdit
-              key={card.id}
-              index={index}
-              register={register}
-              errors={errors.creditCards?.[index] || {}}
-              control={control}
-              removeCreditCard={() => fieldArrays.creditCards.remove(index)}
-              editSection={editSection}
-              section="creditCards"
-            />
-          ))}
-
-          <ButtonGeneral
-            text="Adicionar cartão de crédito"
-            onClick={() => fieldArrays.creditCards.append(emptyCreditCard)}
-            disabled={editSection !== "creditCards"}
-            className={`${
-              editSection !== "creditCards"
-                ? "opacity-70 hover:opacity-70 cursor-not-allowed"
-                : "hover:bg-emerald-700 "
-            } w-60 bg-emerald-400`}
-          />
-
-          <ButtonsActions
-            textButtonSection="Salvar cartões"
-            editSection={editSection}
-            startEditingSection={startEditingSection}
-            stopEditingSection={stopEditingSection}
-            section="creditCards"
-          />
-        </div>
+        {/* Cartões de Crédito */}
+        <CreditCardFormUserEdit
+          creditCards={client.creditCards || []}
+          editSection={editSection}
+          startEditingSection={startEditingSection}
+          stopEditingSection={stopEditingSection}
+        />
 
         <div className="flex gap-4 mt-4">
-          <ButtonGeneral text="Salvar" type="submit" className="w-full" />
+          <ButtonGeneral
+            text="Salvar"
+            type="button"
+            className="w-full"
+            onClick={() => toast.success("Dados salvos com sucesso!")}
+          />
           <ButtonCancel
             text="Cancelar"
             className="w-full"
-            onClick={() => reset(emptyClient)}
+            onClick={() => router.push("/produtos")}
           />
-
-          <button
-            type="button"
-            className="bg-blue-500 rounded-md w-full text-white"
-            onClick={() => reset(mockClient)}
-          >
-            Mock Cliente
-          </button>
         </div>
       </div>
     </section>

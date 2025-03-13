@@ -69,6 +69,31 @@ export const detailClient = async (id: string) => {
   }
 };
 
+export const updateClient = async (id: string, user: Partial<IUser>) => {
+  try {
+    const response = await fetch(`http://localhost:3333/client?user_id=${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+      // next: {
+      //   tags: ["statusClient"],
+      // },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Algo deu errado na requisição: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Erro ao atualizar o cliente!", error);
+    throw new Error("Erro ao atualizar o cliente");
+  }
+};
+
 export const updateStatusClient = async (
   id: string,
   user: Pick<IUser, "status" | "inactiveReason">

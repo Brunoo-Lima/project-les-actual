@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { ModalStatusUser } from "../modals/modal-status-user";
 import { ModalInfoUser } from "../modals/modal-info-user";
 import { detailClient } from "@/services/client";
+import { useRouter } from "next/navigation";
 
 interface ITableUserProps {
   data: IUser[];
@@ -16,6 +17,7 @@ type ModalType = "info" | "status" | null;
 export function TableUser({ data, onDeleteUser }: ITableUserProps) {
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
   const [modalType, setModalType] = useState<ModalType>(null);
+  const router = useRouter();
 
   const handleDeleteUser = (
     user: IUser,
@@ -24,6 +26,19 @@ export function TableUser({ data, onDeleteUser }: ITableUserProps) {
     event.stopPropagation();
     onDeleteUser(user.id);
     toast.success("Usuário deletado com sucesso!");
+  };
+
+  const handleEditUser = async (
+    user: IUser,
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.stopPropagation();
+
+    try {
+      router.push(`/editar/${user.id}`);
+    } catch (error) {
+      toast.error("Erro ao buscar dados do cliente");
+    }
   };
 
   const handleOpenModalInfoUser = async (
@@ -83,6 +98,7 @@ export function TableUser({ data, onDeleteUser }: ITableUserProps) {
                 onOpenDetailsUser={handleOpenModalInfoUser}
                 onDeleteUser={handleDeleteUser}
                 onEditStatusUser={handleEditStatusUser}
+                onEditUser={handleEditUser}
               />
             ))}
           </tbody>

@@ -4,10 +4,10 @@ import { GlobeIcon, LogOutIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { LinkNav } from "./link-nav/link-nav";
 import { useCheckout } from "@/hooks/useCheckout";
-import { useUseAuth } from "@/hooks/useAuth";
+// import { useUseAuth } from "@/hooks/useAuth";
 
 export function HeaderUser() {
-  const { logout } = useUseAuth();
+  // const { logout } = useUseAuth();
   const pathname = usePathname();
   const { cart } = useCheckout();
 
@@ -17,10 +17,15 @@ export function HeaderUser() {
 
       <nav className="flex items-center gap-8">
         <LinkNav
+          isActive={pathname === "/cadastro"}
+          href="/cadastro"
+          text="Cadastrar cliente"
+        />
+        {/* <LinkNav
           isActive={pathname === "/editar"}
           href="/editar"
           text="Editar meus dados"
-        />
+        /> */}
 
         <LinkNav
           isActive={pathname === "/produtos"}
@@ -42,12 +47,12 @@ export function HeaderUser() {
           cartCount={cart.length}
         />
 
-        <LogOutIcon
+        {/* <LogOutIcon
           size={20}
           color="#ffffff"
           onClick={logout}
           style={{ cursor: "pointer" }}
-        />
+        /> */}
       </nav>
     </header>
   );
