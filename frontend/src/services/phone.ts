@@ -69,10 +69,11 @@ export const deletePhone = async (id: string) => {
 
     const data = await response.json();
 
-    console.log("Deletando telefone com ID:", id);
+    console.log("Deletando telefone com ID: aaa", id);
 
     return data;
   } catch (error) {
+    console.error("Erro ao deletar telefone!", error);
     throw new Error("Erro ao deletar telefone!");
   }
 };

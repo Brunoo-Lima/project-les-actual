@@ -92,7 +92,7 @@ export function CreditCardFormUserEdit({
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-y-4 border-[0.5px] border-gray-600 rounded-md p-4"
     >
-      {fields.map((field, index) => (
+      {creditCards.map((field, index) => (
         <div className="flex flex-col gap-2" key={field.id}>
           <h3 className="text-xl font-semibold text-primary-dark">
             Cartão de crédito {index + 1}

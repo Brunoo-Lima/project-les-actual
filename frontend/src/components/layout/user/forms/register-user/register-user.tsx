@@ -37,6 +37,7 @@ export function RegisterUser() {
     control,
     reset,
     setValue,
+    watch,
   } = useForm<IClientSchemaForm>({
     resolver: yupResolver(ClientSchemaForm),
   });
@@ -55,8 +56,6 @@ export function RegisterUser() {
       };
 
       const updatedData = await createClient(formattedData);
-
-      console.log("updatedData", updatedData);
 
       setUsers((prevUsers) => [...prevUsers, updatedData]);
 
@@ -102,16 +101,20 @@ export function RegisterUser() {
 
         <div className="flex flex-col gap-y-4">
           <h2 className="text-lg font-semibold my-4">Telefone</h2>
-          {fieldArrays.phones.fields.map((phone, index) => (
-            <PhoneFormUser
-              key={phone.id}
-              index={index}
-              register={register}
-              errors={errors.phones?.[index] || {}}
-              control={control}
-              removePhone={() => fieldArrays.phones.remove(index)}
-            />
-          ))}
+          {fieldArrays.phones.fields.map((phone, index) => {
+            const phoneType = watch(`phones.${index}.type`);
+            return (
+              <PhoneFormUser
+                key={phone.id}
+                index={index}
+                register={register}
+                errors={errors.phones?.[index] || {}}
+                control={control}
+                phoneType={phoneType}
+                removePhone={() => fieldArrays.phones.remove(index)}
+              />
+            );
+          })}
 
           <ButtonGeneral
             text="Adicionar telefone"

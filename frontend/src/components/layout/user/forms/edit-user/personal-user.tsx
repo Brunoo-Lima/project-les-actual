@@ -10,6 +10,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { SectionType } from "./edit-user";
 import { useEffect } from "react";
+import { toast } from "sonner";
 
 interface IPersonalUserProps {
   clientData: IUser | null;
@@ -40,20 +41,18 @@ export function PersonalUser({
       setValue("cpf", clientData.cpf);
       setValue("dateOfBirth", clientData.dateOfBirth);
       setValue("gender", clientData.gender);
-      setValue("status", clientData.status ? "Ativo" : "Inativo");
-      setValue("password", clientData.password);
     }
   }, [clientData, setValue]);
 
-  const onSubmit: SubmitHandler<Partial<IClientSchemaForm>> = async (data) => {
+  const onSubmit: SubmitHandler<Partial<IClientSchemaForm>> = async (
+    data: any
+  ) => {
     try {
-      // const updatedData: Partial<IUser> = {
-      //   ...data,
-      // };
+      if (clientData?.id) {
+        await updateClient(clientData?.id, data);
+      }
 
-      // if (clientData.id) {
-      //   await updateClient(clientData.id, updatedData);
-      // }
+      toast.success("Cliente editado com sucesso!");
 
       stopEditingSection();
     } catch (error) {
@@ -103,20 +102,6 @@ export function PersonalUser({
           <span className="text-sm text-error mt-1">
             {errors.gender?.message}
           </span>
-        </div>
-
-        <div>
-          <p className="block text-sm font-medium text-white">
-            Status do cliente
-          </p>
-
-          <Radio label="Ativo" value="Ativo" {...register("status")} />
-          <Radio label="Inativo" value="Inativo" {...register("status")} />
-          {errors.status && (
-            <span className="text-red-600 text-sm">
-              {errors.status.message}
-            </span>
-          )}
         </div>
       </div>
 

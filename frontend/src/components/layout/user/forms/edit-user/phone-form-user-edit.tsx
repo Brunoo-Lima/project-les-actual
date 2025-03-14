@@ -6,7 +6,6 @@ import {
   ClientSchemaForm,
   IClientSchemaForm,
 } from "@/components/validation/client-schema-form";
-import { formatPhone } from "@/utils/mask/format-phone";
 import {
   Control,
   Controller,
@@ -26,6 +25,7 @@ import { toast } from "sonner";
 import { ButtonGeneral } from "@/components/ui/button/button-general";
 import { createPhone, deletePhone, updatePhone } from "@/services/phone";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { formatPhone } from "@/utils/mask/format-phone";
 
 interface IPhoneFormUserEditProps {
   phones: IUser["phones"];
@@ -49,6 +49,7 @@ export function PhoneFormUserEdit({
     handleSubmit,
     formState: { errors },
     setValue,
+    watch,
   } = useForm({
     // resolver: yupResolver(ClientSchemaForm),
   });
@@ -57,12 +58,21 @@ export function PhoneFormUserEdit({
     name: "phones",
   });
 
+  const phoneType = watch("type");
+
   useEffect(() => {
     console.log("Phones recebidos:", phones);
     if (phones) {
       setValue("phones", phones);
     }
   }, [phones, setValue]);
+
+  useEffect(() => {
+    console.log(
+      "IDs dos telefones:",
+      fields.map((phone) => phone.id)
+    );
+  }, [fields]);
 
   console.log("phones", phones);
 
@@ -112,59 +122,66 @@ export function PhoneFormUserEdit({
       className="flex flex-col gap-y-4 border-[0.5px] border-gray-600 rounded-md p-4"
     >
       <div className="flex flex-col gap-4">
-        {fields.map((phone, index) => (
-          <div className="flex flex-col gap-2" key={phone.id}>
-            <h3 className="text-xl font-semibold text-primary-dark">
-              Telefone {index + 1}
-            </h3>
+        {fields.map((phone, index) => {
+          const phoneType = watch(`phones.${index}.type`);
 
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <p className="font-normal text-base text-primary-light">
-                  Tipo:
-                </p>
+          return (
+            <div className="flex flex-col gap-2" key={index}>
+              <h3 className="text-xl font-semibold text-primary-dark">
+                Telefone {index + 1}
+              </h3>
 
-                <Radio
-                  label="Fixo"
-                  value="Fixo"
-                  {...register(`phones.${index}.type`)}
-                />
-                <Radio
-                  label="Celular"
-                  value="Móvel"
-                  {...register(`phones.${index}.type`)}
-                />
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <p className="font-normal text-base text-primary-light">
+                    Tipo:
+                  </p>
 
-                {/* {errors.phones?.[index]?.type && (
+                  <Radio
+                    label="Fixo"
+                    value="Fixo"
+                    {...register(`phones.${index}.type`)}
+                  />
+                  <Radio
+                    label="Celular"
+                    value="Móvel"
+                    {...register(`phones.${index}.type`)}
+                  />
+
+                  {/* {errors.phones?.[index]?.type && (
                   <small className="text-error text-sm mt-1">
                     {errors.root?.message}
                   </small>
                 )} */}
-              </div>
+                </div>
 
-              <Controller
-                name={`phones.${index}.number`}
-                control={control}
-                render={({ field: { onChange, value, ref } }) => (
-                  <Input
-                    label="Telefone"
-                    type="tel"
-                    placeholder="(00) 00000-0000"
-                    value={formatPhone(value)}
-                    onChange={onChange}
-                    ref={ref}
-                    maxLength={15}
-                  />
-                )}
+                <Controller
+                  name={`phones.${index}.number`}
+                  control={control}
+                  render={({ field: { onChange, value, ref } }) => (
+                    <Input
+                      label="Telefone"
+                      type="tel"
+                      placeholder="(00) 00000-0000"
+                      value={formatPhone(value, phoneType)}
+                      onChange={(e) => {
+                        const rawValue = e.target.value.replace(/\D/g, "");
+                        onChange(rawValue);
+                      }}
+                      ref={ref}
+                      maxLength={phoneType === "Fixo" ? 10 : 11}
+                    />
+                  )}
+                />
+              </div>
+              <ButtonCancel
+                type="button"
+                text="Remover telefone"
+                onClick={() => handleRemovePhone(phone.id, index)}
               />
             </div>
-            <ButtonCancel
-              type="button"
-              text="Remover telefone"
-              onClick={() => handleRemovePhone(phone.id, index)}
-            />
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="flex items-center gap-4">

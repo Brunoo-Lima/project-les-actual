@@ -90,12 +90,14 @@ export function AddressFormUserEdit({
   };
 
   const handleDeleteAddress = async (addressId: string) => {
-    try {
-      await deleteAddress(addressId, userId);
-      toast.success("Endereço removido com sucesso!");
-    } catch (error) {
-      console.error("Erro ao deletar endereço:", error);
-      toast.error("Erro ao remover endereço");
+    if (addressId) {
+      try {
+        await deleteAddress(addressId, userId);
+        toast.success("Endereço removido com sucesso!");
+      } catch (error) {
+        console.error("Erro ao deletar endereço:", error);
+        toast.error("Erro ao remover endereço");
+      }
     }
   };
 
@@ -125,8 +127,8 @@ export function AddressFormUserEdit({
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-y-4 border-[0.5px] border-gray-600 rounded-md p-4"
     >
-      {fields.map((field, index) => (
-        <div key={field.id} className="flex flex-col gap-2">
+      {addresses.map((address, index) => (
+        <div key={address.id || index} className="flex flex-col gap-2">
           <h3 className="text-xl font-semibold text-primary-dark">
             Endereço {index + 1}
           </h3>
@@ -273,7 +275,7 @@ export function AddressFormUserEdit({
           <div>
             <ButtonCancel
               text="Remover endereço"
-              onClick={() => handleDeleteAddress(field.id)}
+              onClick={() => handleDeleteAddress(address.id as string)}
             />
             {/* <button>Editar</button>
             <button>Adicionar</button> */}
@@ -285,7 +287,7 @@ export function AddressFormUserEdit({
         <ButtonGeneral
           className="min-w-72"
           type="button"
-          text="Adicionar Telefone"
+          text="Adicionar endereço"
           onClick={() => append(addressEmpty)}
         />
         <ButtonGeneral

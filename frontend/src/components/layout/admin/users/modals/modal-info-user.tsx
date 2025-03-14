@@ -20,6 +20,7 @@ export function ModalInfoUser({ onClose, user }: IModalInfoUserProps) {
             <h2 className="text-lg text-white">Dados pessoais</h2>
             <p>Nome: {user.name}</p>
             <p>Email: {user.email}</p>
+            <p>Senha: {user.password}</p>
             <p>CPF: {user.cpf}</p>
             <p>Data de nascimento: {user.dateOfBirth}</p>
             <p>Gênero: {user.gender}</p>

@@ -36,7 +36,9 @@ export function EditUser() {
         try {
           const data = await detailClient(id as string);
 
-          setClient(data);
+          if (data) {
+            setClient(data);
+          }
         } catch (error) {
           toast.error("Erro ao buscar dados do usuário");
         } finally {
