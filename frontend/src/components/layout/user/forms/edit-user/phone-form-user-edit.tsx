@@ -49,15 +49,16 @@ export function PhoneFormUserEdit({
     handleSubmit,
     formState: { errors },
     setValue,
-  } = useForm<IClientSchemaForm>({
-    resolver: yupResolver(ClientSchemaForm),
+  } = useForm({
+    // resolver: yupResolver(ClientSchemaForm),
   });
-  const { fields, append } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control,
     name: "phones",
   });
 
   useEffect(() => {
+    console.log("Phones recebidos:", phones);
     if (phones) {
       setValue("phones", phones);
     }
@@ -88,13 +89,16 @@ export function PhoneFormUserEdit({
     }
   };
 
-  const handleRemovePhone = async (phoneId: string) => {
+  const handleRemovePhone = async (phoneId: string, index: number) => {
+    console.log("ID do telefone a ser removido:", phoneId);
+    setLoading(true);
     if (phoneId) {
-      setLoading(true);
       try {
         await deletePhone(phoneId);
+        remove(index);
         toast.success("Telefone removido com sucesso!");
       } catch (error) {
+        console.error("Erro ao deletar telefone:", error);
         toast.error("Erro ao remover telefone");
       } finally {
         setLoading(false);
@@ -131,11 +135,11 @@ export function PhoneFormUserEdit({
                   {...register(`phones.${index}.type`)}
                 />
 
-                {errors.phones?.[index]?.type && (
+                {/* {errors.phones?.[index]?.type && (
                   <small className="text-error text-sm mt-1">
                     {errors.root?.message}
                   </small>
-                )}
+                )} */}
               </div>
 
               <Controller
@@ -155,9 +159,9 @@ export function PhoneFormUserEdit({
               />
             </div>
             <ButtonCancel
-              type="submit"
+              type="button"
               text="Remover telefone"
-              onClick={() => handleRemovePhone(phone.id)}
+              onClick={() => handleRemovePhone(phone.id, index)}
             />
           </div>
         ))}

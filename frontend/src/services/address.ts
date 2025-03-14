@@ -60,6 +60,7 @@ export const deleteAddress = async (address_id: string, user_id: string) => {
     const response = await fetch(
       `http://localhost:3333/address?address_id=${address_id}&user_id=${user_id}`,
       {
+        method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },

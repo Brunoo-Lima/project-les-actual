@@ -85,6 +85,7 @@ export function EditUser() {
         {/* Endereços */}
         <AddressFormUserEdit
           addresses={client.addresses || []}
+          userId={client.id}
           editSection={editSection}
           startEditingSection={startEditingSection}
           stopEditingSection={stopEditingSection}
@@ -93,6 +94,7 @@ export function EditUser() {
         {/* Cartões de Crédito */}
         <CreditCardFormUserEdit
           creditCards={client.creditCards || []}
+          userId={client.id}
           editSection={editSection}
           startEditingSection={startEditingSection}
           stopEditingSection={stopEditingSection}

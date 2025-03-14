@@ -9,7 +9,7 @@ import {
   selectTypeResidence,
 } from "@/mocks/select/select";
 import { getCep } from "@/services/cep";
-import { FocusEvent, useEffect } from "react";
+import { FocusEvent, useEffect, useState } from "react";
 import {
   Control,
   Controller,
@@ -24,9 +24,17 @@ import { SectionType } from "../edit-user/edit-user";
 import { Checkbox } from "@/components/ui/checkbox/checkbox";
 import { Textarea } from "@/components/ui/textarea/textarea";
 import { IUser } from "@/@types/IUser";
+import {
+  createAddress,
+  deleteAddress,
+  updateAddress,
+} from "@/services/address";
+import { ButtonGeneral } from "@/components/ui/button/button-general";
+import { addressEmpty } from "@/components/validation/address-schema-form";
 
 interface IAddressFormUserEditProps {
   addresses: IUser["addresses"];
+  userId: string;
   editSection: SectionType;
   startEditingSection: (section: SectionType) => void;
   stopEditingSection: () => void;
@@ -37,7 +45,10 @@ export function AddressFormUserEdit({
   editSection,
   startEditingSection,
   stopEditingSection,
+  userId,
 }: IAddressFormUserEditProps) {
+  const [loading, setLoading] = useState<boolean>(false);
+
   const {
     register,
     control,
@@ -57,11 +68,35 @@ export function AddressFormUserEdit({
     }
   }, [addresses, setValue]);
 
-  const onSubmit = (data: any) => {
-    // Lógica para salvar telefones
-    console.log(data.addresses);
-    toast.success("Endereços salvos com sucesso!");
-    stopEditingSection();
+  const onSubmit = async (data: any) => {
+    setLoading(true);
+    try {
+      for (const address of data.addresses) {
+        if (address.id) {
+          // Se o endereço já tem ID, é uma atualização
+          await updateAddress(userId, address.id, address);
+          toast.success("Endereço atualizado com sucesso!");
+        } else {
+          await createAddress(userId, address);
+          toast.success("Endereço criado com sucesso!");
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao salvar endereço:", error);
+      toast.error("Erro ao salvar endereço!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteAddress = async (addressId: string) => {
+    try {
+      await deleteAddress(addressId, userId);
+      toast.success("Endereço removido com sucesso!");
+    } catch (error) {
+      console.error("Erro ao deletar endereço:", error);
+      toast.error("Erro ao remover endereço");
+    }
   };
 
   // const handleAddCep = async (
@@ -238,13 +273,28 @@ export function AddressFormUserEdit({
           <div>
             <ButtonCancel
               text="Remover endereço"
-              onClick={() => remove(index)}
+              onClick={() => handleDeleteAddress(field.id)}
             />
-            <button>Editar</button>
-            <button>Adicionar</button>
+            {/* <button>Editar</button>
+            <button>Adicionar</button> */}
           </div>
         </div>
       ))}
+
+      <div className="flex items-center gap-4">
+        <ButtonGeneral
+          className="min-w-72"
+          type="button"
+          text="Adicionar Telefone"
+          onClick={() => append(addressEmpty)}
+        />
+        <ButtonGeneral
+          className="min-w-28"
+          type="submit"
+          text={loading ? "Salvando..." : "Salvar"}
+          disabled={loading}
+        />
+      </div>
     </form>
   );
 }

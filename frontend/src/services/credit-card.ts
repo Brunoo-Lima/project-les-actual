@@ -66,6 +66,7 @@ export const deleteCreditCard = async (
     const response = await fetch(
       `http://localhost:3333/credit-card?creditCard_id=${creditCard_id}&user_id=${user_id}`,
       {
+        method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },

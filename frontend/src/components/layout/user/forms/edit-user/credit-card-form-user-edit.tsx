@@ -11,11 +11,19 @@ import {
 } from "react-hook-form";
 import { SectionType } from "./edit-user";
 import { IUser } from "@/@types/IUser";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import {
+  createCreditCard,
+  deleteCreditCard,
+  updateCreditCard,
+} from "@/services/credit-card";
+import { ButtonGeneral } from "@/components/ui/button/button-general";
+import { emptyCreditCard } from "@/components/validation/credit-card-schema-form";
 
 interface ICreditCardFormUserEditProps {
   creditCards: IUser["creditCards"];
+  userId: string;
   editSection: SectionType;
   startEditingSection: (section: SectionType) => void;
   stopEditingSection: () => void;
@@ -26,7 +34,9 @@ export function CreditCardFormUserEdit({
   editSection,
   startEditingSection,
   stopEditingSection,
+  userId,
 }: ICreditCardFormUserEditProps) {
+  const [loading, setLoading] = useState<boolean>(false);
   const {
     register,
     control,
@@ -46,11 +56,35 @@ export function CreditCardFormUserEdit({
     }
   }, [creditCards, setValue]);
 
-  const onSubmit = (data: any) => {
-    // Lógica para salvar telefones
-    console.log(data.addresses);
-    toast.success("Cartões de crédito salvos com sucesso!");
-    stopEditingSection();
+  const onSubmit = async (data: any) => {
+    setLoading(true);
+    try {
+      for (const creditCard of data.creditCards) {
+        if (creditCard.id) {
+          // Se o endereço já tem ID, é uma atualização
+          await updateCreditCard(userId, creditCard.id, creditCard);
+          toast.success("Cartão de crédito atualizado com sucesso!");
+        } else {
+          await createCreditCard(userId, creditCard);
+          toast.success("Cartão de crédito criado com sucesso!");
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao salvar cartão de crédito!", error);
+      toast.error("Erro ao salvar cartão de crédito!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteCreditCard = async (creditCardId: string) => {
+    try {
+      await deleteCreditCard(creditCardId, userId);
+      toast.success("Cartão de crédito removido com sucesso!");
+    } catch (error) {
+      console.error("Erro ao deletar cartão de crédito:", error);
+      toast.error("Erro ao remover cartão de crédito");
+    }
   };
 
   return (
@@ -121,9 +155,27 @@ export function CreditCardFormUserEdit({
             // disabled={editSection !== section}
           />
 
-          <ButtonCancel text="Remover cartão" onClick={() => remove(index)} />
+          <ButtonCancel
+            text="Remover cartão"
+            onClick={() => handleDeleteCreditCard(field.id)}
+          />
         </div>
       ))}
+
+      <div className="flex items-center gap-4">
+        <ButtonGeneral
+          className="min-w-72"
+          type="button"
+          text="Adicionar Telefone"
+          onClick={() => append(emptyCreditCard)}
+        />
+        <ButtonGeneral
+          className="min-w-28"
+          type="submit"
+          text={loading ? "Salvando..." : "Salvar"}
+          disabled={loading}
+        />
+      </div>
     </form>
   );
 }

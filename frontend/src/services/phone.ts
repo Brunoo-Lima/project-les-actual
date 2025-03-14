@@ -1,6 +1,4 @@
 import { IPhone } from "@/@types/IUser";
-import api from "./api";
-import { ICreditCard } from "@/@types/ICreditCard";
 
 export const createPhone = async (user_id: string, phone: IPhone) => {
   try {
@@ -70,6 +68,8 @@ export const deletePhone = async (id: string) => {
     }
 
     const data = await response.json();
+
+    console.log("Deletando telefone com ID:", id);
 
     return data;
   } catch (error) {
