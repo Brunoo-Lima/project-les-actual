@@ -51,7 +51,7 @@ export function PhoneFormUser({
           />
           <Radio
             label="Celular"
-            value="Celular"
+            value="Móvel"
             {...register(`phones.${index}.type`)}
             disabled={editSection !== section}
           />

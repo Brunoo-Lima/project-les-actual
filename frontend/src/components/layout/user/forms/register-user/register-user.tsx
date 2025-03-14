@@ -24,8 +24,10 @@ import { emptyCreditCard } from "@/components/validation/credit-card-schema-form
 import { CreditCardFormUser } from "./credit-card-form-user";
 import { useData } from "@/hooks/useData";
 import { createClient } from "@/services/client";
+import { useState } from "react";
 
 export function RegisterUser() {
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
   const { setUsers } = useData();
   const {
@@ -45,25 +47,27 @@ export function RegisterUser() {
     creditCards: useFieldArray({ control, name: "creditCards" }),
   };
 
-  const onSubmit: SubmitHandler<IClientSchemaForm> = async (
-    data: IClientSchemaForm
-  ) => {
+  const onSubmit: SubmitHandler<IClientSchemaForm> = async (data) => {
+    setLoading(true);
     try {
       const formattedData: any = {
         ...data,
-        phones: data.phones ?? [],
       };
 
       const updatedData = await createClient(formattedData);
 
+      console.log("updatedData", updatedData);
+
       setUsers((prevUsers) => [...prevUsers, updatedData]);
 
-      router.push("/");
+      router.push("/usuarios");
 
       toast.success("Cliente cadastrado com sucesso!");
     } catch (error) {
       console.log(error);
       toast.error("Erro ao criar cliente!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -198,7 +202,12 @@ export function RegisterUser() {
         </div>
 
         <div className="flex gap-4 mt-4">
-          <ButtonGeneral text="Cadastrar" type="submit" className="w-full" />
+          <ButtonGeneral
+            className="w-full"
+            type="submit"
+            disabled={loading}
+            text={loading ? "Salvando..." : "Cadastrar"}
+          />
           <ButtonCancel
             text="Limpar"
             className="w-full"

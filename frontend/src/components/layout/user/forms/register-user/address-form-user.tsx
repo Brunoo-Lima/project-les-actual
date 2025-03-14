@@ -179,29 +179,40 @@ export function AddressFormUser({
         />
       </div>
 
-      <div className="flex gap-4">
-        <Checkbox
-          label="Entrega"
-          {...register(`addresses.${index}.delivery`)}
-          error={errors.delivery}
-          disabled={editSection !== section}
-        />
-        <Checkbox
-          label="Cobrança"
-          {...register(`addresses.${index}.charge`)}
-          error={errors.charge}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="">
+          <Checkbox
+            label="Entrega"
+            {...register(`addresses.${index}.delivery`)}
+            error={errors.delivery}
+            disabled={editSection !== section}
+          />
+          <Checkbox
+            label="Cobrança"
+            {...register(`addresses.${index}.charge`)}
+            error={errors.charge}
+            disabled={editSection !== section}
+          />
+
+          <Input
+            label="Nome endereço de entrega"
+            className="w-52"
+            placeholder="Digite o nome"
+            {...register(`addresses.${index}.identifierDelivery`)}
+            error={errors.identifierDelivery}
+            disabled={editSection !== section}
+          />
+        </div>
+
+        <Input
+          label="Nome endereço"
+          className="w-52"
+          placeholder="Digite o nome"
+          {...register(`addresses.${index}.identifier`)}
+          error={errors.identifier}
           disabled={editSection !== section}
         />
       </div>
-
-      <Input
-        label="Nome endereço de entrega"
-        className="w-52"
-        placeholder="Digite o nome"
-        {...register(`addresses.${index}.identifierDelivery`)}
-        error={errors.identifierDelivery}
-        disabled={editSection !== section}
-      />
 
       <Textarea
         label="Observação"
