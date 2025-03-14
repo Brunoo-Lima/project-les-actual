@@ -80,6 +80,7 @@ export function CreditCardFormUserEdit({
   const handleDeleteCreditCard = async (creditCardId: string) => {
     try {
       await deleteCreditCard(creditCardId, userId);
+
       toast.success("Cartão de crédito removido com sucesso!");
     } catch (error) {
       console.error("Erro ao deletar cartão de crédito:", error);

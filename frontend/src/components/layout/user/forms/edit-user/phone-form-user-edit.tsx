@@ -58,8 +58,6 @@ export function PhoneFormUserEdit({
     name: "phones",
   });
 
-  const phoneType = watch("type");
-
   useEffect(() => {
     console.log("Phones recebidos:", phones);
     if (phones) {
@@ -124,7 +122,6 @@ export function PhoneFormUserEdit({
       <div className="flex flex-col gap-4">
         {fields.map((phone, index) => {
           const phoneType = watch(`phones.${index}.type`);
-
           return (
             <div className="flex flex-col gap-2" key={index}>
               <h3 className="text-xl font-semibold text-primary-dark">

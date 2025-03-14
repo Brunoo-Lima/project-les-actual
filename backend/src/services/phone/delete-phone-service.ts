@@ -17,7 +17,7 @@ class DeletePhoneService {
 
       return { phone };
     } catch (error) {
-      console.error('Erro ao deletar telefone!');
+      console.error('Erro ao deletar telefone!', error);
       throw new Error('Erro ao deletar telefone!');
     }
   }
