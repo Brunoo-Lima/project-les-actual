@@ -50,29 +50,31 @@ export function PhoneFormUserEdit({
     formState: { errors },
     setValue,
     watch,
+    reset,
   } = useForm({
     // resolver: yupResolver(ClientSchemaForm),
   });
   const { fields, append, remove } = useFieldArray({
     control,
     name: "phones",
+    keyName: "customId",
   });
 
   useEffect(() => {
-    console.log("Phones recebidos:", phones);
+    // console.log("phones recebidos", phones);
     if (phones) {
-      setValue("phones", phones);
+      reset({
+        phones: phones.map((phone) => ({
+          customId: phone.id, // Agora usamos 'customId' ao invés de 'id'
+          id: phone.id, // Mantemos o ID real
+          type: phone.type,
+          number: phone.number,
+        })),
+      });
     }
-  }, [phones, setValue]);
+  }, [phones, reset]);
 
-  useEffect(() => {
-    console.log(
-      "IDs dos telefones:",
-      fields.map((phone) => phone.id)
-    );
-  }, [fields]);
-
-  console.log("phones", phones);
+  // console.log("phones", phones);
 
   const onSubmit = async (data: any) => {
     setLoading(true);
@@ -98,7 +100,7 @@ export function PhoneFormUserEdit({
   };
 
   const handleRemovePhone = async (phoneId: string, index: number) => {
-    console.log("ID do telefone a ser removido:", phoneId);
+    // console.log("ID do telefone a ser removido:", phoneId);
     setLoading(true);
     if (phoneId) {
       try {
@@ -122,6 +124,7 @@ export function PhoneFormUserEdit({
       <div className="flex flex-col gap-4">
         {fields.map((phone, index) => {
           const phoneType = watch(`phones.${index}.type`);
+
           return (
             <div className="flex flex-col gap-2" key={index}>
               <h3 className="text-xl font-semibold text-primary-dark">

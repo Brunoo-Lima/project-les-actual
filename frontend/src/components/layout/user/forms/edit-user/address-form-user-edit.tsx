@@ -55,18 +55,41 @@ export function AddressFormUserEdit({
     handleSubmit,
     formState: { errors },
     setValue,
+    reset,
   } = useForm();
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: "addresses",
+    keyName: "customId",
   });
 
   useEffect(() => {
+    console.log("address rece", addresses);
     if (addresses) {
-      setValue("addresses", addresses);
+      reset({
+        addresses: addresses.map((address) => ({
+          customId: address.id,
+          id: address.id || "",
+          zipCode: address.zipCode || "",
+          street: address.street || "",
+          neighborhood: address.neighborhood || "",
+          number: address.number || "",
+          city: address.city || "",
+          state: address.state || "",
+          country: address.country || "",
+          typePublicPlace: address.typePublicPlace || "",
+          typeResidence: address.typeResidence || "",
+          delivery: address.delivery || false,
+          charge: address.charge || false,
+          identifierDelivery: address.identifierDelivery || "",
+          observation: address.observation || "",
+        })),
+      });
     }
-  }, [addresses, setValue]);
+  }, [addresses, reset]);
+
+  console.log("addresses", addresses);
 
   const onSubmit = async (data: any) => {
     setLoading(true);
@@ -89,46 +112,50 @@ export function AddressFormUserEdit({
     }
   };
 
-  const handleDeleteAddress = async (addressId: string) => {
+  const handleDeleteAddress = async (addressId: string, index: number) => {
+    setLoading(true);
     if (addressId) {
       try {
         await deleteAddress(addressId, userId);
+        remove(index);
         toast.success("Endereço removido com sucesso!");
       } catch (error) {
         console.error("Erro ao deletar endereço:", error);
         toast.error("Erro ao remover endereço");
+      } finally {
+        setLoading(false);
       }
     }
   };
 
-  // const handleAddCep = async (
-  //   e: FocusEvent<HTMLInputElement>,
-  //   index: number
-  // ) => {
-  //   const cep = e.target.value.replace(/[^0-9]/g, "");
+  const handleAddCep = async (
+    e: FocusEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const cep = e.target.value.replace(/[^0-9]/g, "");
 
-  //   try {
-  //     const data = await getCep(cep);
+    try {
+      const data = await getCep(cep);
 
-  //     if (data) {
-  //       setValue(`addresses.${index}.zipCode`, data.cep);
-  //       setValue(`addresses.${index}.street`, data.logradouro);
-  //       setValue(`addresses.${index}.city`, data.localidade);
-  //       setValue(`addresses.${index}.state`, data.uf);
-  //       setValue(`addresses.${index}.neighborhood`, data.bairro);
-  //     }
-  //   } catch (error) {
-  //     toast.warning("CEP inválido");
-  //   }
-  // };
+      if (data) {
+        setValue(`addresses.${index}.zipCode`, data.cep);
+        setValue(`addresses.${index}.street`, data.logradouro);
+        setValue(`addresses.${index}.city`, data.localidade);
+        setValue(`addresses.${index}.state`, data.uf);
+        setValue(`addresses.${index}.neighborhood`, data.bairro);
+      }
+    } catch (error) {
+      toast.warning("CEP inválido");
+    }
+  };
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-y-4 border-[0.5px] border-gray-600 rounded-md p-4"
     >
-      {addresses.map((address, index) => (
-        <div key={address.id || index} className="flex flex-col gap-2">
+      {fields.map((address, index) => (
+        <div key={index} className="flex flex-col gap-2">
           <h3 className="text-xl font-semibold text-primary-dark">
             Endereço {index + 1}
           </h3>
@@ -138,7 +165,7 @@ export function AddressFormUserEdit({
               label="CEP"
               placeholder="Digite o cep"
               {...register(`addresses.${index}.zipCode`, {
-                // onChange: (e) => handleAddCep(e, index),
+                onChange: (e) => handleAddCep(e, index),
               })}
               error={errors.zipCode as FieldError}
               // disabled={editSection !== section}
@@ -275,10 +302,8 @@ export function AddressFormUserEdit({
           <div>
             <ButtonCancel
               text="Remover endereço"
-              onClick={() => handleDeleteAddress(address.id as string)}
+              onClick={() => handleDeleteAddress(address.id, index)}
             />
-            {/* <button>Editar</button>
-            <button>Adicionar</button> */}
           </div>
         </div>
       ))}

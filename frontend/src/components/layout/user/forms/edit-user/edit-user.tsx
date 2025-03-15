@@ -101,20 +101,6 @@ export function EditUser() {
           startEditingSection={startEditingSection}
           stopEditingSection={stopEditingSection}
         />
-
-        <div className="flex gap-4 mt-4">
-          <ButtonGeneral
-            text="Salvar"
-            type="button"
-            className="w-full"
-            onClick={() => toast.success("Dados salvos com sucesso!")}
-          />
-          <ButtonCancel
-            text="Cancelar"
-            className="w-full"
-            onClick={() => router.push("/produtos")}
-          />
-        </div>
       </div>
     </section>
   );

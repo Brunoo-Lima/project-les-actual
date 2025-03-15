@@ -9,8 +9,9 @@ import { updateClient } from "@/services/client";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { SectionType } from "./edit-user";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { ButtonGeneral } from "@/components/ui/button/button-general";
 
 interface IPersonalUserProps {
   clientData: IUser | null;
@@ -25,6 +26,7 @@ export function PersonalUser({
   startEditingSection,
   stopEditingSection,
 }: IPersonalUserProps) {
+  const [loading, setLoading] = useState<boolean>(false);
   const {
     register,
     formState: { errors },
@@ -47,6 +49,7 @@ export function PersonalUser({
   const onSubmit: SubmitHandler<Partial<IClientSchemaForm>> = async (
     data: any
   ) => {
+    setLoading(true);
     try {
       if (clientData?.id) {
         await updateClient(clientData?.id, data);
@@ -57,6 +60,8 @@ export function PersonalUser({
       stopEditingSection();
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -127,8 +132,14 @@ export function PersonalUser({
         />
       </div>
 
+      <ButtonGeneral
+        className="min-w-28"
+        type="submit"
+        text={loading ? "Salvando..." : "Salvar dados"}
+        disabled={loading}
+      />
+
       <button>Editar</button>
-      <button>Salvar dados</button>
     </form>
   );
 }

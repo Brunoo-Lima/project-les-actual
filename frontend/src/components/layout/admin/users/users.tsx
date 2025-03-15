@@ -93,6 +93,8 @@ export function Users() {
     }
   };
 
+  if (loading) return <p>Carregando...</p>;
+
   if (!users.length) return;
 
   return (
@@ -108,7 +110,7 @@ export function Users() {
       </article>
 
       {loading ? (
-        <p>Carregando</p>
+        <p>Carregando...</p>
       ) : (
         <TableUser data={users} onDeleteUser={handleDeleteUser} />
       )}

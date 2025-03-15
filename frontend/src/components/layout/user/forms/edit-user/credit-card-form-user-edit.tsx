@@ -42,19 +42,34 @@ export function CreditCardFormUserEdit({
     control,
     handleSubmit,
     formState: { errors },
-    setValue,
+    reset,
   } = useForm();
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: "creditCards",
+    keyName: "customId",
   });
 
   useEffect(() => {
+    console.log("creditCards rece", creditCards);
     if (creditCards) {
-      setValue("creditCards", creditCards);
+      reset({
+        creditCards: creditCards.map((creditCard) => ({
+          customId: creditCard.id,
+          id: creditCard.id,
+          number: creditCard.number,
+          flag: creditCard.flag,
+          namePrinted: creditCard.namePrinted,
+          dateExpired: creditCard.dateExpired,
+          cvv: creditCard.cvv,
+          preferential: creditCard.preferential,
+        })),
+      });
     }
-  }, [creditCards, setValue]);
+  }, [creditCards, reset]);
+
+  console.log("creditCards", creditCards);
 
   const onSubmit = async (data: any) => {
     setLoading(true);
@@ -77,14 +92,21 @@ export function CreditCardFormUserEdit({
     }
   };
 
-  const handleDeleteCreditCard = async (creditCardId: string) => {
+  const handleDeleteCreditCard = async (
+    creditCardId: string,
+    index: number
+  ) => {
+    setLoading(true);
     try {
       await deleteCreditCard(creditCardId, userId);
+      remove(index);
 
       toast.success("Cartão de crédito removido com sucesso!");
     } catch (error) {
       console.error("Erro ao deletar cartão de crédito:", error);
       toast.error("Erro ao remover cartão de crédito");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -93,8 +115,8 @@ export function CreditCardFormUserEdit({
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-y-4 border-[0.5px] border-gray-600 rounded-md p-4"
     >
-      {creditCards.map((field, index) => (
-        <div className="flex flex-col gap-2" key={field.id}>
+      {fields.map((creditCard, index) => (
+        <div className="flex flex-col gap-2" key={index}>
           <h3 className="text-xl font-semibold text-primary-dark">
             Cartão de crédito {index + 1}
           </h3>
@@ -158,7 +180,7 @@ export function CreditCardFormUserEdit({
 
           <ButtonCancel
             text="Remover cartão"
-            onClick={() => handleDeleteCreditCard(field.id)}
+            onClick={() => handleDeleteCreditCard(creditCard.id, index)}
           />
         </div>
       ))}

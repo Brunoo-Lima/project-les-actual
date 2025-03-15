@@ -43,26 +43,26 @@ export function AddressFormUser({
   editSection,
   section,
 }: IAddressFormUserProps) {
-  // const handleAddCep = async (
-  //   e: FocusEvent<HTMLInputElement>,
-  //   index: number
-  // ) => {
-  //   const cep = e.target.value.replace(/[^0-9]/g, "");
+  const handleAddCep = async (
+    e: FocusEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const cep = e.target.value.replace(/[^0-9]/g, "");
 
-  //   try {
-  //     const data = await getCep(cep);
+    try {
+      const data = await getCep(cep);
 
-  //     if (data) {
-  //       setValue(`addresses.${index}.zipCode`, data.cep);
-  //       setValue(`addresses.${index}.street`, data.logradouro);
-  //       setValue(`addresses.${index}.city`, data.localidade);
-  //       setValue(`addresses.${index}.state`, data.uf);
-  //       setValue(`addresses.${index}.neighborhood`, data.bairro);
-  //     }
-  //   } catch (error) {
-  //     toast.warning("CEP inválido");
-  //   }
-  // };
+      if (data) {
+        setValue(`addresses.${index}.zipCode`, data.cep);
+        setValue(`addresses.${index}.street`, data.logradouro);
+        setValue(`addresses.${index}.city`, data.localidade);
+        setValue(`addresses.${index}.state`, data.uf);
+        setValue(`addresses.${index}.neighborhood`, data.bairro);
+      }
+    } catch (error) {
+      toast.warning("CEP inválido");
+    }
+  };
 
   return (
     <div className="flex flex-col gap-y-4 border-[0.5px] border-gray-600 rounded-md p-4">
@@ -75,7 +75,7 @@ export function AddressFormUser({
           label="CEP"
           placeholder="Digite o cep"
           {...register(`addresses.${index}.zipCode`, {
-            // onChange: (e) => handleAddCep(e, index),
+            onChange: (e) => handleAddCep(e, index),
           })}
           error={errors.zipCode}
           disabled={editSection !== section}
@@ -147,7 +147,7 @@ export function AddressFormUser({
       <div className="grid grid-cols-3 gap-4">
         <Input
           label="Cidade"
-          placeholder="Digite o cidade"
+          placeholder="Digite a cidade"
           {...register(`addresses.${index}.city`)}
           error={errors.city}
           disabled={editSection !== section}

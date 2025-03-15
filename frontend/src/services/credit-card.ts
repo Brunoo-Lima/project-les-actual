@@ -36,7 +36,7 @@ export const updateCreditCard = async (
 ) => {
   try {
     const response = await fetch(
-      `http://localhost:3333/address?user_id=${user_id}&creditCard_id=${creditCard_id}`,
+      `http://localhost:3333/credit-card?user_id=${user_id}&creditCard_id=${creditCard_id}`,
       {
         method: "PATCH",
         headers: {
