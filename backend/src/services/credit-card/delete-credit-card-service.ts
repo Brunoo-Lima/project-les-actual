@@ -7,8 +7,8 @@ class DeleteCreditCardService {
     this.deleteCreditCardDb = new DeleteCreditCardDb();
   }
 
-  async execute(credit_card: string) {
-    if (!credit_card) {
+  async execute(creditCard_id: string) {
+    if (!creditCard_id) {
       throw new Error('ID do cartão de crédito não encontrado!');
     }
 
@@ -16,7 +16,7 @@ class DeleteCreditCardService {
 
     try {
       const creditCard = await this.deleteCreditCardDb.deleteCreditCard(
-        credit_card
+        creditCard_id
       );
 
       return creditCard;
