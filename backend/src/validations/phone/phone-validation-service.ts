@@ -15,17 +15,20 @@ class PhoneValidation {
   } {
     const cleanedNumber = number.replace(/\D/g, '');
 
+    // Aceita números com 10 ou 11 dígitos
     if (cleanedNumber.length < 10 || cleanedNumber.length > 11) {
       return { isValid: false };
     }
 
+    // Valida fixo (10 dígitos)
     if (cleanedNumber.length === 10) {
-      const isValidFixed = /^[1-9]{2}[2-5]\d{7}$/.test(cleanedNumber);
+      const isValidFixed = /^[1-9]{2}\d{8}$/.test(cleanedNumber); // Aceita qualquer número após o DDD
       return { isValid: isValidFixed, type: isValidFixed ? 'Fixo' : undefined };
     }
 
+    // Valida celular (11 dígitos)
     if (cleanedNumber.length === 11) {
-      const isValidMobile = /^[1-9]{2}9\d{8}$/.test(cleanedNumber);
+      const isValidMobile = /^[1-9]{2}9\d{8}$/.test(cleanedNumber); // Exige nono dígito como 9
       return {
         isValid: isValidMobile,
         type: isValidMobile ? 'Móvel' : undefined,
