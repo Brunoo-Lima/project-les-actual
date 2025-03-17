@@ -61,12 +61,11 @@ export function PhoneFormUserEdit({
   });
 
   useEffect(() => {
-    // console.log("phones recebidos", phones);
     if (phones) {
       reset({
         phones: phones.map((phone) => ({
           customId: phone.id, // Agora usamos 'customId' ao invés de 'id'
-          id: phone.id, // Mantemos o ID real
+          id: phone.id,
           type: phone.type,
           number: phone.number,
         })),
@@ -74,17 +73,18 @@ export function PhoneFormUserEdit({
     }
   }, [phones, reset]);
 
-  // console.log("phones", phones);
-
   const onSubmit = async (data: any) => {
     setLoading(true);
     try {
       for (const phone of data.phones) {
         if (phone.id) {
           // Se o telefone já tem ID, é uma atualização
-          const data = await updatePhone(userId, phone.id, phone);
 
-          console.log("teste", data);
+          console.log("data aaa", data);
+
+          const updatedData = await updatePhone(userId, phone.id, phone);
+
+          console.log("teste", updatedData);
         } else {
           // Se não tem ID, é um novo telefone
           await createPhone(userId, phone);
@@ -147,12 +147,6 @@ export function PhoneFormUserEdit({
                     value="Móvel"
                     {...register(`phones.${index}.type`)}
                   />
-
-                  {/* {errors.phones?.[index]?.type && (
-                  <small className="text-error text-sm mt-1">
-                    {errors.root?.message}
-                  </small>
-                )} */}
                 </div>
 
                 <Controller

@@ -268,30 +268,32 @@ export function AddressFormUserEdit({
               // disabled={editSection !== section}
             />
           </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="">
+              <Checkbox
+                label="Entrega"
+                {...register(`addresses.${index}.delivery`)}
+              />
+              <Checkbox
+                label="Cobrança"
+                {...register(`addresses.${index}.charge`)}
+              />
 
-          <div className="flex gap-4">
-            <Checkbox
-              label="Entrega"
-              {...register(`addresses.${index}.delivery`)}
-              error={errors.delivery as FieldError}
-              // disabled={editSection !== section}
-            />
-            <Checkbox
-              label="Cobrança"
-              {...register(`addresses.${index}.charge`)}
-              error={errors.charge as FieldError}
-              // disabled={editSection !== section}
+              <Input
+                label="Nome endereço de entrega"
+                className="w-52"
+                placeholder="Digite o nome"
+                {...register(`addresses.${index}.identifierDelivery`)}
+              />
+            </div>
+
+            <Input
+              label="Nome endereço"
+              className="w-52"
+              placeholder="Digite o nome"
+              {...register(`addresses.${index}.identifier`)}
             />
           </div>
-
-          <Input
-            label="Nome endereço de entrega"
-            className="w-52"
-            placeholder="Digite o nome"
-            {...register(`addresses.${index}.identifierDelivery`)}
-            error={errors.identifierDelivery as FieldError}
-            // disabled={editSection !== section}
-          />
 
           <Textarea
             label="Observação"

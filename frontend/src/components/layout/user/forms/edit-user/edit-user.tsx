@@ -56,7 +56,18 @@ export function EditUser() {
   const stopEditingSection = () => setEditSection(null);
 
   if (loading) {
-    return <div>Carregando...</div>;
+    return (
+      <div
+        style={{
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        Carregando...
+      </div>
+    );
   }
 
   if (!client) {
@@ -64,7 +75,7 @@ export function EditUser() {
   }
 
   return (
-    <section className="min-h-screen py-8">
+    <section className="min-h-screen py-8 space-y-4">
       <TitlePage title="Editar meus dados" />
 
       <PersonalUser

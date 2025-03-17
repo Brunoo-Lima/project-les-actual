@@ -133,13 +133,11 @@ export function PersonalUser({
       </div>
 
       <ButtonGeneral
-        className="min-w-28"
+        className="min-w-28 w-28"
         type="submit"
-        text={loading ? "Salvando..." : "Salvar dados"}
+        text={loading ? "Salvando..." : "Editar"}
         disabled={loading}
       />
-
-      <button>Editar</button>
     </form>
   );
 }

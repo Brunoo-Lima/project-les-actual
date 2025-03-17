@@ -4,10 +4,10 @@ import { getListClient } from "@/services/list-client";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Usuários",
+  title: "Clientes",
 };
 
-export default async function UsersPage() {
+export default async function ClientsPage() {
   // const usersList = await getListUsers();
 
   // const clients = await getListClient();

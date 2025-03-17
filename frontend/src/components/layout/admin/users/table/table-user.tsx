@@ -105,7 +105,7 @@ export function TableUser({ data, onDeleteUser }: ITableUserProps) {
         </table>
       ) : (
         <p className="text-center text-primary-light text-base font-normal mt-6">
-          Não há usuários
+          Não há clientes
         </p>
       )}
 

@@ -66,9 +66,9 @@ export function Sidebar() {
 
             <Item
               activeTooltip={activeTooltip}
-              href="/usuarios"
+              href="/clientes"
               icon={<UsersIcon size={24} color="#2DD4BF" />}
-              text="Usuários"
+              text="Clientes"
               handleMouseEnter={() => handleMouseEnter("users")}
               handleMouseLeave={handleMouseLeave}
               tooltip="users"

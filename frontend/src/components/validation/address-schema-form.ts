@@ -36,7 +36,6 @@ export const addressEmpty = {
   neighborhood: "",
   number: "",
   typePublicPlace: "",
-  publicPlace: "",
   city: "",
   state: "",
   country: "Brasil",

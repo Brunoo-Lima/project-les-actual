@@ -14,13 +14,16 @@ export const createPhone = async (user_id: string, phone: IPhone) => {
     );
 
     if (!response.ok) {
-      throw new Error(`Algo deu errado na requisição - ${response.status}`);
+      const errorResponse = await response.json(); // Captura o corpo da resposta
+      console.error("Resposta do backend:", errorResponse);
+      throw new Error(`Algo deu errado na requisição - ${response.statusText}`);
     }
 
     const data = await response.json();
 
     return data;
   } catch (error) {
+    console.error("Algo deu errado ao criar telefone!", error);
     throw new Error("Erro ao criar telefone!");
   }
 };

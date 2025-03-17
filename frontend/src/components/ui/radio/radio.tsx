@@ -18,10 +18,7 @@ export const Radio = forwardRef<HTMLInputElement, IRadioProps>(
           {...rest}
         />
         {label && (
-          <label
-            htmlFor={rest.id || value}
-            className="font-normal text-base text-primary-light"
-          >
+          <label className="font-normal text-base text-primary-light">
             {label}
           </label>
         )}

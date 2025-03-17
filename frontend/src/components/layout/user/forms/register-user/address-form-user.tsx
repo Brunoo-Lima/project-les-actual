@@ -75,7 +75,7 @@ export function AddressFormUser({
           label="CEP"
           placeholder="Digite o cep"
           {...register(`addresses.${index}.zipCode`, {
-            onChange: (e) => handleAddCep(e, index),
+            onBlur: (e) => handleAddCep(e, index),
           })}
           error={errors.zipCode}
           disabled={editSection !== section}
