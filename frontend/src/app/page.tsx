@@ -7,13 +7,13 @@ export default function Home() {
         href="/produtos"
         className="text-white text-2xl hover:text-primary-dark transition duration-300 "
       >
-        produtos
+        Produtos
       </Link>
       <Link
-        href="/usuarios"
+        href="/clientes"
         className="text-white text-2xl hover:text-primary-dark transition duration-300 "
       >
-        usuarios
+        Clientes
       </Link>
     </div>
   );

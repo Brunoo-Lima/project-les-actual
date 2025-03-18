@@ -111,8 +111,10 @@ export function Users() {
 
       {loading ? (
         <p>Carregando...</p>
-      ) : (
+      ) : users.length > 0 ? (
         <TableUser data={users} onDeleteUser={handleDeleteUser} />
+      ) : (
+        <p>Não há clientes!</p>
       )}
 
       {isOpenModalFilter && (
