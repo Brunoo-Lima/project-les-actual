@@ -4,6 +4,7 @@ import path from 'path';
 import multer from 'multer';
 import uploadsConfig from '../config/multer';
 import { UpdateProductController } from '../controllers/product/update-product-controller';
+import { ListProductController } from '../controllers/product/list-product-controller';
 
 const productRoutes = Router();
 
@@ -17,6 +18,11 @@ const upload = multer(uploadsConfig);
 productRoutes.post('/product', upload.single('image'), async (req, res) => {
   const createProductController = new CreateProductController();
   await createProductController.handle(req, res);
+});
+
+productRoutes.get('/products', async (req, res) => {
+  const listProductController = new ListProductController();
+  await listProductController.handle(req, res);
 });
 
 productRoutes.patch('/product', upload.single('image'), async (req, res) => {

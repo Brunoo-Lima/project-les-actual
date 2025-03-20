@@ -11,18 +11,50 @@ class UpdateProductService {
     this.validationProduct = new ProductValidationService();
   }
 
-  async execute(product_id: string, productData: Partial<IProduct>) {
+  async execute(
+    product_id: string,
+    {
+      category,
+      image,
+      name,
+      price,
+      brand,
+      description,
+      material,
+      universe,
+      inactiveReason,
+      isAvailable,
+      depth,
+      height,
+      weight,
+      width,
+      quantity,
+    }: Partial<IProduct>
+  ) {
     if (!product_id) {
       throw new Error('Id do produto é obrigatório!');
     }
 
-    this.validationProduct.validateNameProduct(productData.name as string);
+    this.validationProduct.validateNameProduct(name as string, product_id);
 
     try {
-      const product = await this.updateProductDb.updateProduct(
-        product_id,
-        productData
-      );
+      const product = await this.updateProductDb.updateProduct(product_id, {
+        category,
+        image,
+        name,
+        price,
+        brand,
+        description,
+        material,
+        universe,
+        inactiveReason,
+        isAvailable,
+        depth,
+        height,
+        weight,
+        width,
+        quantity,
+      });
 
       return { product };
     } catch (error) {
