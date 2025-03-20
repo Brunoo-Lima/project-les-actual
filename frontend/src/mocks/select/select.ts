@@ -65,3 +65,15 @@ export const selectStates: Options[] = [
   { value: "SE", label: "Sergipe" },
   { value: "TO", label: "Tocantins" },
 ];
+
+export const selectParcelas: Options[] = [
+  { value: "1x", label: "1x" },
+  { value: "2x", label: "2x" },
+  { value: "3x", label: "3x" },
+  { value: "4x", label: "4x" },
+  { value: "5x", label: "5x" },
+  { value: "6x", label: "6x" },
+  { value: "7x", label: "7x" },
+  { value: "8x", label: "8x" },
+  { value: "9x", label: "9x" },
+];

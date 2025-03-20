@@ -10,11 +10,15 @@ import ModalDetailsOrder from "../shopping-cart/modal-details-order";
 import { CardOrder } from "./card-order";
 import { ordersFinishedList } from "./../../../../mocks/orders-finished-list";
 import { ButtonsActions } from "./buttons-actions";
+import { ModalExchange } from "./modal/modal-exchange";
 
 export function Orders() {
   const { order } = useCheckout();
   const [orders, setOrders] = useState(ordersFinishedList);
   const [isOpenDetails, setIsOpenDetails] = useState<boolean>(false);
+  const [chooseItemForExchange, setChooseItemExchange] = useState("");
+  const [isOpenModalItemForExchange, setIsOpenModalItemForExchange] =
+    useState<boolean>(false);
 
   //Ta dando b.o na hora de adiiconar um novo pedido, precisa ser melhorado quando implementar o backend
 
@@ -40,6 +44,11 @@ export function Orders() {
 
   // console.log('order', order);
   // console.log('ordersss', orders);
+
+  const handleOpenModalItemForExchange = (item: string) => {
+    setChooseItemExchange(item);
+    setIsOpenModalItemForExchange(true);
+  };
 
   if (!orders) return redirect("/produtos");
 
@@ -98,7 +107,10 @@ export function Orders() {
                 Pedido: {item.delivery}
               </p>
 
-              <ButtonsActions item={item as any} />
+              <ButtonsActions
+                item={item as any}
+                onOpenModalForExchange={handleOpenModalItemForExchange}
+              />
 
               <div className="absolute bottom-0 left-0">
                 <p>Total do pedido:</p>
@@ -118,6 +130,16 @@ export function Orders() {
           <ModalDetailsOrder
             order={order}
             onClose={() => setIsOpenDetails(false)}
+          />
+        </ModalBackground>
+      )}
+
+      {isOpenModalItemForExchange && (
+        <ModalBackground>
+          <ModalExchange
+            order={order}
+            onClose={() => setIsOpenModalItemForExchange(false)}
+            chooseItem={chooseItemForExchange}
           />
         </ModalBackground>
       )}
