@@ -3,7 +3,7 @@ import { ICreditCard } from "./ICreditCard";
 import { IProduct } from "./IProduct";
 
 export interface IOrder {
-  items: IProduct[];
+  items: ICartItem[];
   total: number;
   address: IAddress | null;
   payment: ICreditCard[] | null;
@@ -11,4 +11,8 @@ export interface IOrder {
   freight: number;
   coupon: string | null;
   discountValue: number;
+}
+
+export interface ICartItem extends IProduct {
+  quantity: number;
 }

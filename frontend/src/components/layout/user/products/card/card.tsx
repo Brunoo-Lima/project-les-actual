@@ -1,7 +1,8 @@
 import { IProduct } from "@/@types/IProduct";
 import { useCheckout } from "@/hooks/useCheckout";
-import { ShoppingBag } from "lucide-react";
+import { MinusIcon, PlusIcon, ShoppingBag } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
 import { toast } from "sonner";
 
 interface ICardProps {
@@ -9,11 +10,18 @@ interface ICardProps {
 }
 
 export function Card({ product }: ICardProps) {
-  const { addProductToCart } = useCheckout();
+  const { addProductToCart, cart } = useCheckout();
+
+  const [quantity, setQuantity] = useState<number>(0);
+
+  const handleIncreaseQuantity = () => setQuantity((prev) => prev + 1);
+  const handleDecreaseQuantity = () =>
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   const handleAddProductToCart = () => {
+    addProductToCart(product, quantity);
     toast.success("Produto adicionado ao carrinho!");
-    addProductToCart(product);
+    setQuantity(1);
   };
 
   return (
@@ -35,18 +43,39 @@ export function Card({ product }: ICardProps) {
           </small>
           <p className="text-base font-thin">{product.name}</p>
           <p className="text-base font-semibold">R$ {product.price}</p>
+          <p className="text-sm font-semibold">{product.description}</p>
         </div>
 
-        <button
-          type="button"
-          onClick={handleAddProductToCart}
-          className="bg-primary p-1 mt-3 rounded-md flex items-center justify-center gap-2 hover:bg-primary-dark transition duration-300"
-        >
-          <ShoppingBag size={16} color="#000000" />
-          <p className="text-base font-semibold text-background-dark">
-            Carrinho
-          </p>
-        </button>
+        <div className="flex items-center justify-between gap-4 mt-3">
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={handleDecreaseQuantity}
+              className="bg-primary p-1 rounded-md flex items-center justify-center hover:bg-primary-dark transition duration-300"
+            >
+              <MinusIcon size={16} color="#000000" />
+            </button>
+            <p className="text-base font-semibold text-white">{quantity}</p>
+            <button
+              type="button"
+              onClick={handleIncreaseQuantity}
+              className="bg-primary p-1 rounded-md flex items-center justify-center hover:bg-primary-dark transition duration-300"
+            >
+              <PlusIcon size={16} color="#000000" />
+            </button>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleAddProductToCart}
+            className="bg-primary p-1.5 w-96 rounded-md flex items-center justify-center gap-2 hover:bg-primary-dark transition duration-300"
+          >
+            <ShoppingBag size={16} color="#000000" />
+            <p className="text-base font-semibold text-background-dark">
+              Adicionar
+            </p>
+          </button>
+        </div>
       </div>
     </div>
   );

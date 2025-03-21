@@ -81,18 +81,7 @@ export function Payment() {
   return (
     <div className="flex flex-col gap-y-4 w-[600px] min-h-[500px] h-max p-6 border border-gray-700 rounded-lg overflow-hidden">
       <h2 className="text-lg font-bold">Forma de pagamento</h2>
-      {/* <div className="space-y-4">
-        <Checkbox label="Cupom de troca" />
-        <Checkbox label="Cartão de crédito" />
 
-
-      </div>
-
-
-      <div>
-        <Input label="Valor do cupom"  />
-
-      </div> */}
       <div className="overflow-auto h-[400px] container-address-form flex flex-col gap-4">
         {cards.length > 0 ? (
           cards.map((card) => (

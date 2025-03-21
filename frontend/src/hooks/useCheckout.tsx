@@ -4,24 +4,24 @@ import { createContext, ReactNode, useContext, useMemo, useState } from "react";
 import { IAddress } from "@/@types/IAddress";
 import { ICreditCard } from "@/@types/ICreditCard";
 import { IProduct } from "@/@types/IProduct";
-import { IOrder } from "@/@types/IOrder";
+import { ICartItem, IOrder } from "@/@types/IOrder";
 import { toast } from "sonner";
 
 interface ICheckoutContextProps {
-  cart: IProduct[];
-  setCart: React.Dispatch<React.SetStateAction<IProduct[]>>;
+  cart: ICartItem[];
+  setCart: React.Dispatch<React.SetStateAction<ICartItem[]>>;
   addresses: IAddress[];
   selectedAddress: IAddress | null;
   cards: ICreditCard[];
   selectedCreditCard: ICreditCard | null;
-  addProductToCart: (product: IProduct) => void;
+  addProductToCart: (product: IProduct, quantity: number) => void;
   handleSelectAddress: (address: IAddress) => void;
   handleAddAddressOnOrder: (address: IAddress) => void;
   handleSelectCreditCard: (card: ICreditCard) => void;
   handleAddCreditCardOnOrder: (card: ICreditCard) => void;
-  decrementItemCart: (id: number) => void;
-  incrementItemCart: (id: number) => void;
-  removeItemCart: (id: number) => void;
+  decrementItemCart: (id: string) => void;
+  incrementItemCart: (id: string) => void;
+  removeItemCart: (id: string) => void;
   order: IOrder;
   setOrder: React.Dispatch<React.SetStateAction<IOrder>>;
   applyCoupon: (coupon: string) => void;
@@ -34,7 +34,7 @@ interface ICheckoutProvider {
 export const CheckoutContext = createContext({} as ICheckoutContextProps);
 
 export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
-  const [cart, setCart] = useState<IProduct[]>([]);
+  const [cart, setCart] = useState<ICartItem[]>([]);
   const [addresses, setAddresses] = useState<IAddress[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<IAddress | null>(null);
   const [cards, setCards] = useState<ICreditCard[]>([]);
@@ -51,29 +51,32 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
     discountValue: 0,
   });
 
-  const addProductToCart = (product: IProduct) => {
+  const updateCart = (cartItems: ICartItem[]) => {
+    const newTotal = cartItems.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    );
+
+    setOrder((prevOrder) => ({
+      ...prevOrder,
+      items: cartItems,
+      total: newTotal + prevOrder.freight,
+    }));
+
+    return cartItems;
+  };
+
+  const addProductToCart = (product: IProduct, quantity: number) => {
     setCart((prevItems) => {
       const updatedCart = prevItems.some((item) => item.id === product.id)
         ? prevItems.map((item) =>
             item.id === product.id
-              ? { ...item, quantity: item.quantity + 1 }
+              ? { ...item, quantity: item.quantity + quantity }
               : item
           )
-        : [...prevItems, { ...product, quantity: 1 }];
+        : [...prevItems, { ...product, quantity }];
 
-      const newTotal = updatedCart.reduce(
-        (acc, item) => acc + item.price * item.quantity,
-        0
-      );
-
-      // Atualiza a ordem com o novo carrinho
-      setOrder((prevOrder) => ({
-        ...prevOrder,
-        items: updatedCart,
-        total: newTotal + prevOrder.freight,
-      }));
-
-      return updatedCart;
+      return updateCart(updatedCart);
     });
   };
 
@@ -104,7 +107,7 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
     }));
   };
 
-  const decrementItemCart = (id: number) => {
+  const decrementItemCart = (id: string) => {
     setCart((prev) => {
       const updatedCart = prev
         .map((item) =>
@@ -127,7 +130,7 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
     });
   };
 
-  const incrementItemCart = (id: number) => {
+  const incrementItemCart = (id: string) => {
     setCart((prev) => {
       const updatedCart = prev.map((item) =>
         item.id === id ? { ...item, quantity: item.quantity + 1 } : item
@@ -146,8 +149,21 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
     });
   };
 
-  const removeItemCart = (id: number) => {
-    setCart((prev) => prev.filter((item) => item.id !== id));
+  const removeItemCart = (id: string) => {
+    setCart((prev) => {
+      const updatedCart = prev.filter((item) => item.id !== id);
+
+      setOrder((prevOrder) => ({
+        ...prevOrder,
+        items: updatedCart,
+        total: updatedCart.reduce(
+          (acc, item) => acc + item.price * item.quantity,
+          0
+        ),
+      }));
+
+      return updatedCart;
+    });
   };
 
   const handleSelectAddress = (address: IAddress) => {
