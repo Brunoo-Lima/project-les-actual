@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { ButtonLogin } from '@/components/ui/button/button-login/button-login';
-import { Input } from '@/components/ui/input/input';
-import { TitleLogin } from '@/components/ui/title/title-login/title-login';
-import { useRouter } from 'next/navigation';
+import { ButtonLogin } from "@/components/ui/button/button-login/button-login";
+import { Input } from "@/components/ui/input/input";
+import { TitleLogin } from "@/components/ui/title/title-login/title-login";
+import { useRouter } from "next/navigation";
 
 export function UserRegister() {
   const router = useRouter();
@@ -26,7 +26,7 @@ export function UserRegister() {
         <ButtonLogin
           type="button"
           text="Registrar"
-          onClick={() => router.push('/')}
+          onClick={() => router.push("/")}
         />
       </div>
     </section>

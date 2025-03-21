@@ -15,6 +15,7 @@ import { AddressFormUserEdit } from "./address-form-user-edit";
 import { CreditCardFormUserEdit } from "./credit-card-form-user-edit";
 import { IUser } from "@/@types/IUser";
 import { PhoneFormUserEdit } from "./phone-form-user-edit";
+import { useUseAuth } from "@/hooks/useAuth";
 
 export type SectionType =
   | "addresses"
@@ -25,10 +26,13 @@ export type SectionType =
 
 export function EditUser() {
   const { id } = useParams();
+  const { user } = useUseAuth();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
   const [editSection, setEditSection] = useState<SectionType>(null);
   const [client, setClient] = useState<IUser | null>(null);
+
+  console.log("userrrr", user);
 
   useEffect(() => {
     if (id) {
