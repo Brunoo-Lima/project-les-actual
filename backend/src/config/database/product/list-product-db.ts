@@ -2,7 +2,32 @@ import { prismaClient } from '../../prisma-client/prisma-client';
 
 class ListProductDb {
   async listProduct() {
-    return await prismaClient.product.findMany();
+    return await prismaClient.product.findMany({
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        price: true,
+
+        category: true,
+        image: true,
+        brand: true,
+        universe: true,
+        material: true,
+        depth: true,
+        height: true,
+        weight: true,
+        width: true,
+        isAvailable: true,
+        inactiveReason: true,
+        stockId: true,
+        stock: {
+          select: {
+            quantity: true,
+          },
+        },
+      },
+    });
   }
 }
 

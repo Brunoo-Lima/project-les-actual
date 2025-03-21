@@ -1,10 +1,12 @@
 import { UpdateProductDb } from '../../config/database/product/update-product-db';
+import { prismaClient } from '../../config/prisma-client/prisma-client';
 import { IProduct } from '../../types/IProduct';
 import { ProductValidationService } from '../../validations/product/product-validation-service';
 
 class UpdateProductService {
   private updateProductDb: UpdateProductDb;
   private validationProduct: ProductValidationService;
+  private MIN_SALES_VALUE = 10;
 
   constructor() {
     this.updateProductDb = new UpdateProductDb();
@@ -37,6 +39,30 @@ class UpdateProductService {
 
     if (name) {
       this.validationProduct.validateNameProduct(name as string, product_id);
+    }
+
+    const existingProduct = await prismaClient.product.findUnique({
+      where: { id: product_id },
+      include: {
+        orderItems: true,
+        stock: true,
+      },
+    });
+
+    if (!existingProduct) {
+      throw new Error('Produto não encontrado');
+    }
+
+    if (
+      existingProduct.stock?.quantity === 0 &&
+      existingProduct.orderItems.reduce(
+        (sum: number, sale: any) => sum + sale.price,
+        0
+      ) < this.MIN_SALES_VALUE
+    ) {
+      isAvailable = false;
+      inactiveReason =
+        'Inativado automaticamente por falta de estoque e vendas insuficientes.';
     }
 
     try {

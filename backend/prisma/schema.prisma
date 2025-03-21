@@ -195,7 +195,7 @@ model CartItem {
 model OrderItem {
   id        String  @id @default(uuid())
   quantity  Int
-  price     Decimal
+  price     Float
   productId String
   orderId   String
 

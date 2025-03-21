@@ -17,6 +17,8 @@ class ProductValidationService {
       throw new Error('Já existe um produto com esse nome.');
     }
   }
+
+  async inactivateProductEqualToZero() {}
 }
 
 export { ProductValidationService };

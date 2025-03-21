@@ -139,7 +139,7 @@ CREATE TABLE "cart_items" (
 CREATE TABLE "order_items" (
     "id" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL,
-    "price" DECIMAL(65,30) NOT NULL,
+    "price" DOUBLE PRECISION NOT NULL,
     "productId" TEXT NOT NULL,
     "orderId" TEXT NOT NULL,
 

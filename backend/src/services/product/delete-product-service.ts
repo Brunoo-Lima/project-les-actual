@@ -8,6 +8,10 @@ class DeleteProductService {
   }
 
   async execute(product_id: string) {
+    if (!product_id) {
+      throw new Error('ID do produto é obrigatório');
+    }
+
     try {
       const deleteProduct = await this.deleteProductDb.deleteProduct(
         product_id
