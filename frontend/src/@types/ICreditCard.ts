@@ -1,5 +1,5 @@
 export interface ICreditCard {
-  id: number;
+  id: string;
   flag: string;
   number: string;
   namePrinted: string;

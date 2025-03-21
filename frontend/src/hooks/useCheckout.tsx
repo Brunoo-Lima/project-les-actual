@@ -165,7 +165,7 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
     setSelectedCreditCard(card);
     setOrder((prevOrder) => ({
       ...prevOrder,
-      payment: card,
+      payment: [card],
     }));
   };
 
