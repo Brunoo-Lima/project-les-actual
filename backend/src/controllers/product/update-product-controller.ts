@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { IProduct } from '../../types/IProduct';
 import { UpdateProductService } from '../../services/product/update-product-service';
 
 class UpdateProductController {
@@ -22,29 +21,13 @@ class UpdateProductController {
       'stock.quantity': stockQuantity,
     } = req.body;
 
-    //Consertar pois sem imagem nao atualiza
-
-    console.log(image);
-
-    let imageUrl;
+    let imageUrl = image;
 
     if (req.file) {
       imageUrl = `${req.protocol}://${req.get('host')}/images/${
         req.file.filename
       }`;
-    } else {
-      // Mantém a imagem atual ou define um valor padrão
-      imageUrl = image; // Supondo que `produtoExistente` seja o objeto do produto atual
     }
-
-    if (!req.file) {
-      return res.status(400).json({ error: 'Nenhuma imagem enviada.' });
-    }
-
-    // Gera a URL da imagem
-    // const imageUrl = `${req.protocol}://${req.get('host')}/images/${
-    //   req.file.filename || ''
-    // }`;
 
     const quantity = stockQuantity ? parseInt(stockQuantity, 10) : 0;
 

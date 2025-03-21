@@ -35,7 +35,9 @@ class UpdateProductService {
       throw new Error('Id do produto é obrigatório!');
     }
 
-    this.validationProduct.validateNameProduct(name as string, product_id);
+    if (name) {
+      this.validationProduct.validateNameProduct(name as string, product_id);
+    }
 
     try {
       const product = await this.updateProductDb.updateProduct(product_id, {

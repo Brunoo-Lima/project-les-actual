@@ -41,7 +41,29 @@ class UpdateProductDb {
         width,
         stock: {
           update: {
-            quantity: quantity,
+            quantity: quantity !== undefined ? quantity : undefined,
+          },
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        category: true,
+        image: true,
+        price: true,
+        brand: true,
+        description: true,
+        material: true,
+        universe: true,
+        isAvailable: true,
+        inactiveReason: true,
+        depth: true,
+        height: true,
+        weight: true,
+        width: true,
+        stock: {
+          select: {
+            quantity: true,
           },
         },
       },
