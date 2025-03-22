@@ -20,6 +20,7 @@ class UpdateProductDb {
       width,
       quantity,
       isAvailable,
+      categoryIsAvailable,
     }: Partial<IProduct>
   ) {
     return await prismaClient.product.update({
@@ -36,6 +37,7 @@ class UpdateProductDb {
         material,
         universe,
         inactiveReason,
+        categoryIsAvailable,
         isAvailable,
         depth,
         height,
@@ -59,6 +61,7 @@ class UpdateProductDb {
         universe: true,
         isAvailable: true,
         inactiveReason: true,
+        categoryIsAvailable: true,
         depth: true,
         height: true,
         weight: true,

@@ -117,6 +117,7 @@ model Product {
   depth  Decimal
 
   isAvailable    Boolean @default(true)
+  categoryIsAvailable CategoryStatusReason?
   inactiveReason String?
 
   created_at DateTime? @default(now())
@@ -133,6 +134,12 @@ model Product {
   cartItem CartItem[]
 
   @@map("products")
+}
+
+enum CategoryStatusReason {
+  FORA_DE_MERCADO
+  INDISPONIVEL
+  EM_ESTOQUE
 }
 
 model PricingGroup {
@@ -256,4 +263,15 @@ model ExchangeCoupon {
   order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@map("exchange_coupons")
+}
+
+model Log {
+  id          String   @id @default(uuid())
+  action      String   // Tipo de ação: "CREATE", "UPDATE", "DELETE"
+  table       String   // Nome da tabela afetada (ex: "User", "Product")
+  recordId    String   // ID do registro afetado
+  userId      String  
+  createdAt   DateTime @default(now())
+
+  @@map("logs")
 }

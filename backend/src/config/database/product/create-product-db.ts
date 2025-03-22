@@ -1,4 +1,4 @@
-import { IProduct } from '../../../types/IProduct';
+import { CategoryIsAvailable, IProduct } from '../../../types/IProduct';
 import { prismaClient } from '../../prisma-client/prisma-client';
 
 class CreateProductDb {
@@ -12,6 +12,7 @@ class CreateProductDb {
     material,
     universe,
     inactiveReason,
+    categoryIsAvailable = CategoryIsAvailable.EM_ESTOQUE,
     depth,
     height,
     weight,
@@ -34,6 +35,7 @@ class CreateProductDb {
         weight,
         width,
         isAvailable: true,
+        categoryIsAvailable: categoryIsAvailable,
         stock: {
           create: {
             quantity: quantity,
@@ -51,6 +53,7 @@ class CreateProductDb {
         material: true,
         universe: true,
         isAvailable: true,
+        categoryIsAvailable: true,
         inactiveReason: true,
         depth: true,
         height: true,

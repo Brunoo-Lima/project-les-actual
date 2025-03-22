@@ -1,8 +1,10 @@
 import { prismaClient } from '../../config/prisma-client/prisma-client';
 import { UpdateStatusProductDb } from '../../config/database/product/update-status-product-db';
+import { CategoryIsAvailable } from '../../types/IProduct';
 
 interface IProductStatus {
   status: boolean;
+  categoryIsAvailable: CategoryIsAvailable;
   inactiveReason?: string;
 }
 

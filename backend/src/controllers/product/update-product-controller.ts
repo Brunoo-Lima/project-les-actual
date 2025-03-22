@@ -18,6 +18,7 @@ class UpdateProductController {
       weight,
       width,
       image,
+      categoryIsAvailable,
       'stock.quantity': stockQuantity,
     } = req.body;
 
@@ -47,6 +48,7 @@ class UpdateProductController {
       weight,
       width,
       quantity,
+      categoryIsAvailable,
       image: imageUrl,
     });
 

@@ -1,6 +1,6 @@
 import { UpdateProductDb } from '../../config/database/product/update-product-db';
 import { prismaClient } from '../../config/prisma-client/prisma-client';
-import { IProduct } from '../../types/IProduct';
+import { CategoryIsAvailable, IProduct } from '../../types/IProduct';
 import { ProductValidationService } from '../../validations/product/product-validation-service';
 
 class UpdateProductService {
@@ -31,6 +31,7 @@ class UpdateProductService {
       weight,
       width,
       quantity,
+      categoryIsAvailable,
     }: Partial<IProduct>
   ) {
     if (!product_id) {
@@ -61,6 +62,7 @@ class UpdateProductService {
       ) < this.MIN_SALES_VALUE
     ) {
       isAvailable = false;
+      categoryIsAvailable = CategoryIsAvailable.INDISPONIVEL;
       inactiveReason =
         'Inativado automaticamente por falta de estoque e vendas insuficientes.';
     }
@@ -77,6 +79,7 @@ class UpdateProductService {
         universe,
         inactiveReason,
         isAvailable,
+        categoryIsAvailable,
         depth,
         height,
         weight,

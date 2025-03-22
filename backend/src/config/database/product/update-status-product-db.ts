@@ -1,8 +1,10 @@
+import { CategoryIsAvailable } from '../../../types/IProduct';
 import { prismaClient } from '../../prisma-client/prisma-client';
 
 interface IProductStatus {
   status: boolean;
   inactiveReason?: string;
+  categoryIsAvailable: CategoryIsAvailable;
 }
 
 class UpdateStatusProductDb {
@@ -15,6 +17,7 @@ class UpdateStatusProductDb {
       data: {
         isAvailable: data.status,
         inactiveReason: data.inactiveReason,
+        categoryIsAvailable: data.categoryIsAvailable,
         updated_at: new Date(),
       },
 
@@ -30,6 +33,7 @@ class UpdateStatusProductDb {
         universe: true,
         inactiveReason: true,
         isAvailable: true,
+        categoryIsAvailable: true,
         depth: true,
         height: true,
         weight: true,

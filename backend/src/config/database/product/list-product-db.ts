@@ -19,6 +19,7 @@ class ListProductDb {
         weight: true,
         width: true,
         isAvailable: true,
+        categoryIsAvailable: true,
         inactiveReason: true,
         stockId: true,
         stock: {

@@ -26,6 +26,7 @@ class CreateProductService {
     weight,
     width,
     quantity,
+    categoryIsAvailable,
   }: IProduct) {
     await this.validationService.validateNameProduct(name);
 
@@ -40,6 +41,7 @@ class CreateProductService {
         material,
         universe,
         inactiveReason,
+        categoryIsAvailable,
         isAvailable: true,
         depth,
         height,

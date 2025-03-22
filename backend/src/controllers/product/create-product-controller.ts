@@ -17,6 +17,7 @@ class CreateProductController {
       height,
       weight,
       width,
+      categoryIsAvailable,
       'stock.quantity': stockQuantity,
     } = req.body;
 
@@ -49,6 +50,7 @@ class CreateProductController {
       weight,
       width,
       quantity,
+      categoryIsAvailable,
     });
 
     return res.status(201).json(createProduct);

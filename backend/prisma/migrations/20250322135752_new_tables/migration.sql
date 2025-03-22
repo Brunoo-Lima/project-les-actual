@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "CategoryStatusReason" AS ENUM ('FORA_DE_MERCADO', 'INDISPONIVEL', 'EM_ESTOQUE');
+
 -- CreateTable
 CREATE TABLE "users" (
     "id" TEXT NOT NULL,
@@ -81,6 +84,7 @@ CREATE TABLE "products" (
     "width" DECIMAL(65,30) NOT NULL,
     "depth" DECIMAL(65,30) NOT NULL,
     "isAvailable" BOOLEAN NOT NULL DEFAULT true,
+    "categoryIsAvailable" "CategoryStatusReason",
     "inactiveReason" TEXT,
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
@@ -184,6 +188,18 @@ CREATE TABLE "exchange_coupons" (
     "orderId" TEXT NOT NULL,
 
     CONSTRAINT "exchange_coupons_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "logs" (
+    "id" TEXT NOT NULL,
+    "action" TEXT NOT NULL,
+    "table" TEXT NOT NULL,
+    "recordId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "logs_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex

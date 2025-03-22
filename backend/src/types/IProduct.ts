@@ -16,7 +16,14 @@ export interface IProduct {
   quantity: number;
 
   isAvailable: boolean;
+  categoryIsAvailable: CategoryIsAvailable;
   inactiveReason?: string;
 
   pricingGroupId?: string;
+}
+
+export enum CategoryIsAvailable {
+  FORA_DE_MERCADO = 'FORA_DE_MERCADO',
+  INDISPONIVEL = 'INDISPONIVEL',
+  EM_ESTOQUE = 'EM_ESTOQUE',
 }

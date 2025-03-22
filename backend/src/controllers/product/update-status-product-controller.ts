@@ -1,14 +1,17 @@
 import { Request, Response } from 'express';
 import { UpdateStatusProductService } from '../../services/product/update-status-product-service';
+import { CategoryIsAvailable } from '../../types/IProduct';
 
 interface IProductStatus {
   status: boolean;
+  categoryIsAvailable: CategoryIsAvailable;
   inactiveReason?: string;
 }
 class UpdateStatusProductController {
   async handle(req: Request, res: Response) {
     const product_id = req.query.product_id as string;
-    const { status, inactiveReason }: IProductStatus = req.body;
+    const { status, inactiveReason, categoryIsAvailable }: IProductStatus =
+      req.body;
 
     const updateStatusProductService = new UpdateStatusProductService();
 
@@ -16,6 +19,7 @@ class UpdateStatusProductController {
       product_id as string,
       {
         status,
+        categoryIsAvailable,
         inactiveReason,
       }
     );
