@@ -9,13 +9,13 @@ import { selectParcelas } from "@/mocks/select/select";
 import { Input } from "@/components/ui/input/input";
 import { FormatValue } from "@/utils/format-value";
 import { ICreditCard } from "@/@types/ICreditCard";
-// import { Checkbox } from "@/components/ui/checkbox/checkbox";
+import { toast } from "sonner";
 
 //TODO: Implementar talvez um sistema de parcelamento
 //TODO: implementar talvez um sistema de cupons, no qual o usuario pode escolher o cupom para pagar e tbm o cartao, tem a opção cupom no começo porém aquele é mais promocional
 
 export function Payment() {
-  const { order, cards } = useCheckout();
+  const { order, cards, validatePayment, setOrder } = useCheckout();
   const [selectedCards, setSelectedCards] = useState<{
     card1: ICreditCard | null;
     card2: ICreditCard | null;
@@ -72,11 +72,35 @@ export function Payment() {
     setIsOpenModalAddPayment(false);
   };
 
-  const totalValue = values.value1 + values.value2;
-  if (totalValue > order.total) {
-    alert("A soma dos valores dos cartões excede o valor total da compra.");
-    return;
-  }
+  console.log("set", order);
+
+  const handleAddPayment = () => {
+    setOrder((prevOrder) => ({
+      ...prevOrder,
+      payment: [
+        ...(selectedCards.card1
+          ? [
+              {
+                card: selectedCards.card1,
+                value: values.value1,
+                installments: parcelas.parcela1,
+              },
+            ]
+          : []),
+        ...(selectedCards.card2
+          ? [
+              {
+                card: selectedCards.card2,
+                value: values.value2,
+                installments: parcelas.parcela2,
+              },
+            ]
+          : []),
+      ],
+    }));
+
+    toast.success("Pagamento adicionado ao pedido!");
+  };
 
   return (
     <div className="flex flex-col gap-y-4 w-[600px] min-h-[500px] h-max p-6 border border-gray-700 rounded-lg overflow-hidden">
@@ -101,59 +125,42 @@ export function Payment() {
         )}
       </div>
 
-      {/* <div className="w-36">
-        <Input
-          label="Valor cartão 1"
-          value={+value}
-          onChange={(e) => setValue(+e.target.value)}
-        />
-      </div> */}
-
       {selectedCards.card1 && (
-        <div className="w-36">
+        <div className="w-max flex items-end gap-4">
           <Input
-            label={`Valor cartão 1 (${selectedCards.card1.last4})`}
-            value={values.value1}
+            label={`Valor cartão (${selectedCards.card1.flag})`}
+            value={values.value1.toString()}
             onChange={(e) =>
-              handleValueChange(selectedCards.card1.id, +e.target.value)
+              handleValueChange(selectedCards!.card1!.id, +e.target.value)
             }
           />
           <SelectComponent
             placeholder="1x"
-            onChange={(e) => handleParcelaChange(selectedCards.card1.id, +e)}
+            onChange={(e) => handleParcelaChange(selectedCards!.card1!.id, +e)}
             options={selectParcelas}
           />
         </div>
       )}
 
       {selectedCards.card2 && (
-        <div className="w-36">
+        <div className="w-max flex items-end gap-4">
           <Input
-            label={`Valor cartão 2 (${selectedCards.card2.last4})`}
-            value={values.value2}
+            label={`Valor cartão (${selectedCards.card2.flag})`}
+            value={values.value2.toString()}
             onChange={(e) =>
-              handleValueChange(selectedCards.card2.id, +e.target.value)
+              handleValueChange(selectedCards!.card2!.id, +e.target.value)
             }
           />
           <SelectComponent
             placeholder="1x"
-            onChange={(e) => handleParcelaChange(selectedCards.card2.id, +e)}
+            onChange={(e) => handleParcelaChange(selectedCards!.card2!.id, +e)}
             options={selectParcelas}
           />
         </div>
       )}
 
-      {/* <div className="flex gap-2 items-center">
-        <p className="text-base">Parcelas:</p>
-        <SelectComponent
-          placeholder="1x"
-          onChange={(e) => setParcela(e.toString())}
-          options={selectParcelas}
-        />
-      </div> */}
-
       <div>Valor: {FormatValue(order.total)}</div>
-      <div>
+      <div className="flex items-center gap-4">
         <button
           type="button"
           className="bg-primary-dark text-background p-2 rounded-md font-semibold text-base w-60 flex items-center justify-center gap-2 transition duration-300 hover:bg-primary"
@@ -161,6 +168,14 @@ export function Payment() {
         >
           <Plus size={16} weight="bold" />
           Cadastrar novo cartão
+        </button>
+
+        <button
+          className="bg-blue-600 text-white p-2 rounded-md"
+          type="button"
+          onClick={handleAddPayment}
+        >
+          Adicionar pagamento
         </button>
       </div>
       {isOpenModalAddPayment && (

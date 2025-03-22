@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { useCheckout } from "@/hooks/useCheckout";
 
 export function MultiStepForm() {
-  const { setCart } = useCheckout();
+  const { cart, order, validatePayment, setCart } = useCheckout();
   const router = useRouter();
   const { isFirstStep, currentStep, isLastStep, next, previous } =
     useMultiStepForm({
@@ -22,6 +22,23 @@ export function MultiStepForm() {
     });
 
   const handleOrderFinished = async () => {
+    if (!validatePayment()) {
+      toast.error("Erro no pagamento. Verifique os valores dos cartões.");
+      return;
+    }
+
+    // Valida se um endereço foi selecionado
+    if (!order.address) {
+      toast.error("Selecione um endereço de entrega.");
+      return;
+    }
+
+    // Valida se há itens no carrinho
+    if (cart.length === 0) {
+      toast.error("O carrinho está vazio.");
+      return;
+    }
+
     //Logica para enviar para o backend
 
     toast.success("Pedido realizado com sucesso!");

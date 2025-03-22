@@ -6,6 +6,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -28,7 +29,7 @@ interface IAuthContextProps {
     password: string,
     option: "ADMIN" | "CLIENT"
   ) => Promise<void>;
-  // isAuthenticated: boolean;
+  isAuthenticated: boolean;
 }
 
 interface IChildrenProps {
@@ -44,8 +45,27 @@ export const AuthProvider = ({ children }: IChildrenProps) => {
     role: "CLIENT",
   });
 
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("@token:access");
+    const userData = localStorage.getItem("@user:data");
+
+    if (token && userData) {
+      const parsedUserData = JSON.parse(userData);
+
+      setUser({
+        role: token === "ADMIN" ? "ADMIN" : "CLIENT",
+        id: parsedUserData.id,
+      });
+
+      setIsAuthenticated(true);
+    }
+  }, []);
+
   const logout = useCallback(() => {
     setUser({ role: "CLIENT", id: "" });
+    setIsAuthenticated(false);
     localStorage.removeItem("@token:access");
     localStorage.removeItem("@user:data");
     router.push("/");
@@ -71,6 +91,7 @@ export const AuthProvider = ({ children }: IChildrenProps) => {
       localStorage.setItem("@user:data", JSON.stringify(user));
 
       setUser({ role: option, id: user.id });
+      setIsAuthenticated(true);
 
       if (option === "ADMIN") {
         router.push("/vendas");
@@ -103,8 +124,9 @@ export const AuthProvider = ({ children }: IChildrenProps) => {
       user,
       setUser,
       login,
+      isAuthenticated,
     }),
-    [handleChangeUser, logout, user, setUser, login]
+    [handleChangeUser, logout, user, setUser, login, isAuthenticated]
   );
 
   return (

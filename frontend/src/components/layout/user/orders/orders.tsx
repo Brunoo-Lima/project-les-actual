@@ -13,7 +13,7 @@ import { ButtonsActions } from "./buttons-actions";
 import { ModalExchange } from "./modal/modal-exchange";
 
 export function Orders() {
-  const { order } = useCheckout();
+  const { order, setOrder } = useCheckout();
   const [orders, setOrders] = useState(ordersFinishedList);
   const [isOpenDetails, setIsOpenDetails] = useState<boolean>(false);
   const [chooseItemForExchange, setChooseItemExchange] = useState("");
@@ -24,21 +24,36 @@ export function Orders() {
 
   useEffect(() => {
     if (order && order.items.length > 0) {
-      const newOrder = {
-        id: Math.ceil(Math.random() * 1000),
-        status: order.status || "Finalizado",
-        created_at: new Date().toLocaleDateString("pt-BR"),
-        updated_at: new Date().toLocaleDateString("pt-BR"),
-        items: order.items,
-        address: order.address,
-        payment: order.payment,
-        freight: order.freight,
-        coupon: order.coupon,
-        discountValue: order.discountValue,
-        total: order.total,
-      };
+      const orderExists = orders.some((order: any) => order.id === order.id);
 
-      setOrders((prevOrders) => [newOrder, ...prevOrders] as any);
+      if (!orderExists) {
+        const newOrder = {
+          id: Math.ceil(Math.random() * 1000).toString(),
+          status: order.status || "Finalizado",
+          created_at: new Date().toLocaleDateString("pt-BR"),
+          updated_at: new Date().toLocaleDateString("pt-BR"),
+          items: order.items,
+          address: order.address,
+          payment: order.payment,
+          freight: order.freight,
+          coupon: order.coupon,
+          discountValue: order.discountValue,
+          total: order.total,
+        };
+
+        setOrders((prevOrders) => [newOrder, ...prevOrders] as any);
+
+        setOrder({
+          items: [],
+          total: 0,
+          address: null,
+          payment: [],
+          status: "Pendente",
+          freight: 20,
+          coupon: null,
+          discountValue: 0,
+        });
+      }
     }
   }, [order]);
 

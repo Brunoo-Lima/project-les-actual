@@ -17,8 +17,14 @@ interface ICheckoutContextProps {
   addProductToCart: (product: IProduct, quantity: number) => void;
   handleSelectAddress: (address: IAddress) => void;
   handleAddAddressOnOrder: (address: IAddress) => void;
-  handleSelectCreditCard: (card: ICreditCard) => void;
+  handleSelectCreditCard: (
+    card: ICreditCard,
+    value: number,
+    installments: number
+  ) => void;
+  handleRemoveCreditCardFromOrder: (id: string) => void;
   handleAddCreditCardOnOrder: (card: ICreditCard) => void;
+  validatePayment: () => boolean;
   decrementItemCart: (id: string) => void;
   incrementItemCart: (id: string) => void;
   removeItemCart: (id: string) => void;
@@ -44,7 +50,7 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
     items: [],
     total: 0,
     address: null,
-    payment: null,
+    payment: [],
     status: "Pendente",
     freight: 20,
     coupon: null,
@@ -177,12 +183,54 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
   const handleAddAddressOnOrder = (address: IAddress) =>
     setAddresses((prevAddresses) => [...prevAddresses, address]);
 
-  const handleSelectCreditCard = (card: ICreditCard) => {
+  const handleSelectCreditCard = (
+    card: ICreditCard,
+    value: number,
+    installments: number
+  ) => {
     setSelectedCreditCard(card);
+
+    setOrder((prevOrder) => {
+      const existingPayment = prevOrder.payment.find(
+        (payment) => payment.card.id === card.id
+      );
+
+      if (existingPayment) {
+        return {
+          ...prevOrder,
+          payment: prevOrder.payment.map((payment) =>
+            payment.card.id === card.id
+              ? { ...payment, value, installments }
+              : payment
+          ),
+        };
+      } else {
+        return {
+          ...prevOrder,
+          payment: [...prevOrder.payment, { card, value, installments }],
+        };
+      }
+    });
+  };
+
+  const handleRemoveCreditCardFromOrder = (cardId: string) => {
     setOrder((prevOrder) => ({
       ...prevOrder,
-      payment: [card],
+      payment: prevOrder.payment.filter((p) => p.card.id !== cardId),
     }));
+  };
+
+  const validatePayment = () => {
+    const totalPaid = order.payment.reduce((acc, p) => acc + p.value, 0);
+
+    if (totalPaid !== order.total) {
+      toast.error(
+        "A soma dos valores dos cartões deve ser igual ao total do pedido."
+      );
+      return false;
+    }
+
+    return true;
   };
 
   const handleAddCreditCardOnOrder = (card: ICreditCard) =>
@@ -208,6 +256,8 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
       order,
       setOrder,
       applyCoupon,
+      handleRemoveCreditCardFromOrder,
+      validatePayment,
     }),
     [
       cart,

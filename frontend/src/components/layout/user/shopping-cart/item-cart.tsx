@@ -1,16 +1,12 @@
-import { Trash2Icon } from 'lucide-react';
-import { ButtonsQuantity } from './buttons-quantity/buttons-quantity';
+import { Trash2Icon } from "lucide-react";
+import { ButtonsQuantity } from "./buttons-quantity/buttons-quantity";
+import { ICartItem } from "@/@types/IOrder";
 
 interface IItemCartProps {
-  item: {
-    id: number;
-    name: string;
-    price: number;
-    quantity: number;
-  };
-  handleIncrement: (id: number) => void;
-  handleDecrement: (id: number) => void;
-  handleRemoveItem: (id: number) => void;
+  item: ICartItem;
+  handleIncrement: (id: string) => void;
+  handleDecrement: (id: string) => void;
+  handleRemoveItem: (id: string) => void;
 }
 
 export function ItemCart({

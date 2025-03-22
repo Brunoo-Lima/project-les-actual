@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Input } from '@/components/ui/input/input';
-import { FormatValue } from '@/utils/format-value';
-import { ItemCart } from './item-cart';
-import { useCheckout } from '@/hooks/useCheckout';
+import { useState } from "react";
+import { Input } from "@/components/ui/input/input";
+import { FormatValue } from "@/utils/format-value";
+import { ItemCart } from "./item-cart";
+import { useCheckout } from "@/hooks/useCheckout";
 
 export function ShoppingCart() {
-  const [newCoupon, setNewCoupon] = useState<string>('');
+  const [newCoupon, setNewCoupon] = useState<string>("");
   const {
     cart,
     incrementItemCart,
@@ -19,7 +19,7 @@ export function ShoppingCart() {
 
   const handleApplyNewCoupon = () => {
     applyCoupon(newCoupon);
-    setNewCoupon('');
+    setNewCoupon("");
   };
 
   return (
