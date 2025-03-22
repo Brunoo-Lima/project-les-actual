@@ -1,5 +1,24 @@
+import { CheckIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+
 export function ListProgress() {
-  const progress = "EM ANDAMENTO";
+  const [progress, setProgress] = useState("EM PROCESSAMENTO");
+  const [statusOrder, setStatusOrder] = useState<
+    "AGUARDANDO PAGAMENTO" | "EM TRÂNSITO" | "ENTREGUE"
+  >("AGUARDANDO PAGAMENTO");
+
+  useEffect(() => {
+    const time = setTimeout(() => {
+      setProgress("APROVADO");
+      setStatusOrder("EM TRÂNSITO");
+    }, 3000);
+
+    return () => clearTimeout(time);
+  }, [progress]);
+
+  const handleChangeStatus = (newStatus: "EM TRÂNSITO" | "ENTREGUE") => {
+    setStatusOrder("ENTREGUE");
+  };
 
   return (
     <div>
@@ -9,9 +28,10 @@ export function ListProgress() {
             <th className="w-1/5">Id do pedido</th>
             <th className="w-1/5">Data do pedido</th>
             <th className="w-1/5">Valor do pedido</th>
-            <th className="w-1/5">Quantidade de itens</th>
+            <th className="w-40">Quantidade de itens</th>
             {/* passar pagamento ou status  */}
-            <th className="w-1/5">Pagamento</th>
+            <th className="w-40">Pagamento</th>
+            <th className="w-40">Status do pedido</th>
           </tr>
         </thead>
 
@@ -24,11 +44,24 @@ export function ListProgress() {
             <td>
               <p
                 className={`w-max px-2 py-1 rounded-md ${
-                  progress === "EM ANDAMENTO" ? "bg-yellow-500" : ""
+                  progress === "EM PROCESSAMENTO" ? "bg-yellow-500" : ""
                 } `}
               >
-                EM ANDAMENTO
+                {progress}
               </p>
+            </td>
+
+            <td className="flex items-center gap-2">
+              <p>{statusOrder}</p>
+
+              {statusOrder === "EM TRÂNSITO" && (
+                <CheckIcon
+                  size={16}
+                  color="#ffffff"
+                  className="rounded-full size-7 bg-primary p-1 cursor-pointer"
+                  onClick={() => handleChangeStatus(statusOrder)}
+                />
+              )}
             </td>
           </tr>
         </tbody>

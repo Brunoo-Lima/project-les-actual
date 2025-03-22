@@ -11,8 +11,10 @@ interface ICheckoutContextProps {
   cart: ICartItem[];
   setCart: React.Dispatch<React.SetStateAction<ICartItem[]>>;
   addresses: IAddress[];
+  setAddresses: React.Dispatch<React.SetStateAction<IAddress[]>>;
   selectedAddress: IAddress | null;
   cards: ICreditCard[];
+  setCards: React.Dispatch<React.SetStateAction<ICreditCard[]>>;
   selectedCreditCard: ICreditCard | null;
   addProductToCart: (product: IProduct, quantity: number) => void;
   handleSelectAddress: (address: IAddress) => void;
@@ -243,6 +245,7 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
       addresses,
       setAddresses,
       cards,
+      setCards,
       selectedCreditCard,
       selectedAddress,
       addProductToCart,
@@ -263,7 +266,9 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
       cart,
       setCart,
       addresses,
+      setAddresses,
       cards,
+      setCards,
       order,
       selectedCreditCard,
       selectedAddress,

@@ -64,7 +64,7 @@ export function MultiStepForm() {
         {!isLastStep ? (
           <button
             type="button"
-            // disabled={cart.length === 0}
+            disabled={cart.length === 0}
             onClick={next}
             className="mt-8 bg-primary text-background p-2 rounded-md font-semibold text-base transition duration-300 hover:bg-primary-dark"
           >

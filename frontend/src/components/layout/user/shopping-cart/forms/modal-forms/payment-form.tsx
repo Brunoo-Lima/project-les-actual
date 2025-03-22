@@ -9,6 +9,7 @@ import {
 } from "@/components/validation/credit-card-schema-form";
 import { useCheckout } from "@/hooks/useCheckout";
 import { selectFlagCard } from "@/mocks/select/select";
+import { createCreditCard } from "@/services/credit-card";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -28,18 +29,26 @@ export function PaymentForm({ onClose }: IPaymentFormProps) {
     resolver: yupResolver(CreditCardSchemaForm),
   });
 
-  const onSubmit: SubmitHandler<ICreditCardSchemaForm> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<ICreditCardSchemaForm> = async (data: any) => {
+    try {
+      const userData = localStorage.getItem("@user:data");
 
-    const updatedData = {
-      id: Math.random() * 100,
-      ...data,
-    };
+      if (!userData) {
+        toast.error("Nenhum cliente encontrado!");
+      }
 
-    handleAddCreditCardOnOrder(updatedData);
+      const parsedUserData = JSON.parse(userData as string);
 
-    toast.success("Cartão cadastrado com sucesso!");
-    onClose();
+      const updatedData = await createCreditCard(parsedUserData.id, data);
+
+      handleAddCreditCardOnOrder(updatedData);
+
+      toast.success("Cartão de crédito cadastrado com sucesso!");
+      onClose();
+    } catch (error) {
+      console.error("Erro ao cadastrar cartão de crédito:", error);
+      toast.error("Erro ao cadastrar cartão de crédito!");
+    }
   };
 
   return (

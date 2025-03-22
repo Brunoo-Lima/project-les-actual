@@ -1,15 +1,38 @@
-import { useState } from 'react';
-import { AddressForm } from './modal-forms/address-form';
-import { ModalBackground } from '@/components/modal/modal-background/modal-background';
-import { Plus } from '@phosphor-icons/react';
-import { ButtonGeneral } from '@/components/ui/button/button-general';
-import { useCheckout } from '@/hooks/useCheckout';
-import { AddressCard } from '../ui/address-card';
+import { useEffect, useState } from "react";
+import { AddressForm } from "./modal-forms/address-form";
+import { ModalBackground } from "@/components/modal/modal-background/modal-background";
+import { Plus } from "@phosphor-icons/react";
+import { ButtonGeneral } from "@/components/ui/button/button-general";
+import { useCheckout } from "@/hooks/useCheckout";
+import { AddressCard } from "../ui/address-card";
+import { detailClient } from "@/services/client";
 
 export function Addresses() {
-  const { addresses, handleSelectAddress, selectedAddress } = useCheckout();
+  const { addresses, setAddresses, handleSelectAddress, selectedAddress } =
+    useCheckout();
   const [isOpenModalNewAddress, setIsOpenModalNewAddress] =
     useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      const userData = localStorage.getItem("@user:data");
+      try {
+        const parsedUserData = JSON.parse(userData as string);
+
+        const addressesData = await detailClient(parsedUserData.id);
+
+        console.log("addressesData", addressesData);
+
+        if (addressesData) {
+          setAddresses(addressesData.addresses);
+        }
+      } catch (error) {
+        console.error("Erro ao obter endereços:", error);
+      }
+    };
+
+    fetchAddresses();
+  }, []);
 
   const handleOpenModalNewAddress = () => {
     setIsOpenModalNewAddress(true);

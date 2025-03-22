@@ -1,5 +1,6 @@
 export function ListComplete() {
-  const progress = "FINALIZADO";
+  const progress = "APROVADO";
+  const statusOrder = "ENTREGUE";
 
   return (
     <div>
@@ -9,9 +10,10 @@ export function ListComplete() {
             <th className="w-1/5">Id do pedido</th>
             <th className="w-1/5">Data do pedido</th>
             <th className="w-1/5">Valor do pedido</th>
-            <th className="w-1/5">Quantidade de itens</th>
+            <th className="w-40">Quantidade de itens</th>
             {/* passar pagamento ou status  */}
-            <th className="w-1/5">Pagamento</th>
+            <th className="w-40">Pagamento</th>
+            <th className="w-40">Status do pedido</th>
           </tr>
         </thead>
 
@@ -24,11 +26,14 @@ export function ListComplete() {
             <td>
               <p
                 className={`w-max px-2 py-1 rounded-md ${
-                  progress === "FINALIZADO" ? "bg-green-500" : ""
+                  progress === "APROVADO" ? "bg-green-500" : ""
                 } `}
               >
-                FINALIZADO
+                APROVADO
               </p>
+            </td>
+            <td className="flex items-center gap-2">
+              <p>{statusOrder}</p>
             </td>
           </tr>
         </tbody>
@@ -36,4 +41,3 @@ export function ListComplete() {
     </div>
   );
 }
-

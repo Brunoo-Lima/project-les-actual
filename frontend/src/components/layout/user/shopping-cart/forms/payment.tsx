@@ -1,5 +1,5 @@
 import { ModalBackground } from "@/components/modal/modal-background/modal-background";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PaymentForm } from "./modal-forms/payment-form";
 import { Plus } from "@phosphor-icons/react";
 import { CreditCard } from "../ui/credit-card";
@@ -10,12 +10,13 @@ import { Input } from "@/components/ui/input/input";
 import { FormatValue } from "@/utils/format-value";
 import { ICreditCard } from "@/@types/ICreditCard";
 import { toast } from "sonner";
+import { detailClient } from "@/services/client";
 
 //TODO: Implementar talvez um sistema de parcelamento
 //TODO: implementar talvez um sistema de cupons, no qual o usuario pode escolher o cupom para pagar e tbm o cartao, tem a opção cupom no começo porém aquele é mais promocional
 
 export function Payment() {
-  const { order, cards, validatePayment, setOrder } = useCheckout();
+  const { order, cards, setCards, validatePayment, setOrder } = useCheckout();
   const [selectedCards, setSelectedCards] = useState<{
     card1: ICreditCard | null;
     card2: ICreditCard | null;
@@ -31,6 +32,36 @@ export function Payment() {
 
   const [isOpenModalAddPayment, setIsOpenModalAddPayment] =
     useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchCreditCards = async () => {
+      const userData = localStorage.getItem("@user:data");
+      try {
+        const parsedUserData = JSON.parse(userData as string);
+
+        const creditCardsData = await detailClient(parsedUserData.id);
+
+        console.log("addressesData", creditCardsData);
+
+        if (creditCardsData) {
+          setCards(creditCardsData.creditCards);
+        }
+      } catch (error) {
+        console.error("Erro ao obter cartões de crédito:", error);
+      }
+    };
+
+    fetchCreditCards();
+  }, []);
+
+  useEffect(() => {
+    // Se apenas um cartão estiver selecionado, atribua o valor total do pedido a ele
+    if (selectedCards.card1 && !selectedCards.card2) {
+      setValues({ value1: order.total, value2: 0 });
+    } else if (!selectedCards.card1 && selectedCards.card2) {
+      setValues({ value1: 0, value2: order.total });
+    }
+  }, [selectedCards, order.total]);
 
   const handleSelectCreditCard = (card: ICreditCard) => {
     if (!selectedCards.card1) {
@@ -127,13 +158,15 @@ export function Payment() {
 
       {selectedCards.card1 && (
         <div className="w-max flex items-end gap-4">
-          <Input
-            label={`Valor cartão (${selectedCards.card1.flag})`}
-            value={values.value1.toString()}
-            onChange={(e) =>
-              handleValueChange(selectedCards!.card1!.id, +e.target.value)
-            }
-          />
+          {selectedCards.card2 && (
+            <Input
+              label={`Valor cartão (${selectedCards.card1.flag})`}
+              value={values.value1.toString()}
+              onChange={(e) =>
+                handleValueChange(selectedCards!.card1!.id, +e.target.value)
+              }
+            />
+          )}
           <SelectComponent
             placeholder="1x"
             onChange={(e) => handleParcelaChange(selectedCards!.card1!.id, +e)}
