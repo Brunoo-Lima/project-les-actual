@@ -28,7 +28,7 @@ class AuthValidationService {
 
     const passwordHash = await hash(password, 8);
 
-    const isPasswordMatch = await compare(password, passwordHash);
+    const isPasswordMatch = await compare(password, user.password);
 
     if (!isPasswordMatch) {
       throw new Error('Senha incorreta');
@@ -57,7 +57,6 @@ class AuthValidationService {
       name: user.name,
       email: user.email,
       role: role,
-      password: user.password,
       token,
     };
   }
