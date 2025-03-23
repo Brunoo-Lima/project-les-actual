@@ -8,9 +8,10 @@ import { Payment } from "./payment";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useCheckout } from "@/hooks/useCheckout";
+import { IOrder } from "@/@types/IOrder";
 
 export function MultiStepForm() {
-  const { cart, order, validatePayment, setCart } = useCheckout();
+  const { cart, order, validatePayment, setCart, clearCart } = useCheckout();
   const router = useRouter();
   const { isFirstStep, currentStep, isLastStep, next, previous } =
     useMultiStepForm({
@@ -41,10 +42,31 @@ export function MultiStepForm() {
 
     //Logica para enviar para o backend
 
+    // const newOrder: IOrder = {
+    //   items: cart,
+    //   total: order.total,
+    //   address: order.address,
+    //   payment: order.payment || [],
+    //   status: "Pendente",
+    //   freight: order.freight,
+    //   discountValue: order.discountValue,
+    //   coupon: order.coupon,
+    // };
+
+    // const existingOrders = JSON.parse(
+    //   localStorage.getItem("tempOrders") || "[]"
+    // ) as IOrder[];
+
+    // existingOrders.push(newOrder);
+
+    // localStorage.setItem("tempOrders", JSON.stringify(existingOrders));
+
     toast.success("Pedido realizado com sucesso!");
     router.push("/pedidos");
 
-    setCart([]);
+    // setCart([]);
+
+    clearCart();
   };
 
   return (

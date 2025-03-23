@@ -1,6 +1,13 @@
 "use client";
 
-import { createContext, ReactNode, useContext, useMemo, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { IAddress } from "@/@types/IAddress";
 import { ICreditCard } from "@/@types/ICreditCard";
 import { IProduct } from "@/@types/IProduct";
@@ -33,6 +40,7 @@ interface ICheckoutContextProps {
   order: IOrder;
   setOrder: React.Dispatch<React.SetStateAction<IOrder>>;
   applyCoupon: (coupon: string) => void;
+  clearCart: () => void;
 }
 
 interface ICheckoutProvider {
@@ -58,6 +66,30 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
     coupon: null,
     discountValue: 0,
   });
+
+  useEffect(() => {
+    const savedCart = localStorage.getItem("cart");
+    if (savedCart) {
+      console.log(
+        "Carrinho recuperado do localStorage:",
+        JSON.parse(savedCart)
+      );
+      setCart(JSON.parse(savedCart));
+    }
+  }, []);
+
+  console.log("cart", cart);
+
+  useEffect(() => {
+    console.log("Salvando carrinho no localStorage:", cart);
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
+
+  const clearCart = () => {
+    setCart([]);
+    localStorage.removeItem("cart");
+  };
 
   const updateCart = (cartItems: ICartItem[]) => {
     const newTotal = cartItems.reduce(
@@ -86,6 +118,8 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
 
       return updateCart(updatedCart);
     });
+
+    localStorage.setItem("cart", JSON.stringify(cart));
   };
 
   const applyCoupon = (coupon: string) => {
@@ -261,6 +295,7 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
       applyCoupon,
       handleRemoveCreditCardFromOrder,
       validatePayment,
+      clearCart,
     }),
     [
       cart,

@@ -19,6 +19,11 @@ export function Card({ product }: ICardProps) {
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   const handleAddProductToCart = () => {
+    if (quantity === 0) {
+      toast.error("Quantidade inválida!");
+      return;
+    }
+
     addProductToCart(product, quantity);
     toast.success("Produto adicionado ao carrinho!");
     setQuantity(1);
