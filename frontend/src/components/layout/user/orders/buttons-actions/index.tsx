@@ -2,12 +2,16 @@ import { IProduct } from "@/@types/IProduct";
 
 interface IButtonsActionsProps {
   item: Pick<IProduct, "isAvailable">;
-  onOpenModalForExchange: () => void;
+  coupon: string | null;
+  status: string;
+  onOpenModalForExchange: (item: string) => void;
 }
 
 export function ButtonsActions({
   item,
+  coupon,
   onOpenModalForExchange,
+  status,
 }: IButtonsActionsProps) {
   return (
     <div className="flex flex-col gap-2 z-2 mt-1">
@@ -23,13 +27,20 @@ export function ButtonsActions({
       <button type="button" className="bg-error p-1 rounded-md">
         Cancelar pedido
       </button>
-      <button
-        type="button"
-        onClick={onOpenModalForExchange}
-        className="underline text-orange-400"
-      >
-        Solicitar troca
-      </button>
+
+      {coupon ? (
+        <p>Cupom Disponível: {coupon}</p>
+      ) : status === "TROCA SOLICITADA" ? (
+        <p>TROCA SOLICITADA</p>
+      ) : (
+        <button
+          type="button"
+          onClick={() => onOpenModalForExchange(item)}
+          className="underline text-orange-400"
+        >
+          Solicitar troca
+        </button>
+      )}
     </div>
   );
 }

@@ -61,7 +61,7 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
     total: 0,
     address: null,
     payment: [],
-    status: "Pendente",
+    status: "EM PROCESSAMENTO",
     freight: 20,
     coupon: null,
     discountValue: 0,

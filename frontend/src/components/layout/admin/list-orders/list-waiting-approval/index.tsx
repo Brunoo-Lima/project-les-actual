@@ -1,23 +1,32 @@
 import { CheckIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
-export function ListProgress() {
-  const [progress, setProgress] = useState("APROVADO");
-  const [statusOrder, setStatusOrder] = useState<"EM TRÂNSITO" | "ENTREGUE">(
-    "EM TRÂNSITO"
-  );
+export function ListWaitingApproval() {
+  const [progress, setProgress] = useState("EM PROCESSAMENTO");
+  const [statusOrder, setStatusOrder] = useState<
+    | "AGUARDANDO PAGAMENTO"
+    | "EM TRÂNSITO"
+    | "ENTREGUE"
+    | "AGUARDANDO TRANSPORTE"
+  >("AGUARDANDO PAGAMENTO");
 
-  // useEffect(() => {
-  //   const time = setTimeout(() => {
-  //     setProgress("APROVADO");
-  //     setStatusOrder("EM TRÂNSITO");
-  //   }, 3000);
+  useEffect(() => {
+    const time = setTimeout(() => {
+      setProgress("APROVADO");
+      setStatusOrder("AGUARDANDO TRANSPORTE");
+    }, 3000);
 
-  //   return () => clearTimeout(time);
-  // }, [progress]);
+    return () => clearTimeout(time);
+  }, [progress]);
 
-  const handleChangeStatus = (newStatus: "EM TRÂNSITO" | "ENTREGUE") => {
-    setStatusOrder("ENTREGUE");
+  const handleChangeStatus = (
+    newStatus:
+      | "AGUARDANDO PAGAMENTO"
+      | "EM TRÂNSITO"
+      | "ENTREGUE"
+      | "AGUARDANDO TRANSPORTE"
+  ) => {
+    setStatusOrder(newStatus);
   };
 
   return (
@@ -43,24 +52,23 @@ export function ListProgress() {
             <td>2</td>
             <td>
               <p
-              // className={`w-max px-2 py-1 rounded-md ${
-              //   progress === "EM PROCESSAMENTO" ? "bg-yellow-500" : ""
-              // } `}
+                className={`w-max px-2 py-1 rounded-md ${
+                  progress === "EM PROCESSAMENTO" ? "bg-yellow-500" : ""
+                } `}
               >
-                APROVADO
-                {/* {progress} */}
+                {progress}
               </p>
             </td>
 
             <td className="flex items-center gap-2">
-              <p>{statusOrder}</p>
+              <p className="w-max px-2 py-1 rounded-md">{statusOrder}</p>
 
-              {statusOrder === "EM TRÂNSITO" && (
+              {statusOrder === "AGUARDANDO TRANSPORTE" && (
                 <CheckIcon
                   size={16}
                   color="#ffffff"
                   className="rounded-full size-7 bg-primary p-1 cursor-pointer"
-                  onClick={() => handleChangeStatus(statusOrder)}
+                  onClick={() => handleChangeStatus("EM TRÂNSITO")}
                 />
               )}
             </td>

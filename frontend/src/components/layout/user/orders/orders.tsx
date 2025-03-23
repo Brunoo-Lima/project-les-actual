@@ -48,7 +48,7 @@ export function Orders() {
           total: 0,
           address: null,
           payment: [],
-          status: "Pendente",
+          status: "EM PROCESSAMENTO",
           freight: 20,
           coupon: null,
           discountValue: 0,
@@ -75,7 +75,7 @@ export function Orders() {
         orders.map((item) => (
           <div
             key={item.id}
-            className="grid grid-cols-[1fr_200px] place-items-center gap-6 bg-background-dark rounded-md p-4 w-[650px] h-max min-h-[250px]"
+            className="grid grid-cols-[1fr_220px] place-items-center gap-6 bg-background-dark rounded-md p-4 min-w-[650px] w-max h-max min-h-[250px]"
           >
             <div className="flex flex-col gap-y-4 w-full h-[250px] overflow-auto relative z-1 container-address-form">
               {item.items.map((product) => (
@@ -123,7 +123,9 @@ export function Orders() {
               </p>
 
               <ButtonsActions
-                item={item as any}
+                item={item}
+                coupon={item.coupon}
+                status={item.status}
                 onOpenModalForExchange={handleOpenModalItemForExchange}
               />
 

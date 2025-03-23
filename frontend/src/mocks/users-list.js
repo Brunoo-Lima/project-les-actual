@@ -50,7 +50,7 @@ export const usersList = [
     orders: [
       {
         id: 1,
-        status: "Pendente",
+        status: "EM PROCESSAMENTO",
         created_at: "15/02/2025",
         updated_at: "15/02/2025",
         items: [

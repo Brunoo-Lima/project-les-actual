@@ -6,11 +6,12 @@ import { TabActions } from "./tab-actions/tab-actions";
 import { ListProgress } from "./list-progress";
 import { ListComplete } from "./list-complete";
 import { ListReplacement } from "./list-replacement";
+import { ListWaitingApproval } from "./list-waiting-approval";
 
-type Tab = "COMPLETE" | "PROGRESS" | "REPLACEMENT";
+type Tab = "COMPLETE" | "PROGRESS" | "REPLACEMENT" | "WAITING_APPROVAL";
 
 export function ListOrders() {
-  const [option, setOption] = useState<Tab>("PROGRESS");
+  const [option, setOption] = useState<Tab>("WAITING_APPROVAL");
 
   const handleChangeOption = (option: Tab) => {
     setOption(option);
@@ -21,6 +22,11 @@ export function ListOrders() {
       <TitlePage title="Lista de pedidos" />
 
       <div className="flex gap-2 items-center mb-6">
+        <TabActions
+          textButton="Aguardando aprovação"
+          active={option === "WAITING_APPROVAL"}
+          onClick={() => handleChangeOption("WAITING_APPROVAL")}
+        />
         <TabActions
           textButton="Em andamento"
           active={option === "PROGRESS"}
@@ -37,6 +43,8 @@ export function ListOrders() {
           onClick={() => handleChangeOption("REPLACEMENT")}
         />
       </div>
+
+      {option === "WAITING_APPROVAL" && <ListWaitingApproval />}
 
       {option === "PROGRESS" && <ListProgress />}
 
