@@ -64,6 +64,8 @@ class CreateProductDb {
             quantity: true,
           },
         },
+        created_at: true,
+        updated_at: true,
       },
     });
   }

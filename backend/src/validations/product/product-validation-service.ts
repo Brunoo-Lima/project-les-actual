@@ -18,7 +18,11 @@ class ProductValidationService {
     }
   }
 
-  async inactivateProductEqualToZero() {}
+  async validateQuantityProduct(quantity: number): Promise<void> {
+    if (quantity <= 0) {
+      throw new Error('Quantidade inválida.');
+    }
+  }
 }
 
 export { ProductValidationService };

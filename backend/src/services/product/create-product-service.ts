@@ -30,6 +30,8 @@ class CreateProductService {
   }: IProduct) {
     await this.validationService.validateNameProduct(name);
 
+    await this.validationService.validateQuantityProduct(quantity);
+
     try {
       const product = await this.createProductDb.createProduct({
         category,

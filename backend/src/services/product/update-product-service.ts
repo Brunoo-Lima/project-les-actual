@@ -42,6 +42,10 @@ class UpdateProductService {
       this.validationProduct.validateNameProduct(name as string, product_id);
     }
 
+    if (quantity) {
+      this.validationProduct.validateQuantityProduct(quantity);
+    }
+
     const existingProduct = await prismaClient.product.findUnique({
       where: { id: product_id },
       include: {
