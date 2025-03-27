@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Modal } from "@/components/modal";
 import { ButtonCancel } from "@/components/ui/button/button-cancel/button-cancel";
@@ -13,6 +13,9 @@ import {
 import { IProduct } from "@/@types/IProduct";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea/textarea";
+import { createProduct } from "@/services/product";
+import { SelectComponent } from "@/components/ui/select/select";
+import { selectCategoryIsAvailable } from "@/mocks/select/select";
 
 interface IModalRegisterProps {
   onClose: () => void;
@@ -26,6 +29,7 @@ export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
     register,
     setValue,
     formState: { errors },
+    control,
     handleSubmit,
   } = useForm<IProductSchemaForm>({
     resolver: yupResolver(ProductSchemaForm),
@@ -47,22 +51,33 @@ export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
   };
 
   //Solução pra imagem até implementar o backend
-  const onSubmit: SubmitHandler<IProductSchemaForm> = (
-    data: IProductSchemaForm
-  ) => {
-    const updatedData: IProduct = {
-      ...data,
-      id: Math.ceil(Math.random() * 10000).toString(),
-      price: +data.price,
-      quantity: +data.quantity,
-      image: previewImage || (filename as string),
-      description: data.description || (data?.description as any),
-    };
+  const onSubmit: SubmitHandler<IProductSchemaForm> = async (data) => {
+    // const updatedData: IProduct = {
+    //   ...data,
+    //   id: Math.ceil(Math.random() * 10000).toString(),
+    //   price: +data.price,
+    //   quantity: +data.quantity,
+    //   image: previewImage || (filename as string),
+    //   description: data.description || (data?.description as any),
+    // };
 
-    setProducts((prevProducts) => [...prevProducts, updatedData]);
-    toast.success("Produto cadastrado com sucesso!");
+    try {
+      const updatedData: any = {
+        ...data,
+        image: previewImage,
+      };
 
-    onClose();
+      const productData = await createProduct(updatedData);
+
+      console.log("upd", productData);
+
+      setProducts((prevProducts) => [...prevProducts, productData]);
+      toast.success("Produto cadastrado com sucesso!");
+
+      onClose();
+    } catch (error) {
+      toast.error("Erro ao criar produto");
+    }
   };
 
   return (
@@ -208,6 +223,21 @@ export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
               placeholder="5"
               {...register("depth")}
               error={errors.depth}
+            />
+          </div>
+
+          <div>
+            <Controller
+              name="categoryIsAvailable"
+              control={control}
+              render={({ field }) => (
+                <SelectComponent
+                  placeholder="Categoria"
+                  onChange={field.onChange}
+                  options={selectCategoryIsAvailable}
+                  label="Categoria de disponibilidade"
+                />
+              )}
             />
           </div>
 

@@ -22,6 +22,7 @@ export const ProductSchemaForm = yup.object().shape({
     .integer("A quantidade deve ser um número inteiro")
     .min(0, "A quantidade não pode ser negativa")
     .required("A quantidade é obrigatória"),
+  categoryIsAvailable: yup.string(),
 
   weight: yup
     .number()

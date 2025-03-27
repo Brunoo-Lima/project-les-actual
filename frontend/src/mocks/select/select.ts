@@ -36,6 +36,12 @@ export const selectTypePublicPlace: Options[] = [
   { value: "Praça", label: "Praça" },
 ];
 
+export const selectCategoryIsAvailable: Options[] = [
+  { value: "FORA_DE_MERCADO", label: "FORA DE MERCADO" },
+  { value: "INDISPONIVEL", label: "INDISPONIVEL" },
+  { value: "EM_ESTOQUE", label: "EM ESTOQUE" },
+];
+
 export const selectStates: Options[] = [
   { value: "AC", label: "Acre" },
   { value: "AL", label: "Alagoas" },
