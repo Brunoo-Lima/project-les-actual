@@ -16,12 +16,15 @@ export const ProductSchemaForm = yup.object().shape({
   universe: yup.string().required("O universo é obrigatório"),
   material: yup.string().required("O material é obrigatório"),
 
-  quantity: yup
-    .number()
-    .typeError("A quantidade deve ser um número")
-    .integer("A quantidade deve ser um número inteiro")
-    .min(0, "A quantidade não pode ser negativa")
-    .required("A quantidade é obrigatória"),
+  stock: yup.object().shape({
+    quantity: yup
+      .number()
+      .typeError("A quantidade deve ser um número")
+      .integer("A quantidade deve ser um número inteiro")
+      .min(0, "A quantidade não pode ser negativa")
+      .required("A quantidade é obrigatória"),
+  }),
+
   categoryIsAvailable: yup.string(),
 
   weight: yup
@@ -52,8 +55,9 @@ export const ProductSchemaForm = yup.object().shape({
 export type IStatusSchemaForm = yup.InferType<typeof StatusSchemaForm>;
 
 export const StatusSchemaForm = yup.object().shape({
-  status: yup.boolean().required("O status é obrigatório"),
+  status: yup.string().required("O status é obrigatório"),
   inactiveReason: yup.string().required("A justificativa é obrigatória"),
+  categoryIsAvailable: yup.string().required("A categoria é obrigatória"),
 });
 
 // export type ICouponSchemaForm = yup.InferType<typeof CouponSchemaForm>;

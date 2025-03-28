@@ -12,6 +12,7 @@ import { IProduct } from "@/@types/IProduct";
 import { ModalFilter } from "./modals/modal-filter/modal-filter";
 import { useFilter } from "@/hooks/useFilter";
 import { toast } from "sonner";
+import { listProducts } from "@/services/product";
 
 export function Product() {
   const {
@@ -29,7 +30,7 @@ export function Product() {
   } = useFilter();
   const { products, setProducts } = useData();
 
-  const [filteredData, setFilteredData] = useState<IProduct[]>(products);
+  const [filteredData, setFilteredData] = useState<IProduct[]>([]);
   const [isOpenModalNewProduct, setIsOpenModalNewProduct] =
     useState<boolean>(false);
   const [isOpenModalFilter, setIsOpenModalFilter] = useState<boolean>(false);
@@ -41,8 +42,20 @@ export function Product() {
   };
 
   useEffect(() => {
-    setFilteredData(products);
-  }, [products]);
+    const fetchProducts = async () => {
+      try {
+        const response = await listProducts();
+
+        setProducts(response);
+        setFilteredData(response);
+
+        console.log("data", response);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   const handleOpenModalNewProduct = () => {
     setIsOpenModalNewProduct(true);
@@ -71,7 +84,7 @@ export function Product() {
         const matchesPrice = !selectedPrice || client.price <= selectedPrice;
 
         const matchesStock =
-          !selectedStock || client.quantity <= +selectedStock;
+          !selectedStock || client.stock.quantity <= +selectedStock;
 
         return (
           matchesName &&

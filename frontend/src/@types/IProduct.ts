@@ -2,7 +2,7 @@ export interface IProduct {
   id: string;
   name: string;
   description: string;
-  image: string;
+  image: File;
   price: number;
   category: string;
 
@@ -14,13 +14,18 @@ export interface IProduct {
   height: number;
   width: number;
   depth: number;
-  quantity: number;
+  stock: IStock;
 
   isAvailable: boolean;
   inactiveReason?: string;
   categoryIsAvailable: CategoryIsAvailable.EM_ESTOQUE;
 
   pricingGroupId?: string;
+}
+
+export interface IStock {
+  id: string;
+  quantity: number;
 }
 
 export enum CategoryIsAvailable {

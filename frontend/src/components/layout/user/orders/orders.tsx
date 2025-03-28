@@ -123,7 +123,7 @@ export function Orders() {
               </p>
 
               <ButtonsActions
-                item={item}
+                item={item as any}
                 coupon={item.coupon}
                 status={item.status}
                 onOpenModalForExchange={handleOpenModalItemForExchange}

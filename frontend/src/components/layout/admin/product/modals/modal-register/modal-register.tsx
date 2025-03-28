@@ -1,3 +1,5 @@
+"use client";
+
 /* eslint-disable @next/next/no-img-element */
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -16,6 +18,7 @@ import { Textarea } from "@/components/ui/textarea/textarea";
 import { createProduct } from "@/services/product";
 import { SelectComponent } from "@/components/ui/select/select";
 import { selectCategoryIsAvailable } from "@/mocks/select/select";
+import axios from "axios";
 
 interface IModalRegisterProps {
   onClose: () => void;
@@ -24,11 +27,12 @@ interface IModalRegisterProps {
 
 export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [filename, setFilename] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
   const {
     register,
     setValue,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     control,
     handleSubmit,
   } = useForm<IProductSchemaForm>({
@@ -39,8 +43,8 @@ export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
     const file = event.target.files?.[0];
 
     if (file) {
-      setValue("image", file.name);
-      setFilename(file.name);
+      setValue("image", file as any);
+      setSelectedFile(file);
 
       const reader = new FileReader();
       reader.onload = (e: any) => {
@@ -50,35 +54,118 @@ export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
     }
   };
 
-  //Solução pra imagem até implementar o backend
-  const onSubmit: SubmitHandler<IProductSchemaForm> = async (data) => {
-    // const updatedData: IProduct = {
-    //   ...data,
-    //   id: Math.ceil(Math.random() * 10000).toString(),
-    //   price: +data.price,
-    //   quantity: +data.quantity,
-    //   image: previewImage || (filename as string),
-    //   description: data.description || (data?.description as any),
-    // };
-
+  const onSubmit = async (data: any) => {
     try {
-      const updatedData: any = {
-        ...data,
-        image: previewImage,
-      };
+      if (!selectedFile) {
+        toast.error("Por favor, selecione uma imagem");
+        return;
+      }
 
-      const productData = await createProduct(updatedData);
+      const formData = new FormData();
 
-      console.log("upd", productData);
+      formData.append("image", selectedFile);
 
-      setProducts((prevProducts) => [...prevProducts, productData]);
+      // Adiciona todos os campos do formulário ao FormData
+
+      formData.append("category", data.category);
+      formData.append("name", data.name);
+      formData.append("price", data.price.toString());
+      formData.append("brand", data.brand);
+      formData.append("description", data.description);
+      formData.append("material", data.material);
+      formData.append("universe", data.universe);
+      if (data.inactiveReason)
+        formData.append("inactiveReason", data.inactiveReason);
+      formData.append("depth", data.depth?.toString() || "");
+      formData.append("height", data.height?.toString() || "");
+      formData.append("weight", data.weight?.toString() || "");
+      formData.append("width", data.width?.toString() || "");
+      formData.append(
+        "categoryIsAvailable",
+        data.categoryIsAvailable?.toString() || "true"
+      );
+      formData.append(
+        "stock.quantity",
+        data.stock?.quantity?.toString() || "1"
+      );
+
+      const response = await axios.post(
+        "http://localhost:3333/product",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      setProducts((prev) => [...prev, response.data]);
       toast.success("Produto cadastrado com sucesso!");
-
+      // reset();
       onClose();
     } catch (error) {
-      toast.error("Erro ao criar produto");
+      console.error("Erro ao criar produto:", error);
+      // Mostrar mensagem de erro
     }
   };
+
+  // const onSubmit: SubmitHandler<IProductSchemaForm> = async (data) => {
+  //   try {
+  //     if (!selectedFile) {
+  //       toast.error("Por favor, selecione uma imagem");
+  //       return;
+  //     }
+
+  //     const formData = new FormData();
+
+  //     formData.append("image", selectedFile);
+
+  //     formData.append(
+  //       "data",
+  //       JSON.stringify({
+  //         ...data,
+  //         // Converte campos numéricos explicitamente
+  //         price: Number(data.price),
+  //         quantity: Number(data.stock.quantity),
+  //         weight: Number(data.weight),
+  //         height: Number(data.height),
+  //         width: Number(data.width),
+  //         depth: Number(data.depth),
+  //       })
+  //     );
+
+  //     // const numericFields = ["price", "quantity", "depth", "height", "weight"];
+
+  //     // for (const [key, value] of Object.entries(data)) {
+  //     //   if (key !== "image") {
+  //     //     if (numericFields.includes(key)) {
+  //     //       formData.append(key, value.toString());
+  //     //     } else {
+  //     //       formData.append(key, String(value));
+  //     //     }
+  //     //   }
+  //     // }
+
+  //     console.log("Dados do FormData:");
+  //     formData.forEach((value, key) => {
+  //       console.log(key, value);
+  //     });
+
+  //     // console.log("formData", formData.get("image"));
+
+  //     const response = await createProduct(formData);
+
+  //     console.log("upd", response);
+  //     if (response) {
+  //       setProducts((prev) => [...prev, response]);
+  //       toast.success("Produto cadastrado com sucesso!");
+  //       // reset();
+  //       onClose();
+  //     }
+  //   } catch (error) {
+  //     toast.error("Erro ao criar produto");
+  //   }
+  // };
 
   return (
     <Modal.Root className="flex flex-col gap-y-4 w-[600px] h-[600px] p-4 rounded-lg overflow-auto container-modal">
@@ -109,16 +196,16 @@ export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
             <input
               type="file"
               accept="image/*"
-              {...(register("image"),
-              {
-                onChange: handleImageUpload,
-              })}
               id="inputFile"
+              {...register("image")}
+              onChange={handleImageUpload}
               className="hidden"
             />
 
             <div>
-              <p className="text-base text-primary-light">{filename}</p>
+              <p className="text-base text-primary-light">
+                {selectedFile?.name}
+              </p>
 
               {errors.image && (
                 <span className="text-sm text-error">
@@ -175,11 +262,11 @@ export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
               />
 
               <Input
+                className="w-16 border border-gray-600"
                 label="Estoque"
                 placeholder="0"
-                {...register("quantity")}
-                className="w-16 border border-gray-600"
-                error={errors?.quantity}
+                {...register("stock.quantity")}
+                error={errors?.stock?.quantity}
               />
             </div>
 
@@ -248,7 +335,12 @@ export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
           />
 
           <div className="flex justify-center items-center gap-4 mt-3">
-            <ButtonGeneral type="submit" text="Cadastrar" className="w-48" />
+            <ButtonGeneral
+              type="submit"
+              text={isSubmitting ? "Enviando..." : "Cadastrar"}
+              disabled={isSubmitting}
+              className="w-48"
+            />
             <ButtonCancel text="Cancelar" onClick={onClose} />
           </div>
         </form>

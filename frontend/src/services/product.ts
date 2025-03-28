@@ -1,44 +1,85 @@
-import { IProduct } from "@/@types/IProduct";
+import { CategoryIsAvailable, IProduct } from "@/@types/IProduct";
 
 const baseUrl = "http://localhost:3333";
 
-export const createProduct = async (
-  product: IProduct & { imageFile?: File }
-) => {
+export const createProduct = async (productData: FormData) => {
   try {
-    const formData = new FormData();
-
-    Object.keys(product).forEach((key) => {
-      if (key !== "imageFile" && product[key] !== undefined) {
-        formData.append(key, String(product[key]));
-      }
-    });
-
-    if (product.imageFile) {
-      formData.append("image", product.imageFile); // "image" deve bater com o nome esperado no backend
-    }
-
     const response = await fetch(`http://localhost:3333/product`, {
       method: "POST",
-      body: formData,
+      body: productData,
     });
 
-    console.log("resp", response.json());
+    console.log("Status da resposta:", response.status);
 
     if (!response.ok) {
-      throw new Error(`Erro na requisição!: ${response.statusText}`);
+      const errorData = await response.json().catch(() => ({}));
+      const errorMessage =
+        errorData.message || `Erro ${response.status}: ${response.statusText}`;
+      throw new Error(errorMessage);
     }
 
-    console.log("resp", response.json());
-
-    const data = await response.json();
-
-    console.log("data", data);
-
-    return data;
+    return await response.json();
   } catch (error) {
-    console.error("Erro ao criar produto!", error);
-    throw new Error("Erro ao criar produto!");
+    console.error("Erro detalhado ao criar produto:", error);
+    throw new Error(
+      error instanceof Error ? error.message : "Erro ao criar produto"
+    );
   }
 };
 
+export const listProducts = async () => {
+  try {
+    const response = await fetch(`http://localhost:3333/products`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Algo deu errado na requisição: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error("Erro ao listar produtos", error);
+    throw new Error("Erro ao listar produtos");
+  }
+};
+
+interface IProductStatus {
+  status: boolean;
+  categoryIsAvailable: CategoryIsAvailable;
+  inactiveReason?: string;
+}
+
+export const updateStatusProduct = async (
+  product_id: string,
+  productData: IProductStatus
+) => {
+  try {
+    const response = await fetch(
+      `http://localhost:3333/status-product?product_id=${product_id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(productData),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Algo deu errado na requisição: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error("Erro ao atualizar status do produto", error);
+    throw new Error("Erro ao atualizar status do produto");
+  }
+};
