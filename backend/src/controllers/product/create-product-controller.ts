@@ -32,10 +32,12 @@ class CreateProductController {
 
     const quantity = stockQuantity ? parseInt(stockQuantity, 10) : 0;
 
+    const categories = Array.isArray(category) ? category : [category];
+
     const createProductService = new CreateProductService();
 
     const createProduct = await createProductService.execute({
-      category,
+      category: categories,
       image: imageUrl,
       name,
       price,

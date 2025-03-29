@@ -89,8 +89,8 @@ CREATE TABLE "products" (
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
     "stockId" TEXT,
-    "category" TEXT NOT NULL,
     "pricingGroupId" TEXT,
+    "category" TEXT[],
 
     CONSTRAINT "products_pkey" PRIMARY KEY ("id")
 );
@@ -182,7 +182,7 @@ CREATE TABLE "exchange_coupons" (
     "code" TEXT NOT NULL,
     "value" DECIMAL(65,30) NOT NULL,
     "status" TEXT NOT NULL DEFAULT 'active',
-    "expiration" TIMESTAMP(3) NOT NULL,
+    "expiration" DECIMAL(65,30) NOT NULL,
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "userId" TEXT NOT NULL,
     "orderId" TEXT NOT NULL,

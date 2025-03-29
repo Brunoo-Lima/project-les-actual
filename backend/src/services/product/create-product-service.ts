@@ -54,7 +54,7 @@ class CreateProductService {
 
       return { product };
     } catch (error) {
-      console.log('erro ao criar produto');
+      console.log('erro ao criar produto', error);
       throw new Error('Erro ao criar produto!');
     }
   }
