@@ -35,6 +35,7 @@ export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
     formState: { errors, isSubmitting },
     control,
     handleSubmit,
+    reset,
   } = useForm<IProductSchemaForm>({
     resolver: yupResolver(ProductSchemaForm),
   });
@@ -64,8 +65,6 @@ export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
       const formData = new FormData();
 
       formData.append("image", selectedFile);
-
-      // Adiciona todos os campos do formulário ao FormData
 
       formData.append("category", data.category);
       formData.append("name", data.name);
@@ -101,71 +100,12 @@ export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
 
       setProducts((prev) => [...prev, response.data]);
       toast.success("Produto cadastrado com sucesso!");
-      // reset();
+      reset();
       onClose();
     } catch (error) {
-      console.error("Erro ao criar produto:", error);
-      // Mostrar mensagem de erro
+      toast.error("Erro ao criar produto:");
     }
   };
-
-  // const onSubmit: SubmitHandler<IProductSchemaForm> = async (data) => {
-  //   try {
-  //     if (!selectedFile) {
-  //       toast.error("Por favor, selecione uma imagem");
-  //       return;
-  //     }
-
-  //     const formData = new FormData();
-
-  //     formData.append("image", selectedFile);
-
-  //     formData.append(
-  //       "data",
-  //       JSON.stringify({
-  //         ...data,
-  //         // Converte campos numéricos explicitamente
-  //         price: Number(data.price),
-  //         quantity: Number(data.stock.quantity),
-  //         weight: Number(data.weight),
-  //         height: Number(data.height),
-  //         width: Number(data.width),
-  //         depth: Number(data.depth),
-  //       })
-  //     );
-
-  //     // const numericFields = ["price", "quantity", "depth", "height", "weight"];
-
-  //     // for (const [key, value] of Object.entries(data)) {
-  //     //   if (key !== "image") {
-  //     //     if (numericFields.includes(key)) {
-  //     //       formData.append(key, value.toString());
-  //     //     } else {
-  //     //       formData.append(key, String(value));
-  //     //     }
-  //     //   }
-  //     // }
-
-  //     console.log("Dados do FormData:");
-  //     formData.forEach((value, key) => {
-  //       console.log(key, value);
-  //     });
-
-  //     // console.log("formData", formData.get("image"));
-
-  //     const response = await createProduct(formData);
-
-  //     console.log("upd", response);
-  //     if (response) {
-  //       setProducts((prev) => [...prev, response]);
-  //       toast.success("Produto cadastrado com sucesso!");
-  //       // reset();
-  //       onClose();
-  //     }
-  //   } catch (error) {
-  //     toast.error("Erro ao criar produto");
-  //   }
-  // };
 
   return (
     <Modal.Root className="flex flex-col gap-y-4 w-[600px] h-[600px] p-4 rounded-lg overflow-auto container-modal">

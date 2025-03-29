@@ -15,7 +15,20 @@ export const selectFlagCard: Options[] = [
 ];
 
 export const selectCategory: Options[] = [
-  { value: "action-figure", label: "Action Figure" },
+  { value: "Ação", label: "Ação" },
+  { value: "Aventura", label: "Aventura" },
+  { value: "Comédia", label: "Comédia" },
+  { value: "Fantasia", label: "Fantasia" },
+  { value: "Ficção Científica", label: "Ficção Científica" },
+  { value: "Romance", label: "Romance" },
+  { value: "Suspense", label: "Suspense" },
+  { value: "Mistério", label: "Mistério" },
+  { value: "Shounen", label: "Shounen" },
+  { value: "Shoujo", label: "Shoujo" },
+  { value: "Seinen", label: "Seinen" },
+  { value: "Isekai", label: "Isekai" },
+  { value: "Mecha", label: "Mecha" },
+  { value: "Slice of Life", label: "Slice of Life" },
 ];
 
 export const selectTypeResidence: Options[] = [

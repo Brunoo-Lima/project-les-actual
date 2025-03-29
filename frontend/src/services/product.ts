@@ -83,3 +83,55 @@ export const updateStatusProduct = async (
     throw new Error("Erro ao atualizar status do produto");
   }
 };
+
+export const updateProduct = async (
+  product_id: string,
+  productData: IProduct
+) => {
+  try {
+    const response = await fetch(
+      `http://localhost:3333/product?product_id=${product_id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(productData),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Algo deu errado na requisição: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error("Erro ao atualizar o produto", error);
+    throw new Error("Erro ao atualizar o produto");
+  }
+};
+
+export const deleteProduct = async (product_id: string) => {
+  try {
+    const response = await fetch(
+      `http://localhost:3333/product?product_id=${product_id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Algo deu errado na requisição: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Erro ao deletar produto", error);
+    throw new Error("Erro ao deletar produto");
+  }
+};

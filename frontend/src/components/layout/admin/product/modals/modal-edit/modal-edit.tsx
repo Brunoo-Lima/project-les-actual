@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { IProduct } from "@/@types/IProduct";
 import { Modal } from "@/components/modal";
@@ -14,6 +14,10 @@ import {
 import { toast } from "sonner";
 import { useData } from "@/hooks/useData";
 import { Textarea } from "@/components/ui/textarea/textarea";
+import { updateProduct } from "@/services/product";
+import axios from "axios";
+import { SelectComponent } from "@/components/ui/select/select";
+import { selectCategoryIsAvailable } from "@/mocks/select/select";
 
 interface IModalEditProps {
   product: IProduct | null;
@@ -27,13 +31,14 @@ export function ModalEdit({
   setSelectedProduct,
 }: IModalEditProps) {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [filename, setFilename] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const { setProducts } = useData();
   const {
     register,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     handleSubmit,
     setValue,
+    control,
   } = useForm<IProductSchemaForm>({
     resolver: yupResolver(ProductSchemaForm),
   });
@@ -49,7 +54,7 @@ export function ModalEdit({
     setValue("name", product?.name || "");
     setValue("category", product?.category || "");
     setValue("price", product?.price || 0);
-    setValue("quantity", product?.quantity || 0);
+    setValue("stock.quantity", product?.stock.quantity || 0);
     setValue("description", product?.description || "");
     setValue("material", product?.material || "");
     setValue("weight", product?.weight || 0);
@@ -59,14 +64,16 @@ export function ModalEdit({
     setValue("universe", product?.universe || "");
     setValue("inactiveReason", product?.inactiveReason || "");
     setValue("isAvailable", product?.isAvailable || false);
+    setValue("categoryIsAvailable", product?.categoryIsAvailable || "");
   }, [setValue, product]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
     if (file) {
-      setValue("image", file.name);
-      setFilename(file.name);
+      setValue("image", file as any);
+      setSelectedFile(file);
+
       const reader = new FileReader();
       reader.onload = (e: any) => {
         setPreviewImage(e.target.result as string);
@@ -75,27 +82,69 @@ export function ModalEdit({
     }
   };
 
-  const onSubmit: SubmitHandler<IProductSchemaForm> = (
-    data: IProductSchemaForm
-  ) => {
-    const updatedData: IProduct = {
-      ...data,
-      id: product?.id as string,
-      price: +data.price,
-      quantity: +data.quantity,
-      image: data.image || (filename as string),
-      description: data.description || (product?.description as any),
-    };
+  console.log("product", product);
 
-    setSelectedProduct(updatedData);
+  const onSubmit: SubmitHandler<IProductSchemaForm> = async (data: any) => {
+    try {
+      const formData = new FormData();
 
-    setProducts((prevProducts) =>
-      prevProducts.map((p) => (p.id === product?.id ? updatedData : p))
-    );
+      if (selectedFile) {
+        formData.append("image", selectedFile);
+      } else if (product?.image && typeof product?.image === "string") {
+        formData.append("image", product?.image); // Mantém a imagem atual
+      }
+      formData.append("category", data.category);
+      formData.append("name", data.name);
+      formData.append("price", data.price.toString());
+      formData.append("brand", data.brand);
+      formData.append("description", data.description);
+      formData.append("material", data.material);
+      formData.append("universe", data.universe);
 
-    toast.success("Produto editado com sucesso!");
+      if (data.inactiveReason) {
+        formData.append("inactiveReason", data.inactiveReason);
+      }
 
-    onClose();
+      formData.append("depth", data.depth?.toString() || "");
+      formData.append("height", data.height?.toString() || "");
+      formData.append("weight", data.weight?.toString() || "");
+      formData.append("width", data.width?.toString() || "");
+      formData.append(
+        "categoryIsAvailable",
+        data.categoryIsAvailable?.toString() || "EM_ESTOQUE"
+      );
+      formData.append(
+        "stock.quantity",
+        data.stock?.quantity?.toString() || "1"
+      );
+
+      console.log("product", product);
+      console.log("product", formData);
+
+      for (const [key, values] of formData.entries()) {
+        console.log("aaa -" + key, values);
+      }
+
+      const response = await axios.patch(
+        `http://localhost:3333/product?product_id=${product?.id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log("resss", response.data);
+
+      setProducts((prev) => [...prev, response.data]);
+
+      toast.success("Produto editado com sucesso!");
+
+      onClose();
+    } catch (error) {
+      toast.error("Erro ao editar produto!");
+    }
   };
 
   if (!product) return;
@@ -132,16 +181,16 @@ export function ModalEdit({
             <input
               type="file"
               accept="image/*"
-              {...(register("image"),
-              {
-                onChange: handleImageUpload,
-              })}
+              {...register("image")}
+              onChange={handleImageUpload}
               id="inputFile"
               className="hidden"
             />
 
             <div>
-              <p className="text-base text-primary-light">{filename}</p>
+              <p className="text-base text-primary-light">
+                {selectedFile?.name}
+              </p>
 
               {errors.image && (
                 <span className="text-sm text-error">
@@ -200,9 +249,9 @@ export function ModalEdit({
               <Input
                 label="Estoque"
                 placeholder="0"
-                {...register("quantity")}
+                {...register("stock.quantity")}
                 className="w-16 border border-gray-600"
-                error={errors?.quantity}
+                error={errors?.stock?.quantity}
               />
             </div>
 
@@ -249,6 +298,22 @@ export function ModalEdit({
             />
           </div>
 
+          <div>
+            <Controller
+              name="categoryIsAvailable"
+              control={control}
+              render={({ field }) => (
+                <SelectComponent
+                  placeholder="Categoria"
+                  value={field.value}
+                  onChange={field.onChange}
+                  options={selectCategoryIsAvailable}
+                  label="Categoria de disponibilidade"
+                />
+              )}
+            />
+          </div>
+
           <Textarea
             label="Descrição"
             {...register("description")}
@@ -256,7 +321,12 @@ export function ModalEdit({
           />
 
           <div className="flex justify-center items-center gap-4 mt-3">
-            <ButtonGeneral type="submit" text="Salvar" className="w-48" />
+            <ButtonGeneral
+              type="submit"
+              text={isSubmitting ? "Salvando..." : "Salvar"}
+              disabled={isSubmitting}
+              className="w-48"
+            />
             <ButtonCancel text="Cancelar" onClick={onClose} />
           </div>
         </form>
