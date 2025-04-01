@@ -12,7 +12,6 @@ class CreateProductService {
   }
 
   async execute({
-    category,
     image,
     name,
     price,
@@ -34,7 +33,6 @@ class CreateProductService {
 
     try {
       const product = await this.createProductDb.createProduct({
-        category,
         image,
         name,
         price,

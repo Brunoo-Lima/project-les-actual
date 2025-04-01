@@ -1,4 +1,5 @@
 import { prismaClient } from '../../config/prisma-client/prisma-client';
+import { ICart, ICartItem } from '../../types/ICart';
 
 class ProductValidationService {
   async validateNameProduct(name: string, product_id?: string): Promise<void> {
@@ -22,6 +23,31 @@ class ProductValidationService {
     if (quantity <= 0) {
       throw new Error('Quantidade inválida.');
     }
+  }
+
+  async validateStockProduct(cart: ICartItem[]): Promise<void> {
+    for (const item of cart) {
+      const product = await prismaClient.product.findUnique({
+        where: {
+          id: item.productId,
+        },
+        include: { stock: true },
+      });
+
+      if (!product?.stock || product.stock.quantity < item.quantity) {
+        throw new Error(
+          `Produto ${product?.name || item.productId} sem estoque suficiente`
+        );
+      }
+    }
+  }
+
+  validateCartItems(cart: ICartItem[]): void {
+    cart.forEach((item) => {
+      if (item.quantity < 1) {
+        throw new Error(`Quantidade inválida para o produto ${item.productId}`);
+      }
+    });
   }
 }
 

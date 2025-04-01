@@ -1,6 +1,12 @@
 -- CreateEnum
 CREATE TYPE "CategoryStatusReason" AS ENUM ('FORA_DE_MERCADO', 'INDISPONIVEL', 'EM_ESTOQUE');
 
+-- CreateEnum
+CREATE TYPE "PaymentStatus" AS ENUM ('pending', 'completed', 'failed', 'refunded');
+
+-- CreateEnum
+CREATE TYPE "PaymentType" AS ENUM ('credit_card', 'coupon', 'pix', 'boleto');
+
 -- CreateTable
 CREATE TABLE "users" (
     "id" TEXT NOT NULL,
@@ -90,7 +96,6 @@ CREATE TABLE "products" (
     "updated_at" TIMESTAMP(3),
     "stockId" TEXT,
     "pricingGroupId" TEXT,
-    "category" TEXT[],
 
     CONSTRAINT "products_pkey" PRIMARY KEY ("id")
 );
@@ -122,6 +127,7 @@ CREATE TABLE "carts" (
     "userId" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
 
     CONSTRAINT "carts_pkey" PRIMARY KEY ("id")
 );
@@ -157,7 +163,6 @@ CREATE TABLE "orders" (
     "total" DECIMAL(65,30) NOT NULL,
     "status" TEXT NOT NULL,
     "freight" DECIMAL(65,30) NOT NULL,
-    "coupon" TEXT,
     "discountValue" DECIMAL(65,30),
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
@@ -170,10 +175,22 @@ CREATE TABLE "orders" (
 CREATE TABLE "order_payments" (
     "id" TEXT NOT NULL,
     "orderId" TEXT NOT NULL,
-    "creditCardId" TEXT NOT NULL,
+    "paymentMethodId" TEXT NOT NULL,
     "amount" DECIMAL(65,30) NOT NULL,
+    "status" "PaymentStatus" NOT NULL DEFAULT 'pending',
+    "processedAt" TIMESTAMP(3),
+    "creditCardId" TEXT,
+    "exchangeCouponId" TEXT,
 
     CONSTRAINT "order_payments_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "payment_methods" (
+    "id" TEXT NOT NULL,
+    "type" "PaymentType" NOT NULL,
+
+    CONSTRAINT "payment_methods_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -182,10 +199,11 @@ CREATE TABLE "exchange_coupons" (
     "code" TEXT NOT NULL,
     "value" DECIMAL(65,30) NOT NULL,
     "status" TEXT NOT NULL DEFAULT 'active',
-    "expiration" DECIMAL(65,30) NOT NULL,
+    "expiration" TIMESTAMP(3) NOT NULL,
+    "isUsed" BOOLEAN NOT NULL DEFAULT false,
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3),
     "userId" TEXT NOT NULL,
-    "orderId" TEXT NOT NULL,
 
     CONSTRAINT "exchange_coupons_pkey" PRIMARY KEY ("id")
 );
@@ -222,6 +240,9 @@ CREATE UNIQUE INDEX "carts_userId_key" ON "carts"("userId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "exchange_coupons_code_key" ON "exchange_coupons"("code");
+
+-- CreateIndex
+CREATE INDEX "exchange_coupons_code_status_idx" ON "exchange_coupons"("code", "status");
 
 -- AddForeignKey
 ALTER TABLE "phones" ADD CONSTRAINT "phones_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -263,10 +284,13 @@ ALTER TABLE "orders" ADD CONSTRAINT "orders_addressId_fkey" FOREIGN KEY ("addres
 ALTER TABLE "order_payments" ADD CONSTRAINT "order_payments_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "orders"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "order_payments" ADD CONSTRAINT "order_payments_creditCardId_fkey" FOREIGN KEY ("creditCardId") REFERENCES "creditCards"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "order_payments" ADD CONSTRAINT "order_payments_paymentMethodId_fkey" FOREIGN KEY ("paymentMethodId") REFERENCES "payment_methods"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "order_payments" ADD CONSTRAINT "order_payments_creditCardId_fkey" FOREIGN KEY ("creditCardId") REFERENCES "creditCards"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "order_payments" ADD CONSTRAINT "order_payments_exchangeCouponId_fkey" FOREIGN KEY ("exchangeCouponId") REFERENCES "exchange_coupons"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "exchange_coupons" ADD CONSTRAINT "exchange_coupons_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "exchange_coupons" ADD CONSTRAINT "exchange_coupons_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "orders"("id") ON DELETE CASCADE ON UPDATE CASCADE;

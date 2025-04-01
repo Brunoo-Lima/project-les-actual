@@ -5,7 +5,6 @@ import { CreateProductService } from '../../services/product/create-product-serv
 class CreateProductController {
   async handle(req: Request, res: Response) {
     const {
-      category,
       name,
       price,
       brand,
@@ -32,12 +31,9 @@ class CreateProductController {
 
     const quantity = stockQuantity ? parseInt(stockQuantity, 10) : 0;
 
-    const categories = Array.isArray(category) ? category : [category];
-
     const createProductService = new CreateProductService();
 
     const createProduct = await createProductService.execute({
-      category: categories,
       image: imageUrl,
       name,
       price,

@@ -3,7 +3,6 @@ import { prismaClient } from '../../prisma-client/prisma-client';
 
 class CreateProductDb {
   async createProduct({
-    category,
     image,
     name,
     price,
@@ -21,7 +20,6 @@ class CreateProductDb {
   }: IProduct) {
     return await prismaClient.product.create({
       data: {
-        category,
         image,
         name,
         price,
@@ -45,7 +43,6 @@ class CreateProductDb {
       select: {
         id: true,
         name: true,
-        category: true,
         image: true,
         price: true,
         brand: true,

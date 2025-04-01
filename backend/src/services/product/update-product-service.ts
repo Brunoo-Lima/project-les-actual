@@ -16,7 +16,6 @@ class UpdateProductService {
   async execute(
     product_id: string,
     {
-      category,
       image,
       name,
       price,
@@ -73,7 +72,6 @@ class UpdateProductService {
 
     try {
       const product = await this.updateProductDb.updateProduct(product_id, {
-        category,
         image,
         name,
         price,

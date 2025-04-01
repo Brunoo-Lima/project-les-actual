@@ -23,7 +23,6 @@ class UpdateStatusProductDb {
 
       select: {
         id: true,
-        category: true,
         image: true,
         name: true,
         price: true,

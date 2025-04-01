@@ -5,7 +5,6 @@ class UpdateProductDb {
   async updateProduct(
     product_id: string,
     {
-      category,
       image,
       name,
       price,
@@ -28,7 +27,6 @@ class UpdateProductDb {
         id: product_id,
       },
       data: {
-        category,
         image,
         name,
         price,
@@ -52,7 +50,6 @@ class UpdateProductDb {
       select: {
         id: true,
         name: true,
-        category: true,
         image: true,
         price: true,
         brand: true,

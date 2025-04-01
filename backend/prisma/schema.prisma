@@ -95,7 +95,7 @@ model CreditCard {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  orders OrderPayment[]
+  orderPayments OrderPayment[]
 
   @@map("creditCards")
 }
@@ -131,8 +131,6 @@ model Product {
   pricingGroupId String?
 
   cartItem CartItem[]
-
-  category String[]
 
   @@map("products")
 
@@ -180,6 +178,8 @@ model Cart {
   created_at DateTime? @default(now())
   updated_at DateTime? @updatedAt
 
+  isActive  Boolean  @default(true)
+
   @@map("carts")
 }
 
@@ -220,7 +220,6 @@ model Order {
   total         Decimal
   status        String
   freight       Decimal
-  coupon        String?
   discountValue Decimal?
 
   created_at DateTime? @default(now())
@@ -230,9 +229,8 @@ model Order {
   items     OrderItem[]
   address   Address?       @relation(fields: [addressId], references: [id], onDelete: SetNull)
   addressId String?
+  
   payments  OrderPayment[]
-
-  exchangeCoupon ExchangeCoupon[]
 
   @@map("orders")
 }
@@ -240,13 +238,45 @@ model Order {
 model OrderPayment {
   id           String  @id @default(uuid())
   orderId      String
-  creditCardId String
+  paymentMethodId String
   amount       Decimal  // Valor pago com este cartão de crédito
+  status     PaymentStatus @default(pending)
+
+  processedAt DateTime?
 
   order   Order      @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  payment CreditCard @relation(fields: [creditCardId], references: [id], onDelete: Cascade)
+  payment PaymentMethod @relation(fields: [paymentMethodId], references: [id], onDelete: Cascade)
+
+  creditCardId String?
+  creditCard CreditCard? @relation(fields: [creditCardId], references: [id], onDelete: SetNull)
+
+  exchangeCouponId String?
+  exchangeCoupon   ExchangeCoupon? @relation(fields: [exchangeCouponId], references: [id], onDelete: SetNull)
 
   @@map("order_payments")
+}
+
+enum PaymentStatus {
+  pending
+  completed
+  failed
+  refunded
+}
+
+model PaymentMethod {
+  id          String         @id @default(uuid())
+  type        PaymentType
+
+  payments OrderPayment[]
+
+  @@map("payment_methods")
+}
+
+enum PaymentType {
+  credit_card
+  coupon
+  pix
+  boleto
 }
 
 model ExchangeCoupon {
@@ -254,16 +284,18 @@ model ExchangeCoupon {
   code       String   @unique
   value      Decimal
   status     String   @default("active")
-  expiration Decimal
+  expiration DateTime
+  isUsed     Boolean  @default(false)
 
   created_at DateTime? @default(now())
+  updated_at DateTime? @updatedAt
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  orderId String
-  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  payments OrderPayment[]
 
+  @@index([code, status]) 
   @@map("exchange_coupons")
 }
 

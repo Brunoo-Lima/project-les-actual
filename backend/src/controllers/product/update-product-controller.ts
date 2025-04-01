@@ -5,7 +5,6 @@ class UpdateProductController {
   async handle(req: Request, res: Response) {
     const product_id = req.query.product_id as string;
     const {
-      category,
       name,
       price,
       brand,
@@ -35,7 +34,6 @@ class UpdateProductController {
     const updateProductService = new UpdateProductService();
 
     const product = await updateProductService.execute(product_id, {
-      category,
       name,
       price,
       brand,

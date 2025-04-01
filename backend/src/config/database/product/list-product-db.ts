@@ -8,8 +8,6 @@ class ListProductDb {
         name: true,
         description: true,
         price: true,
-
-        category: true,
         image: true,
         brand: true,
         universe: true,

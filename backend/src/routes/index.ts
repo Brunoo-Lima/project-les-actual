@@ -5,6 +5,7 @@ import { addressRoutes } from './address.routes';
 import { creditCardRoutes } from './credit-card.routes';
 import { phoneRoutes } from './phone.routes';
 import { loginRoutes } from './login.routes';
+import { orderRoutes } from './order.routes';
 
 const routes = express.Router();
 
@@ -14,5 +15,6 @@ routes.use(addressRoutes);
 routes.use(creditCardRoutes);
 routes.use(phoneRoutes);
 routes.use(loginRoutes);
+routes.use(orderRoutes);
 
 export { routes };
