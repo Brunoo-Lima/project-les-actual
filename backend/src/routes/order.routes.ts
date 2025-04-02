@@ -8,4 +8,9 @@ orderRoutes.post('/cart', async (req, res) => {
   await createCartController.handle(req, res);
 });
 
+orderRoutes.post('/checkout', async (req, res) => {
+  // const createCartController = new CreateCartController();
+  // await createCartController.handle(req, res);
+});
+
 export { orderRoutes };

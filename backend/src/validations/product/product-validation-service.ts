@@ -25,19 +25,17 @@ class ProductValidationService {
     }
   }
 
-  async validateStockProduct(cart: ICartItem[]): Promise<void> {
-    for (const item of cart) {
-      const product = await prismaClient.product.findUnique({
-        where: {
-          id: item.productId,
-        },
-        include: { stock: true },
+  // Em ProductValidationService
+  async validateStockProduct(items: ICartItem[], tx: any = prismaClient) {
+    for (const item of items) {
+      const product = await tx.product.findUnique({
+        where: { id: item.productId },
+        select: { stock: true, name: true },
       });
 
-      if (!product?.stock || product.stock.quantity < item.quantity) {
-        throw new Error(
-          `Produto ${product?.name || item.productId} sem estoque suficiente`
-        );
+      if (!product) throw new Error(`Produto ${item.productId} não encontrado`);
+      if (product.stock < item.quantity) {
+        throw new Error(`Estoque insuficiente para ${product.name}`);
       }
     }
   }

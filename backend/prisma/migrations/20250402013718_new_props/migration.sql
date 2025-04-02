@@ -239,6 +239,9 @@ CREATE UNIQUE INDEX "pricing_groups_name_key" ON "pricing_groups"("name");
 CREATE UNIQUE INDEX "carts_userId_key" ON "carts"("userId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "cart_items_cartId_productId_key" ON "cart_items"("cartId", "productId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "exchange_coupons_code_key" ON "exchange_coupons"("code");
 
 -- CreateIndex

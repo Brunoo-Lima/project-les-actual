@@ -12,6 +12,13 @@ class OrderValidationService {
       throw new Error('Usuário já possui um carrinho ativo');
     }
   }
+
+  async getExistingCart(userId: string) {
+    return await prismaClient.cart.findFirst({
+      where: { userId },
+      include: { items: true },
+    });
+  }
 }
 
 export { OrderValidationService };
