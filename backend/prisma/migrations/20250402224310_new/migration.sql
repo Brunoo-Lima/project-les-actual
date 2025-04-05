@@ -127,6 +127,7 @@ CREATE TABLE "carts" (
     "userId" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
+    "expires_at" TIMESTAMP(3) DEFAULT (now() + interval '10 min'),
     "isActive" BOOLEAN NOT NULL DEFAULT true,
 
     CONSTRAINT "carts_pkey" PRIMARY KEY ("id")

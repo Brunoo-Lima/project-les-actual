@@ -1,11 +1,8 @@
 import { Request, Response } from 'express';
 import { CreateCartService } from '../../services/order/create-cart-service';
-import { ICart } from '../../types/ICart';
 
 class CreateCartController {
   async handle(req: Request, res: Response) {
-    // const userId = req.query.userId as string;
-
     const { userId, items } = req.body;
 
     const createCartService = new CreateCartService();

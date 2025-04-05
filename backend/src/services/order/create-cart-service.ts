@@ -15,23 +15,45 @@ class CreateCartService {
     this.orderValidationService = new OrderValidationService();
   }
 
-  //Olhar dps aqui nao sei se ta certo
-  private async addItemsToCart(userId: string, newItems: ICartItem[]) {
+  private async handleStockUpdate(items: ICartItem[], tx: any) {
+    for (const item of items) {
+      const product = await tx.product.findUnique({
+        where: { id: item.productId },
+        include: { stock: true },
+      });
+
+      if (!product) throw new Error(`Produto ${item.productId} não encontrado`);
+      if (!product.stock)
+        throw new Error(`Produto ${item.productId} sem estoque`);
+      if (product.stock.quantity < item.quantity) {
+        throw new Error(
+          `Estoque insuficiente para ${product.name}. Disponível: ${product.stock.quantity}, Solicitado: ${item.quantity}`
+        );
+      }
+
+      await tx.stock.update({
+        where: { id: product.stock.id },
+        data: {
+          quantity: { decrement: item.quantity },
+          reserved: { increment: item.quantity },
+        },
+      });
+    }
+  }
+
+  private async addItemsToCart(userId: string, items: ICartItem[]) {
     const existingCart = await this.orderValidationService.getExistingCart(
       userId
     );
     if (!existingCart) throw new Error('Carrinho não encontrado');
 
     try {
-      // Tudo dentro da transação para garantir atomicidade
-      const updatedCart = await prismaClient.$transaction(async (tx) => {
-        // 1. Valida estoque (dentro da transação)
-        await this.productValidationService.validateStockProduct(newItems, tx); // Note o 'tx'
-        this.productValidationService.validateCartItems(newItems);
+      return await prismaClient.$transaction(async (tx) => {
+        this.productValidationService.validateCartItems(items);
+        await this.handleStockUpdate(items, tx);
 
-        // 2. Atualiza itens do carrinho E estoque
-        for (const item of newItems) {
-          // 2.1. Adiciona ao carrinho
+        // Atualiza itens do carrinho
+        for (const item of items) {
           await tx.cartItem.upsert({
             where: {
               cartId_productId: {
@@ -46,51 +68,34 @@ class CreateCartService {
               quantity: item.quantity,
             },
           });
-
-          // 2.2. Atualiza estoque (importante!)
-          await tx.product.update({
-            where: { id: item.productId },
-            data: {
-              stock: {
-                create: {
-                  quantity: item.quantity,
-                },
-              },
-            },
-          });
         }
 
-        // 3. Retorna o carrinho atualizado
         return tx.cart.findUnique({
           where: { id: existingCart.id },
           include: { items: { include: { product: true } } },
         });
       });
-
-      return { cartData: updatedCart };
     } catch (error: any) {
-      console.error('Erro na transação:', error);
+      console.error('Erro ao atualizar carrinho:', error);
       throw new Error(`Falha ao atualizar carrinho: ${error.message}`);
     }
   }
+
   async execute(userId: string, cart: Omit<ICart, 'userId'>) {
     const existingCart = await this.orderValidationService.getExistingCart(
       userId
     );
 
     if (existingCart) {
-      return await this.addItemsToCart(userId, cart.items);
+      return { cartData: await this.addItemsToCart(userId, cart.items) };
     }
 
     try {
       const cartData = await prismaClient.$transaction(async (tx) => {
-        await this.productValidationService.validateStockProduct(
-          cart.items,
-          tx
-        );
         this.productValidationService.validateCartItems(cart.items);
+        await this.handleStockUpdate(cart.items, tx);
 
-        const newCart = await tx.cart.create({
+        return tx.cart.create({
           data: {
             userId,
             items: {
@@ -102,21 +107,6 @@ class CreateCartService {
           },
           include: { items: { include: { product: true } } },
         });
-
-        for (const item of cart.items) {
-          await tx.product.update({
-            where: { id: item.productId },
-            data: {
-              stock: {
-                create: {
-                  quantity: item.quantity,
-                },
-              },
-            },
-          });
-        }
-
-        return newCart;
       });
 
       return { cartData };

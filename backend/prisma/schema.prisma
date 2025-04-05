@@ -177,6 +177,7 @@ model Cart {
 
   created_at DateTime? @default(now())
   updated_at DateTime? @updatedAt
+  expires_at DateTime? @default(dbgenerated("(now() + interval '10 min')"))
 
   isActive  Boolean  @default(true)
 
