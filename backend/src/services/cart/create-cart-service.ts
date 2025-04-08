@@ -1,18 +1,18 @@
 import { CreateCartDb } from '../../config/database/order/create-cart-db';
 import { prismaClient } from '../../config/prisma-client/prisma-client';
 import { ICart, ICartItem } from '../../types/ICart';
-import { OrderValidationService } from '../../validations/order/order-validation-service';
+import { CartValidationService } from '../../validations/cart/cart-validation-service';
 import { ProductValidationService } from '../../validations/product/product-validation-service';
 
 class CreateCartService {
   private createCartDb: CreateCartDb;
   private productValidationService: ProductValidationService;
-  private orderValidationService: OrderValidationService;
+  private cartValidationService: CartValidationService;
 
   constructor() {
     this.createCartDb = new CreateCartDb();
     this.productValidationService = new ProductValidationService();
-    this.orderValidationService = new OrderValidationService();
+    this.cartValidationService = new CartValidationService();
   }
 
   private async handleStockUpdate(items: ICartItem[], tx: any) {
@@ -42,7 +42,7 @@ class CreateCartService {
   }
 
   private async addItemsToCart(userId: string, items: ICartItem[]) {
-    const existingCart = await this.orderValidationService.getExistingCart(
+    const existingCart = await this.cartValidationService.getExistingCart(
       userId
     );
     if (!existingCart) throw new Error('Carrinho não encontrado');
@@ -82,7 +82,7 @@ class CreateCartService {
   }
 
   async execute(userId: string, cart: Omit<ICart, 'userId'>) {
-    const existingCart = await this.orderValidationService.getExistingCart(
+    const existingCart = await this.cartValidationService.getExistingCart(
       userId
     );
 
