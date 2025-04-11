@@ -7,7 +7,6 @@ export const ProductSchemaForm = yup.object().shape({
   name: yup.string().required("O nome é obrigatório"),
   description: yup.string().optional(),
 
-  category: yup.string().required("A categoria é obrigatória"),
   price: yup
     .number()
     .typeError("O preço deve ser um número")

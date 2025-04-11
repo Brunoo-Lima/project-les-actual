@@ -13,19 +13,6 @@ import {
 } from "@/components/validation/login-schema-form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useFormStatus } from "react-dom";
-
-function SubmitButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <ButtonLogin
-      type="submit"
-      text={pending ? "Carregando..." : "Entrar"}
-      disabled={pending}
-    />
-  );
-}
 
 export function UserLogin() {
   const { login } = useUseAuth();
@@ -33,7 +20,7 @@ export function UserLogin() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<ILoginSchemaUser>({
     resolver: yupResolver(LoginSchema),
   });
@@ -44,8 +31,6 @@ export function UserLogin() {
   }: ILoginSchemaUser) => {
     try {
       await login(email, password, "CLIENT");
-
-      // router.push("/produtos");
     } catch (error) {
       toast.error("Email ou senha incorretos!");
     }
@@ -73,7 +58,11 @@ export function UserLogin() {
           error={errors.password}
         />
 
-        <SubmitButton />
+        <ButtonLogin
+          type="submit"
+          text={isSubmitting ? "Carregando..." : "Entrar"}
+          disabled={isSubmitting}
+        />
       </form>
 
       <p className="text-sm -my-1">

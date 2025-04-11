@@ -16,11 +16,10 @@ export function ModalExchange({
       <Modal.Header title="Trocar pedido" onClick={onClose} />
 
       <Modal.Content>
-        {order.items.map((item) => (
-          <div>{item.nome}</div>
-        ))}
+        {/* {order.items.map((item) => (
+          <div>{item.product.name}</div>
+        ))} */}
       </Modal.Content>
     </Modal.Root>
   );
 }
-

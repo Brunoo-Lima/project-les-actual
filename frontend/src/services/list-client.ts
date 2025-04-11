@@ -39,12 +39,6 @@ export const getListClient = async () => {
 
     const data = await response.json();
 
-    console.log("data", data);
-
-    if (!data.length) {
-      throw new Error("Nenhum cliente encontrado!");
-    }
-
     return data;
   } catch (error) {
     console.error("Error", error);

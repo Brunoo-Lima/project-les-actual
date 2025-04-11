@@ -14,7 +14,7 @@ import { toast } from "sonner";
 
 interface IUserProps {
   id: string;
-  role: TypeUser;
+  role: "CLIENT";
 }
 
 export type TypeUser = "ADMIN" | "CLIENT";
@@ -24,12 +24,9 @@ interface IAuthContextProps {
   user: IUserProps;
   setUser: React.Dispatch<React.SetStateAction<IUserProps>>;
   logout: () => void;
-  login: (
-    email: string,
-    password: string,
-    option: "ADMIN" | "CLIENT"
-  ) => Promise<void>;
+  login: (email: string, password: string, option: "CLIENT") => Promise<void>;
   isAuthenticated: boolean;
+  isLoading: boolean;
 }
 
 interface IChildrenProps {
@@ -46,21 +43,38 @@ export const AuthProvider = ({ children }: IChildrenProps) => {
   });
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("@token:access");
-    const userData = localStorage.getItem("@user:data");
+    const loadUser = async () => {
+      const token = localStorage.getItem("@token:access");
+      const userData = localStorage.getItem("@user:data");
 
-    if (token && userData) {
-      const parsedUserData = JSON.parse(userData);
+      if (token && userData) {
+        try {
+          const parsedUserData = JSON.parse(userData);
 
-      setUser({
-        role: token === "ADMIN" ? "ADMIN" : "CLIENT",
-        id: parsedUserData.id,
-      });
+          if (parsedUserData?.id) {
+            setUser({
+              role: "CLIENT",
+              id: parsedUserData.id,
+            });
+            setIsAuthenticated(true);
+          } else {
+            console.error("Dados do usuário inválidos no localStorage");
+            logout();
+          }
+        } catch (error) {
+          console.error("Erro ao parsear userData:", error);
+          logout();
+        }
+      } else {
+        setIsAuthenticated(false);
+      }
+      setIsLoading(false);
+    };
 
-      setIsAuthenticated(true);
-    }
+    loadUser();
   }, []);
 
   const logout = useCallback(() => {
@@ -71,11 +85,8 @@ export const AuthProvider = ({ children }: IChildrenProps) => {
     router.push("/");
   }, [router]);
 
-  const login = async (
-    email: string,
-    password: string,
-    option: "ADMIN" | "CLIENT"
-  ) => {
+  const login = async (email: string, password: string, option: "CLIENT") => {
+    setIsLoading(true);
     try {
       const user = await fetchLogin(email, password, option);
 
@@ -84,35 +95,45 @@ export const AuthProvider = ({ children }: IChildrenProps) => {
         return;
       }
 
-      if (email && password) {
-        toast.success("Logado com sucesso!");
-      }
-
-      localStorage.setItem("@user:data", JSON.stringify(user));
+      await Promise.all([
+        localStorage.setItem("@user:data", JSON.stringify(user)),
+        localStorage.setItem("@token:access", option),
+      ]);
 
       setUser({ role: option, id: user.id });
       setIsAuthenticated(true);
 
-      if (option === "ADMIN") {
-        router.push("/vendas");
-        localStorage.setItem("@token:access", "ADMIN");
-      } else {
-        router.push("/produtos");
-        localStorage.setItem("@token:access", "CLIENT");
-      }
+      toast.success("Logado com sucesso!");
+      router.push("/produtos");
+      // const targetRoute = option === "ADMIN" ? "/vendas" : "/produtos";
+
+      // if (email && password) {
+      //   toast.success("Logado com sucesso!");
+      // }
+
+      // localStorage.setItem("@user:data", JSON.stringify(user));
+
+      // setUser({ role: option, id: user.id });
+      // setIsAuthenticated(true);
+
+      // if (option === "ADMIN") {
+      //   router.push("/vendas");
+      //   localStorage.setItem("@token:access", "ADMIN");
+      // } else {
+      //   router.push("/produtos");
+      //   localStorage.setItem("@token:access", "CLIENT");
+      // }
     } catch (error) {
       toast.error("Algo deu errado");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleChangeUser = () => {
-    if (user.role === "ADMIN") {
-      setUser({ role: "CLIENT", id: user.id });
-      router.replace("/produtos");
-    } else {
-      setUser({ role: "ADMIN", id: "" });
-      router.replace("/vendas");
-    }
+    const targetRoute = user.role === "CLIENT" ? "/produtos" : "/vendas";
+
+    router.replace(targetRoute);
   };
 
   console.log("user", user);
@@ -125,6 +146,7 @@ export const AuthProvider = ({ children }: IChildrenProps) => {
       setUser,
       login,
       isAuthenticated,
+      isLoading,
     }),
     [handleChangeUser, logout, user, setUser, login, isAuthenticated]
   );

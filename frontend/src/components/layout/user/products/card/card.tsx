@@ -24,8 +24,8 @@ export function Card({ product }: ICardProps) {
       return;
     }
 
-    addProductToCart(product, quantity);
-    toast.success("Produto adicionado ao carrinho!");
+    addProductToCart(product.id, quantity);
+    // toast.success("Produto adicionado ao carrinho!");
     setQuantity(1);
   };
 

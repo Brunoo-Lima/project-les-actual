@@ -59,8 +59,7 @@ export function RegisterUser() {
 
       setUsers((prevUsers) => [...prevUsers, updatedData]);
 
-      // router.push("/clientes");
-      router.push("/login");
+      router.push("/");
 
       toast.success("Cliente cadastrado com sucesso!");
     } catch (error) {

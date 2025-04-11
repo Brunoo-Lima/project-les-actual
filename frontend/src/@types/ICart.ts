@@ -1,4 +1,9 @@
 export interface ICart {
-  id: string;
-  items: [];
+  userId: string;
+  items: ICartItem[];
+}
+
+export interface ICartItem {
+  quantity: number;
+  productId: string;
 }

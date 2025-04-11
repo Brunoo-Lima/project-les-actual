@@ -95,8 +95,6 @@ export function Users() {
 
   if (loading) return <p>Carregando...</p>;
 
-  if (!users.length) return;
-
   return (
     <section className="h-screen">
       <TitlePage title="Usuários" />
@@ -114,7 +112,7 @@ export function Users() {
       ) : users.length > 0 ? (
         <TableUser data={users} onDeleteUser={handleDeleteUser} />
       ) : (
-        <p>Não há clientes!</p>
+        <p className="mt-6">Não há clientes!</p>
       )}
 
       {isOpenModalFilter && (

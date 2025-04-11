@@ -52,7 +52,6 @@ export function ModalEdit({
   useEffect(() => {
     setValue("brand", product?.brand || "");
     setValue("name", product?.name || "");
-    setValue("category", product?.category || "");
     setValue("price", product?.price || 0);
     setValue("stock.quantity", product?.stock.quantity || 0);
     setValue("description", product?.description || "");
@@ -93,7 +92,6 @@ export function ModalEdit({
       } else if (product?.image && typeof product?.image === "string") {
         formData.append("image", product?.image); // Mantém a imagem atual
       }
-      formData.append("category", data.category);
       formData.append("name", data.name);
       formData.append("price", data.price.toString());
       formData.append("brand", data.brand);
@@ -254,14 +252,6 @@ export function ModalEdit({
                 error={errors?.stock?.quantity}
               />
             </div>
-
-            <Input
-              className="border border-gray-600"
-              label="Categoria"
-              placeholder="Digite a categoria"
-              {...register("category")}
-              error={errors.category}
-            />
           </div>
 
           <div className="grid grid-cols-4">

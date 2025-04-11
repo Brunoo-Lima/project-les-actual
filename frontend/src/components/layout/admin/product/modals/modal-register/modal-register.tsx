@@ -66,7 +66,6 @@ export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
 
       formData.append("image", selectedFile);
 
-      formData.append("category", data.category);
       formData.append("name", data.name);
       formData.append("price", data.price.toString());
       formData.append("brand", data.brand);
@@ -209,14 +208,6 @@ export function ModalRegister({ onClose, setProducts }: IModalRegisterProps) {
                 error={errors?.stock?.quantity}
               />
             </div>
-
-            <Input
-              className="border border-gray-600"
-              label="Categoria"
-              placeholder="Digite a categoria"
-              {...register("category")}
-              error={errors.category}
-            />
           </div>
 
           <div className="grid grid-cols-4">

@@ -14,7 +14,6 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 export function AdminLogin() {
-  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -30,8 +29,6 @@ export function AdminLogin() {
   }: ILoginSchemaUser) => {
     try {
       await login(email, password, "ADMIN");
-
-      // router.push("/vendas");
     } catch (error) {
       toast.error("Email ou senha incorretos!");
     }

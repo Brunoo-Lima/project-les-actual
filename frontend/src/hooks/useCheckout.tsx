@@ -8,22 +8,22 @@ import {
   useMemo,
   useState,
 } from "react";
+import { toast } from "sonner";
+import { createCart } from "@/services/order";
 import { IAddress } from "@/@types/IAddress";
 import { ICreditCard } from "@/@types/ICreditCard";
-import { IProduct } from "@/@types/IProduct";
-import { ICartItem, IOrder } from "@/@types/IOrder";
-import { toast } from "sonner";
+import { IOrder } from "@/@types/IOrder";
 
 interface ICheckoutContextProps {
-  cart: ICartItem[];
-  setCart: React.Dispatch<React.SetStateAction<ICartItem[]>>;
+  cart: ICart;
+  setCart: React.Dispatch<React.SetStateAction<ICart>>;
   addresses: IAddress[];
   setAddresses: React.Dispatch<React.SetStateAction<IAddress[]>>;
   selectedAddress: IAddress | null;
   cards: ICreditCard[];
   setCards: React.Dispatch<React.SetStateAction<ICreditCard[]>>;
   selectedCreditCard: ICreditCard | null;
-  addProductToCart: (product: IProduct, quantity: number) => void;
+  addProductToCart: (productId: string, quantity: number) => void;
   handleSelectAddress: (address: IAddress) => void;
   handleAddAddressOnOrder: (address: IAddress) => void;
   handleSelectCreditCard: (
@@ -34,9 +34,9 @@ interface ICheckoutContextProps {
   handleRemoveCreditCardFromOrder: (id: string) => void;
   handleAddCreditCardOnOrder: (card: ICreditCard) => void;
   validatePayment: () => boolean;
-  decrementItemCart: (id: string) => void;
-  incrementItemCart: (id: string) => void;
-  removeItemCart: (id: string) => void;
+  decrementItemCart: (productId: string) => void;
+  incrementItemCart: (productId: string) => void;
+  removeItemCart: (productId: string) => void;
   order: IOrder;
   setOrder: React.Dispatch<React.SetStateAction<IOrder>>;
   applyCoupon: (coupon: string) => void;
@@ -47,15 +47,31 @@ interface ICheckoutProvider {
   children: ReactNode;
 }
 
+interface ICart {
+  userId: string;
+  items: ICartItem[];
+}
+
+interface ICartItem {
+  productId: string;
+  quantity: number;
+}
+
 export const CheckoutContext = createContext({} as ICheckoutContextProps);
 
 export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
-  const [cart, setCart] = useState<ICartItem[]>([]);
   const [addresses, setAddresses] = useState<IAddress[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<IAddress | null>(null);
   const [cards, setCards] = useState<ICreditCard[]>([]);
   const [selectedCreditCard, setSelectedCreditCard] =
     useState<ICreditCard | null>(null);
+  const [userToken, setUserToken] = useState("");
+
+  const [cart, setCart] = useState<ICart>({
+    userId: userToken,
+    items: [],
+  });
+
   const [order, setOrder] = useState<IOrder>({
     items: [],
     total: 0,
@@ -68,156 +84,108 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
   });
 
   useEffect(() => {
-    const savedCart = localStorage.getItem("cart");
-    if (savedCart) {
-      console.log(
-        "Carrinho recuperado do localStorage:",
-        JSON.parse(savedCart)
-      );
-      setCart(JSON.parse(savedCart));
-    }
+    const token = localStorage.getItem("@user:data");
+    if (token) setUserToken(JSON.parse(token));
   }, []);
 
-  console.log("cart", cart);
+  useEffect(() => {
+    const savedCart = localStorage.getItem("cart");
+    if (savedCart) setCart(JSON.parse(savedCart));
+  }, []);
 
   useEffect(() => {
-    console.log("Salvando carrinho no localStorage:", cart);
-
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
+  // Funções do carrinho (simplificadas)
   const clearCart = () => {
-    setCart([]);
-    localStorage.removeItem("cart");
+    setCart({ userId: userToken, items: [] });
+    setOrder((prev) => ({ ...prev, items: [], total: 0 }));
   };
 
-  const updateCart = (cartItems: ICartItem[]) => {
-    const newTotal = cartItems.reduce(
-      (acc, item) => acc + item.price * item.quantity,
-      0
-    );
+  console.log(cart, "carttt");
 
-    setOrder((prevOrder) => ({
-      ...prevOrder,
-      items: cartItems,
-      total: newTotal + prevOrder.freight,
-    }));
+  const addProductToCart = async (productId: string, quantity: number) => {
+    try {
+      const response = await createCart({
+        userId: userToken,
+        items: [{ productId, quantity }],
+      });
 
-    return cartItems;
+      setCart(response.cartData);
+
+      toast.success("Produto adicionado ao carrinho");
+    } catch (error) {
+      console.error("Erro:", error);
+      toast.error("Falha ao adicionar produto");
+    }
   };
 
-  const addProductToCart = (product: IProduct, quantity: number) => {
-    setCart((prevItems) => {
-      const updatedCart = prevItems.some((item) => item.id === product.id)
-        ? prevItems.map((item) =>
-            item.id === product.id
-              ? { ...item, quantity: item.quantity + quantity }
-              : item
-          )
-        : [...prevItems, { ...product, quantity }];
-
-      return updateCart(updatedCart);
-    });
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-  };
-
-  const applyCoupon = (coupon: string) => {
-    let discount = 0;
-
-    if (coupon === "PROMO10") {
-      discount = 10;
-    } else if (coupon === "DESCONTO20") {
-      discount =
-        cart.reduce((acc, item) => acc + item.price * item.quantity, 0) * 0.2;
-    } else {
-      toast.warning("Cupom inválido!");
+  const updateItemQuantity = (productId: string, newQuantity: number) => {
+    if (newQuantity <= 0) {
+      removeItemCart(productId);
       return;
     }
 
-    setOrder((prevOrder) => ({
-      ...prevOrder,
-      coupon,
-      discountValue: discount,
-      total:
-        prevOrder.items.reduce(
-          (acc, item) => acc + item.price * item.quantity,
-          0
-        ) +
-        prevOrder.freight -
-        discount,
+    setCart((prev) => ({
+      ...prev,
+      items: prev.items.map((item) =>
+        item.productId === productId ? { ...item, quantity: newQuantity } : item
+      ),
     }));
   };
 
-  const decrementItemCart = (id: string) => {
-    setCart((prev) => {
-      const updatedCart = prev
-        .map((item) =>
-          item.id === id && item.quantity > 1
-            ? { ...item, quantity: item.quantity - 1 }
-            : item
-        )
-        .filter((item) => item.quantity > 0);
-
-      setOrder((prevOrder) => ({
-        ...prevOrder,
-        items: updatedCart,
-        total: updatedCart.reduce(
-          (acc, item) => acc + item.price * item.quantity,
-          0
-        ),
-      }));
-
-      return updatedCart;
-    });
-  };
-
-  const incrementItemCart = (id: string) => {
-    setCart((prev) => {
-      const updatedCart = prev.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+  const decrementItemCart = async (productId: string) => {
+    try {
+      const currentItem = cart.items.find(
+        (item) => item.productId === productId
       );
 
-      setOrder((prevOrder) => ({
-        ...prevOrder,
-        items: updatedCart,
-        total: updatedCart.reduce(
-          (acc, item) => acc + item.price * item.quantity,
-          0
-        ),
-      }));
+      if (!currentItem) return;
 
-      return updatedCart;
-    });
+      const newQuantity = currentItem.quantity - 1;
+
+      // if (newQuantity > 0) {
+      //   const response = await updateCartItem(
+      //     userToken,
+      //     productId,
+      //     newQuantity
+      //   );
+      //   setCart(response.cartData);
+      // } else {
+      //   const response = await removeCartItem(userToken, productId);
+      //   setCart(response.cartData);
+      // }
+    } catch (error) {}
   };
 
-  const removeItemCart = (id: string) => {
-    setCart((prev) => {
-      const updatedCart = prev.filter((item) => item.id !== id);
-
-      setOrder((prevOrder) => ({
-        ...prevOrder,
-        items: updatedCart,
-        total: updatedCart.reduce(
-          (acc, item) => acc + item.price * item.quantity,
-          0
-        ),
-      }));
-
-      return updatedCart;
-    });
-  };
-
-  const handleSelectAddress = (address: IAddress) => {
-    setSelectedAddress(address);
-    setOrder((prevOrder) => ({
-      ...prevOrder,
-      address: address,
+  const incrementItemCart = (productId: string) => {
+    setCart((prev) => ({
+      ...prev,
+      items: prev.items.map((item) =>
+        item.productId === productId
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      ),
     }));
   };
 
-  const handleAddAddressOnOrder = (address: IAddress) =>
-    setAddresses((prevAddresses) => [...prevAddresses, address]);
+  const removeItemCart = (productId: string) => {
+    setCart((prev) => ({
+      ...prev,
+      items: prev.items.filter((item) => item.productId !== productId),
+    }));
+  };
+
+  // Funções de endereço e pagamento (mantidas originais)
+  const handleSelectAddress = (address: IAddress) => {
+    setSelectedAddress(address);
+    setOrder((prev) => ({ ...prev, address }));
+  };
+
+  const handleAddAddressOnOrder = (address: IAddress) => {
+    setAddresses((prev) => [...prev, address]);
+  };
 
   const handleSelectCreditCard = (
     card: ICreditCard,
@@ -225,52 +193,51 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
     installments: number
   ) => {
     setSelectedCreditCard(card);
-
-    setOrder((prevOrder) => {
-      const existingPayment = prevOrder.payment.find(
-        (payment) => payment.card.id === card.id
+    setOrder((prev) => {
+      const existingIndex = prev.payment.findIndex(
+        (p) => p.card.id === card.id
       );
 
-      if (existingPayment) {
-        return {
-          ...prevOrder,
-          payment: prevOrder.payment.map((payment) =>
-            payment.card.id === card.id
-              ? { ...payment, value, installments }
-              : payment
-          ),
-        };
-      } else {
-        return {
-          ...prevOrder,
-          payment: [...prevOrder.payment, { card, value, installments }],
-        };
-      }
+      return {
+        ...prev,
+        payment:
+          existingIndex >= 0
+            ? prev.payment.map((p, i) =>
+                i === existingIndex ? { card, value, installments } : p
+              )
+            : [...prev.payment, { card, value, installments }],
+      };
     });
   };
 
   const handleRemoveCreditCardFromOrder = (cardId: string) => {
-    setOrder((prevOrder) => ({
-      ...prevOrder,
-      payment: prevOrder.payment.filter((p) => p.card.id !== cardId),
+    setOrder((prev) => ({
+      ...prev,
+      payment: prev.payment.filter((p) => p.card.id !== cardId),
     }));
+  };
+
+  const handleAddCreditCardOnOrder = (card: ICreditCard) => {
+    setCards((prev) => [...prev, card]);
   };
 
   const validatePayment = () => {
     const totalPaid = order.payment.reduce((acc, p) => acc + p.value, 0);
-
-    if (totalPaid !== order.total) {
-      toast.error(
-        "A soma dos valores dos cartões deve ser igual ao total do pedido."
-      );
-      return false;
-    }
-
-    return true;
+    const isValid = totalPaid === order.total;
+    if (!isValid) toast.error("Valor dos cartões não confere com o total");
+    return isValid;
   };
 
-  const handleAddCreditCardOnOrder = (card: ICreditCard) =>
-    setCards((prevCards) => [...prevCards, card]);
+  const applyCoupon = (coupon: string) => {
+    // Implementação fictícia - ajuste conforme sua regra de negócio
+    const discount = coupon === "PROMO10" ? 10 : 0;
+    setOrder((prev) => ({
+      ...prev,
+      coupon,
+      discountValue: discount,
+      total: prev.total - discount,
+    }));
+  };
 
   const contextValue = useMemo(
     () => ({
@@ -278,38 +245,28 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
       setCart,
       addresses,
       setAddresses,
+      selectedAddress,
       cards,
       setCards,
       selectedCreditCard,
-      selectedAddress,
       addProductToCart,
       handleSelectAddress,
       handleAddAddressOnOrder,
       handleSelectCreditCard,
+      handleRemoveCreditCardFromOrder,
       handleAddCreditCardOnOrder,
+      validatePayment,
       decrementItemCart,
       incrementItemCart,
       removeItemCart,
       order,
       setOrder,
       applyCoupon,
-      handleRemoveCreditCardFromOrder,
-      validatePayment,
       clearCart,
     }),
-    [
-      cart,
-      setCart,
-      addresses,
-      setAddresses,
-      cards,
-      setCards,
-      order,
-      selectedCreditCard,
-      selectedAddress,
-      applyCoupon,
-    ]
+    [cart, addresses, cards, selectedAddress, selectedCreditCard, order]
   );
+
   return (
     <CheckoutContext.Provider value={contextValue}>
       {children}

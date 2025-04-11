@@ -23,8 +23,6 @@ export function Product() {
     setSelectedStatus,
     setSelectedProfilePurchase,
     setSelectedPrice,
-    selectedCategory,
-    setSelectedCategory,
     selectedStock,
     setSelectedStock,
   } = useFilter();
@@ -78,21 +76,12 @@ export function Product() {
             ? "Ativo"
             : "Inativo" === selectedStatus.value;
 
-        const matchesCategory =
-          !selectedCategory || client.category === selectedCategory.value;
-
         const matchesPrice = !selectedPrice || client.price <= selectedPrice;
 
         const matchesStock =
           !selectedStock || client.stock.quantity <= +selectedStock;
 
-        return (
-          matchesName &&
-          matchesStatus &&
-          matchesPrice &&
-          matchesCategory &&
-          matchesStock
-        );
+        return matchesName && matchesStatus && matchesPrice && matchesStock;
       });
 
       setFilteredData(filtered);
@@ -105,7 +94,6 @@ export function Product() {
     setSearchName("");
     setSelectedStatus(null);
     setSelectedProfilePurchase(null);
-    setSelectedCategory(null);
     setSelectedPrice(null);
     setSelectedStock("");
     setIsOpenModalFilter(false);

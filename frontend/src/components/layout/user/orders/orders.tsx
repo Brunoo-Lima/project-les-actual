@@ -11,64 +11,102 @@ import { CardOrder } from "./card-order";
 import { ordersFinishedList } from "./../../../../mocks/orders-finished-list";
 import { ButtonsActions } from "./buttons-actions";
 import { ModalExchange } from "./modal/modal-exchange";
+import { listOrders } from "@/services/order";
+import { useUseAuth } from "@/hooks/useAuth";
+import { IAddress } from "@/@types/IAddress";
+import { toast } from "sonner";
+
+interface IOrderRequest {
+  id: string;
+  total: number;
+  status: string;
+  freight: number;
+  discountValue?: number;
+  address?: IAddress;
+  items: {
+    id: string;
+    quantity: number;
+    price: number;
+    productId: string;
+    orderId: string;
+    product: {
+      name: string;
+      image: string;
+    };
+  }[];
+
+  // payments: IOrderPayment[];
+}
 
 export function Orders() {
-  const { order, setOrder } = useCheckout();
-  const [orders, setOrders] = useState(ordersFinishedList);
+  const { user, isAuthenticated, isLoading: isAuthLoading } = useUseAuth();
+  const [isLoading, setIsLoading] = useState(true);
+  const [orders, setOrders] = useState<IOrderRequest[]>([]);
   const [isOpenDetails, setIsOpenDetails] = useState<boolean>(false);
   const [chooseItemForExchange, setChooseItemExchange] = useState("");
   const [isOpenModalItemForExchange, setIsOpenModalItemForExchange] =
     useState<boolean>(false);
+  const [selectedOrder, setSelectedOrder] = useState<IOrderRequest | null>(
+    null
+  );
 
-  //Ta dando b.o na hora de adiiconar um novo pedido, precisa ser melhorado quando implementar o backend
+  console.log("initial orders", orders);
+  console.log("user", user);
+
+  const fetchOrders = async () => {
+    setIsLoading(true);
+    try {
+      const dataOrder = await listOrders(user.id);
+      setOrders(dataOrder || []);
+    } catch (error) {
+      console.error("Failed to fetch orders:", error);
+      toast.error("Falha ao carregar pedidos");
+      setOrders([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (order && order.items.length > 0) {
-      const orderExists = orders.some((order: any) => order.id === order.id);
+    fetchOrders();
+  }, [user.id, isAuthenticated]);
 
-      if (!orderExists) {
-        const newOrder = {
-          id: Math.ceil(Math.random() * 1000).toString(),
-          status: order.status || "Finalizado",
-          created_at: new Date().toLocaleDateString("pt-BR"),
-          updated_at: new Date().toLocaleDateString("pt-BR"),
-          items: order.items,
-          address: order.address,
-          payment: order.payment,
-          freight: order.freight,
-          coupon: order.coupon,
-          discountValue: order.discountValue,
-          total: order.total,
-        };
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     if (isAuthenticated && user.id) {
+  //       fetchOrders();
+  //     }
+  //   }, 1800000);
 
-        setOrders((prevOrders) => [newOrder, ...prevOrders] as any);
+  //   return () => clearInterval(interval);
+  // }, [isAuthenticated, user.id]);
 
-        setOrder({
-          items: [],
-          total: 0,
-          address: null,
-          payment: [],
-          status: "EM PROCESSAMENTO",
-          freight: 20,
-          coupon: null,
-          discountValue: 0,
-        });
-      }
-    }
-  }, [order]);
+  console.log("orders", orders);
 
-  // console.log('order', order);
-  // console.log('ordersss', orders);
-
-  const handleOpenModalItemForExchange = (item: string) => {
+  const handleOpenModalItemForExchange = (
+    item: string,
+    order: IOrderRequest
+  ) => {
     setChooseItemExchange(item);
+    setSelectedOrder(order);
     setIsOpenModalItemForExchange(true);
   };
 
-  if (!orders) return redirect("/produtos");
+  const handleOpenDetails = (order: IOrderRequest) => {
+    setSelectedOrder(order);
+    setIsOpenDetails(true);
+  };
+
+  if (isLoading) {
+    return (
+      <section className="flex items-center flex-col gap-y-4 py-4 min-h-screen h-screen">
+        <p className="text-base font-semibold mb-4">Carregando pedidos...</p>
+      </section>
+    );
+  }
 
   return (
-    <section className="flex items-center flex-col gap-y-4 py-4 min-h-screen">
+    <section className="flex items-center flex-col gap-y-4 pt-4 mb-8 min-h-screen h-screen">
       <h1 className="text-2xl font-semibold mb-4">Pedidos!</h1>
 
       {orders.length > 0 ? (
@@ -79,17 +117,14 @@ export function Orders() {
           >
             <div className="flex flex-col gap-y-4 w-full h-[250px] overflow-auto relative z-1 container-address-form">
               {item.items.map((product) => (
-                <CardOrder
-                  key={`${item.id}-${product.id}`}
-                  item={product as any}
-                />
+                <CardOrder key={`${item.id}-${product.id}`} item={product} />
               ))}
             </div>
 
             <div className="flex flex-col relative h-full">
               <div
                 className="flex items-center gap-2 cursor-pointer transition duration-300 *:hover:text-primary-light relative"
-                onClick={() => setIsOpenDetails(true)}
+                onClick={() => handleOpenDetails(item)}
               >
                 <p className="">Ver detalhes do pedido</p>
                 {isOpenDetails === true ? (
@@ -119,19 +154,19 @@ export function Orders() {
               </p>
 
               <p className="text-base font-semibold mt-1">
-                Pedido: {item.delivery}
+                Pedido: {item.status === "Finalizado" ? "Entregue" : "Pendente"}
               </p>
 
-              <ButtonsActions
+              {/* <ButtonsActions
                 item={item as any}
-                coupon={item.coupon}
+                coupon={item.}
                 status={item.status}
                 onOpenModalForExchange={handleOpenModalItemForExchange}
-              />
+              /> */}
 
-              <div className="absolute bottom-0 left-0">
+              <div className="absolute bottom-4 w-full flex gap-2 items-center">
                 <p>Total do pedido:</p>
-                <span className="font-bold text-xl">
+                <span className="font-bold text-xl inline-flex">
                   {FormatValue(item.total || 0)}
                 </span>
               </div>
@@ -142,19 +177,19 @@ export function Orders() {
         <p>Não há pedidos para exibir!</p>
       )}
 
-      {isOpenDetails && (
+      {isOpenDetails && selectedOrder && (
         <ModalBackground>
           <ModalDetailsOrder
-            order={order}
+            order={selectedOrder}
             onClose={() => setIsOpenDetails(false)}
           />
         </ModalBackground>
       )}
 
-      {isOpenModalItemForExchange && (
+      {isOpenModalItemForExchange && selectedOrder && (
         <ModalBackground>
           <ModalExchange
-            order={order}
+            order={selectedOrder}
             onClose={() => setIsOpenModalItemForExchange(false)}
             chooseItem={chooseItemForExchange}
           />
