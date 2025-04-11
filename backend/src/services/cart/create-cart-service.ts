@@ -25,19 +25,31 @@ class CreateCartService {
       if (!product) throw new Error(`Produto ${item.productId} não encontrado`);
       if (!product.stock)
         throw new Error(`Produto ${item.productId} sem estoque`);
-      if (product.stock.quantity < item.quantity) {
+
+      const availableQuantity = product.stock.quantity - product.stock.reserved;
+
+      if (availableQuantity < item.quantity) {
         throw new Error(
-          `Estoque insuficiente para ${product.name}. Disponível: ${product.stock.quantity}, Solicitado: ${item.quantity}`
+          `Estoque insuficiente para ${product.name}. Disponível: ${availableQuantity}, Solicitado: ${item.quantity}`
         );
       }
 
-      await tx.stock.update({
+      const updatedStock = await tx.stock.update({
         where: { id: product.stock.id },
         data: {
-          quantity: { decrement: item.quantity },
           reserved: { increment: item.quantity },
         },
+        select: {
+          quantity: true,
+          reserved: true,
+        },
       });
+
+      if (updatedStock.reserved > updatedStock.quantity) {
+        throw new Error(
+          `Erro de consistência no estoque do produto ${product.name}. Reserva (${updatedStock.reserved}) excede quantidade (${updatedStock.quantity})`
+        );
+      }
     }
   }
 
@@ -48,33 +60,58 @@ class CreateCartService {
     if (!existingCart) throw new Error('Carrinho não encontrado');
 
     try {
-      return await prismaClient.$transaction(async (tx) => {
-        this.productValidationService.validateCartItems(items);
-        await this.handleStockUpdate(items, tx);
+      return await prismaClient.$transaction(
+        async (tx) => {
+          this.productValidationService.validateCartItems(items);
 
-        // Atualiza itens do carrinho
-        for (const item of items) {
-          await tx.cartItem.upsert({
-            where: {
-              cartId_productId: {
+          //reserva o estoque
+          await this.handleStockUpdate(items, tx);
+
+          // Atualiza itens do carrinho
+          for (const item of items) {
+            await tx.cartItem.upsert({
+              where: {
+                cartId_productId: {
+                  cartId: existingCart.id,
+                  productId: item.productId,
+                },
+              },
+              update: { quantity: { increment: item.quantity } },
+              create: {
                 cartId: existingCart.id,
                 productId: item.productId,
+                quantity: item.quantity,
               },
-            },
-            update: { quantity: { increment: item.quantity } },
-            create: {
-              cartId: existingCart.id,
-              productId: item.productId,
-              quantity: item.quantity,
-            },
-          });
-        }
+            });
+          }
 
-        return tx.cart.findUnique({
-          where: { id: existingCart.id },
-          include: { items: { include: { product: true } } },
-        });
-      });
+          for (const item of items) {
+            await tx.stock.update({
+              where: {
+                id: (
+                  await tx.product.findUnique({
+                    where: { id: item.productId },
+                    select: { stock: { select: { id: true } } },
+                  })
+                )?.stock?.id,
+              },
+              data: {
+                quantity: { decrement: item.quantity },
+              },
+            });
+          }
+
+          return tx.cart.findUnique({
+            where: { id: existingCart.id },
+            include: { items: { include: { product: true } } },
+          });
+        },
+        {
+          isolationLevel: 'Serializable', // Nível de isolamento mais forte
+          maxWait: 5000, // Tempo máximo de espera
+          timeout: 10000, // Timeout da transação
+        }
+      );
     } catch (error: any) {
       console.error('Erro ao atualizar carrinho:', error);
       throw new Error(`Falha ao atualizar carrinho: ${error.message}`);

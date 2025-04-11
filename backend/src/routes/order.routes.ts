@@ -4,6 +4,7 @@ import { CreateOrderController } from '../controllers/order/create-order-control
 import { ListCartController } from '../controllers/cart/list-cart-controller';
 import { ListDetailOrderController } from '../controllers/order/list-detail-order-controller';
 import { ListOrdersController } from '../controllers/order/list-orders-controller';
+import { RemoveItemCartController } from '../controllers/cart/remove-item-cart-controller';
 
 const orderRoutes = Router();
 
@@ -16,6 +17,11 @@ orderRoutes.post('/cart', async (req, res) => {
 orderRoutes.get('/cart', async (req, res) => {
   const listCartController = new ListCartController();
   await listCartController.handle(req, res);
+});
+
+orderRoutes.delete('/cart/:userId/items', async (req, res) => {
+  const removeItemCartController = new RemoveItemCartController();
+  await removeItemCartController.handle(req, res);
 });
 
 //pedidos
