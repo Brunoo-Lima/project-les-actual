@@ -45,7 +45,7 @@ export function HeaderUser() {
           href="/carrinho"
           text="Carrinho"
           cart
-          cartCount={cart.length}
+          cartCount={cart.items && cart.items.length}
         />
 
         <LogOutIcon

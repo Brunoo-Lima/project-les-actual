@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input/input";
 import { FormatValue } from "@/utils/format-value";
 import { ItemCart } from "./item-cart";
 import { useCheckout } from "@/hooks/useCheckout";
+import { IProduct } from "@/@types/IProduct";
+import { useUseAuth } from "@/hooks/useAuth";
+import { listCart } from "@/services/order";
 
 export function ShoppingCart() {
   const [newCoupon, setNewCoupon] = useState<string>("");
@@ -15,30 +18,50 @@ export function ShoppingCart() {
     removeItemCart,
     applyCoupon,
     order,
+    setCart,
   } = useCheckout();
+  const { user } = useUseAuth();
+
+  const [loading, setLoading] = useState(true);
+
+  // useEffect(() => {
+  //   const loadCart = async () => {
+  //     setLoading(true);
+  //     await fetchCart();
+  //     setLoading(false);
+  //   };
+
+  //   loadCart();
+  // }, []);
 
   const handleApplyNewCoupon = () => {
     applyCoupon(newCoupon);
     setNewCoupon("");
   };
 
+  console.log("cart", cart);
+
+  // if (loading) {
+  //   return <p className="text-lg font-semibold">Carregando...</p>;
+  // }
+
   return (
     <div className="grid grid-cols-2 gap-x-16 place-items-start mt-8 container mx-auto">
       <div className="border border-gray-700  rounded-lg flex flex-col gap-4 w-[600px] h-[500px]">
         <div className="flex flex-col gap-4 flex-1 overflow-auto p-6 container-shopping-cart">
-          {cart.length > 0 ? (
-            <>
-              {cart.map((item) => (
-                <ItemCart
-                  key={item.id}
-                  item={item}
-                  handleIncrement={incrementItemCart}
-                  handleDecrement={decrementItemCart}
-                  handleRemoveItem={removeItemCart}
-                />
-              ))}
-            </>
-          ) : (
+          {cart.items &&
+            cart.items.map((item, index) => (
+              <ItemCart
+                key={item.productId}
+                item={item.product as IProduct}
+                quantity={item.quantity}
+                handleIncrement={incrementItemCart}
+                handleDecrement={decrementItemCart}
+                handleRemoveItem={removeItemCart}
+              />
+            ))}
+
+          {cart.items.length === 0 && (
             <p className="text-lg font-semibold">Nenhum item no carrinho</p>
           )}
         </div>

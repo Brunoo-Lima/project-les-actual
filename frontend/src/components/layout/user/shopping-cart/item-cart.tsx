@@ -1,9 +1,10 @@
 import { Trash2Icon } from "lucide-react";
 import { ButtonsQuantity } from "./buttons-quantity/buttons-quantity";
-import { ICartItem } from "@/@types/IOrder";
+import { IProduct } from "@/@types/IProduct";
 
 interface IItemCartProps {
-  item: ICartItem;
+  item: IProduct;
+  quantity: number;
   handleIncrement: (id: string) => void;
   handleDecrement: (id: string) => void;
   handleRemoveItem: (id: string) => void;
@@ -14,6 +15,7 @@ export function ItemCart({
   handleDecrement,
   handleIncrement,
   handleRemoveItem,
+  quantity,
 }: IItemCartProps) {
   return (
     <div
@@ -27,7 +29,7 @@ export function ItemCart({
 
       <div className="flex flex-col items-start gap-4">
         <ButtonsQuantity
-          quantity={item.quantity}
+          quantity={quantity}
           handleIncrement={() => handleIncrement(item.id)}
           handleDecrement={() => handleDecrement(item.id)}
         />
@@ -43,7 +45,7 @@ export function ItemCart({
       </div>
 
       <div className="w-24 text-right">
-        <p className="text-lg font-semibold">R$ {item.quantity * item.price}</p>
+        <p className="text-lg font-semibold">R$ {quantity * item.price}</p>
       </div>
     </div>
   );

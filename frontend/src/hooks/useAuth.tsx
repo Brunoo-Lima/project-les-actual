@@ -136,8 +136,6 @@ export const AuthProvider = ({ children }: IChildrenProps) => {
     router.replace(targetRoute);
   };
 
-  console.log("user", user);
-
   const contextValue = useMemo(
     () => ({
       handleChangeUser,

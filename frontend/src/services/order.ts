@@ -1,5 +1,4 @@
-import { ICart } from "@/@types/ICart";
-import api from "./api";
+import api, { baseURL } from "./api";
 import { toast } from "sonner";
 import { IAddress } from "@/@types/IAddress";
 
@@ -13,24 +12,52 @@ export interface ICartRequest {
 
 export const createCart = async (cart: ICartRequest) => {
   try {
-    const response = await fetch(`http://localhost:3333/cart`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ cart }),
+    const { data, status } = await api.post(`${baseURL}cart`, {
+      userId: cart.userId,
+      items: cart.items,
     });
 
-    if (!response.ok) {
-      throw new Error(`Algo deu errado na requisição: ${response.statusText}`);
+    if (!data || (status !== 200 && status !== 201)) {
+      toast.error("Algo deu errado na requisição");
     }
 
-    const data = await response.json();
+    console.log("Carrinho criado/atualizado:", data);
+
+    return data;
+  } catch (error: any) {
+    console.error(error);
+    toast.error("Erro ao criar carrinho");
+  }
+};
+
+export const listCart = async (userId: string) => {
+  try {
+    const { data } = await api.get(`/cart?user_id=${userId}`);
+    return data;
+  } catch (error) {
+    console.error("Erro ao buscar carrinho:", error);
+    throw error;
+  }
+};
+
+export const removeItemFromCart = async (
+  userId: string,
+  itemsToRemove: Array<{ productId: string }>
+) => {
+  try {
+    const { data, status } = await api.delete(`${baseURL}cart/${userId}`, {
+      data: {
+        items: itemsToRemove,
+      },
+    });
+
+    if (status !== 200) {
+      toast.error("Algo deu errado ao tentar remover");
+    }
 
     return data;
   } catch (error) {
-    console.error("Erro ao criar carrinho!");
-    throw new Error("Erro ao criar carrinho");
+    toast.error("Algo deu errado ao remover");
   }
 };
 

@@ -13,6 +13,7 @@ import { createCart } from "@/services/order";
 import { IAddress } from "@/@types/IAddress";
 import { ICreditCard } from "@/@types/ICreditCard";
 import { IOrder } from "@/@types/IOrder";
+import { IProduct } from "@/@types/IProduct";
 
 interface ICheckoutContextProps {
   cart: ICart;
@@ -55,6 +56,12 @@ interface ICart {
 interface ICartItem {
   productId: string;
   quantity: number;
+  product?: IProduct;
+}
+
+interface IUser {
+  id: string;
+  name: string;
 }
 
 export const CheckoutContext = createContext({} as ICheckoutContextProps);
@@ -65,10 +72,11 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
   const [cards, setCards] = useState<ICreditCard[]>([]);
   const [selectedCreditCard, setSelectedCreditCard] =
     useState<ICreditCard | null>(null);
-  const [userToken, setUserToken] = useState("");
+
+  const [userToken, setUserToken] = useState<IUser | null>(null);
 
   const [cart, setCart] = useState<ICart>({
-    userId: userToken,
+    userId: "",
     items: [],
   });
 
@@ -84,40 +92,99 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
   });
 
   useEffect(() => {
-    const token = localStorage.getItem("@user:data");
-    if (token) setUserToken(JSON.parse(token));
+    const loadUserAndCart = async () => {
+      const token = localStorage.getItem("@user:data");
+
+      if (token) {
+        const userData = JSON.parse(token);
+        setUserToken(userData);
+
+        const savedCart = localStorage.getItem("cart");
+        if (savedCart) {
+          const parsedCart = JSON.parse(savedCart);
+
+          setCart({ ...parsedCart, userId: userData.id });
+        } else {
+          setCart({ userId: userData.id, items: [] });
+        }
+      }
+    };
+
+    loadUserAndCart();
   }, []);
 
   useEffect(() => {
-    const savedCart = localStorage.getItem("cart");
-    if (savedCart) setCart(JSON.parse(savedCart));
-  }, []);
+    if (userToken && cart.userId) {
+      localStorage.setItem("cart", JSON.stringify(cart));
+    }
+  }, [cart, userToken]);
 
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
-
-  // Funções do carrinho (simplificadas)
   const clearCart = () => {
-    setCart({ userId: userToken, items: [] });
-    setOrder((prev) => ({ ...prev, items: [], total: 0 }));
+    if (userToken) {
+      setCart({ userId: userToken.id, items: [] });
+      setOrder((prev) => ({ ...prev, items: [], total: 0 }));
+    }
   };
 
-  console.log(cart, "carttt");
+  console.log("carttt", cart);
 
   const addProductToCart = async (productId: string, quantity: number) => {
+    if (!userToken || !userToken.id) {
+      toast.error("Usuário não autenticado");
+      return;
+    }
+
     try {
+      const existingItemIndex = cart.items.findIndex(
+        (item) => item.productId === productId
+      );
+
+      let updatedItems: ICartItem[];
+
+      if (existingItemIndex >= 0) {
+        updatedItems = cart.items.map((item, index) =>
+          index === existingItemIndex
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        );
+      } else {
+        updatedItems = [...cart.items, { productId, quantity }];
+      }
+
+      // Atualiza o estado local primeiro para uma resposta mais rápida
+      setCart((prev) => ({
+        ...prev,
+        items: updatedItems,
+      }));
+
+      // Sincroniza com o backend
       const response = await createCart({
-        userId: userToken,
+        userId: userToken.id,
         items: [{ productId, quantity }],
       });
 
-      setCart(response.cartData);
+      if (response.cartData) {
+        setCart({
+          userId: userToken.id,
+          items: response.cartData.items.map((item: any) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+            product: item.product,
+          })),
+        });
+      }
 
       toast.success("Produto adicionado ao carrinho");
-    } catch (error) {
-      console.error("Erro:", error);
-      toast.error("Falha ao adicionar produto");
+    } catch (error: any) {
+      console.error("Erro ao adicionar produto:", error);
+
+      // Reverte a alteração local em caso de erro
+      setCart((prev) => ({
+        ...prev,
+        items: cart.items, // Volta para o estado anterior
+      }));
+
+      toast.error(error.message || "Erro ao adicionar produto ao carrinho");
     }
   };
 
@@ -135,28 +202,22 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
     }));
   };
 
-  const decrementItemCart = async (productId: string) => {
-    try {
-      const currentItem = cart.items.find(
-        (item) => item.productId === productId
-      );
+  const decrementItemCart = (productId: string) => {
+    if (
+      cart.items.find((item) => item.productId === productId)?.quantity === 0
+    ) {
+      removeItemCart(productId);
+      return;
+    }
 
-      if (!currentItem) return;
-
-      const newQuantity = currentItem.quantity - 1;
-
-      // if (newQuantity > 0) {
-      //   const response = await updateCartItem(
-      //     userToken,
-      //     productId,
-      //     newQuantity
-      //   );
-      //   setCart(response.cartData);
-      // } else {
-      //   const response = await removeCartItem(userToken, productId);
-      //   setCart(response.cartData);
-      // }
-    } catch (error) {}
+    setCart((prev) => ({
+      ...prev,
+      items: prev.items.map((item) =>
+        item.productId === productId
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      ),
+    }));
   };
 
   const incrementItemCart = (productId: string) => {
