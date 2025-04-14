@@ -20,10 +20,10 @@ class RemoveFromCartService {
       if (!product.stock)
         throw new Error(`Produto ${item.productId} sem estoque`);
 
+      // Atualiza tanto a quantidade quanto o reservado
       await tx.stock.update({
         where: { id: product.stock.id },
         data: {
-          quantity: { increment: item.quantity },
           reserved: { decrement: item.quantity },
         },
       });
@@ -38,7 +38,7 @@ class RemoveFromCartService {
 
     try {
       return await prismaClient.$transaction(async (tx) => {
-        // Primeiro, obtemos os itens atuais do carrinho para verificar as quantidades
+        // Obtém os itens atuais do carrinho
         const currentItems = await tx.cartItem.findMany({
           where: {
             cartId: existingCart.id,
@@ -46,7 +46,7 @@ class RemoveFromCartService {
           },
         });
 
-        // Validamos se os itens existem no carrinho e se as quantidades são válidas
+        // Valida os itens e quantidades
         const validatedItems = itemsToRemove.map((itemToRemove) => {
           const existingItem = currentItems.find(
             (item) => item.productId === itemToRemove.productId
@@ -58,49 +58,31 @@ class RemoveFromCartService {
             );
           }
 
-          if (itemToRemove.quantity > existingItem.quantity) {
-            throw new Error(
-              `Quantidade a remover (${itemToRemove.quantity}) maior que a quantidade no carrinho (${existingItem.quantity}) para o produto ${itemToRemove.productId}`
-            );
-          }
+          // Se quantity for 0, remove totalmente o item
+          const quantityToRemove =
+            itemToRemove.quantity === 0
+              ? existingItem.quantity
+              : Math.min(itemToRemove.quantity, existingItem.quantity);
 
           return {
             productId: itemToRemove.productId,
-            quantity: itemToRemove.quantity,
+            quantity: quantityToRemove,
           };
         });
 
-        // Restauramos o estoque
+        // Restaura o estoque (diminui o reservado)
         await this.handleStockRestore(validatedItems, tx);
 
-        // Atualizamos ou removemos os itens do carrinho
+        // Remove os itens do carrinho
         for (const item of validatedItems) {
-          const existingItem = currentItems.find(
-            (i) => i.productId === item.productId
-          );
-
-          if (existingItem && existingItem.quantity > item.quantity) {
-            // Se a quantidade a remover for menor que a quantidade no carrinho, apenas decrementamos
-            await tx.cartItem.update({
-              where: {
-                cartId_productId: {
-                  cartId: existingCart.id,
-                  productId: item.productId,
-                },
+          await tx.cartItem.delete({
+            where: {
+              cartId_productId: {
+                cartId: existingCart.id,
+                productId: item.productId,
               },
-              data: { quantity: { decrement: item.quantity } },
-            });
-          } else {
-            // Se for igual ou maior, removemos o item completamente
-            await tx.cartItem.delete({
-              where: {
-                cartId_productId: {
-                  cartId: existingCart.id,
-                  productId: item.productId,
-                },
-              },
-            });
-          }
+            },
+          });
         }
 
         return tx.cart.findUnique({
@@ -109,8 +91,47 @@ class RemoveFromCartService {
         });
       });
     } catch (error: any) {
-      console.error('Transaction error:', error);
-      throw error; // Re-lança o erro para ser capturado pelo controller
+      console.error('Erro ao remover itens do carrinho:', error);
+      throw new Error(`Falha ao remover itens do carrinho: ${error.message}`);
+    }
+  }
+
+  // Método para limpar todo o carrinho
+  async clearCart(userId: string) {
+    const existingCart = await this.cartValidationService.getExistingCart(
+      userId
+    );
+    if (!existingCart) throw new Error('Carrinho não encontrado');
+
+    try {
+      return await prismaClient.$transaction(async (tx) => {
+        // Obtém todos os itens do carrinho
+        const currentItems = await tx.cartItem.findMany({
+          where: { cartId: existingCart.id },
+        });
+
+        // Restaura todo o estoque reservado
+        await this.handleStockRestore(
+          currentItems.map((item) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+          })),
+          tx
+        );
+
+        // Remove todos os itens do carrinho
+        await tx.cartItem.deleteMany({
+          where: { cartId: existingCart.id },
+        });
+
+        return tx.cart.findUnique({
+          where: { id: existingCart.id },
+          include: { items: { include: { product: true } } },
+        });
+      });
+    } catch (error: any) {
+      console.error('Erro ao limpar carrinho:', error);
+      throw new Error(`Falha ao limpar carrinho: ${error.message}`);
     }
   }
 }

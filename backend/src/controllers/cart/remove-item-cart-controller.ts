@@ -37,22 +37,16 @@ class RemoveItemCartController {
         quantity: Number(item.quantity),
       }));
 
-      const result = await removeFromCartService.removeItems(
-        userId,
-        normalizedItems
-      );
+      await removeFromCartService.removeItems(userId, normalizedItems);
 
       return res.status(200).json({
         success: true,
         message: 'Itens removidos do carrinho com sucesso',
-        cart: result,
       });
     } catch (error: any) {
       console.error('Erro na controller ao remover itens:', error);
 
       // Tratamento específico para erros de validação conhecidos
-      console.error('Erro na controller ao remover itens:', error);
-
       if (error.message.includes('não encontrado')) {
         return res.status(404).json({
           success: false,

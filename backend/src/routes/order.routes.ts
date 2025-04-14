@@ -5,6 +5,7 @@ import { ListCartController } from '../controllers/cart/list-cart-controller';
 import { ListDetailOrderController } from '../controllers/order/list-detail-order-controller';
 import { ListOrdersController } from '../controllers/order/list-orders-controller';
 import { RemoveItemCartController } from '../controllers/cart/remove-item-cart-controller';
+import { QuantityCartController } from '../controllers/cart/quantity-cart-controller';
 
 const orderRoutes = Router();
 
@@ -19,9 +20,17 @@ orderRoutes.get('/cart', async (req, res) => {
   await listCartController.handle(req, res);
 });
 
-orderRoutes.delete('/cart/:userId/items', async (req, res) => {
+orderRoutes.delete('/cart/:userId', async (req, res) => {
   const removeItemCartController = new RemoveItemCartController();
   await removeItemCartController.handle(req, res);
+});
+
+const quantityCartController = new QuantityCartController();
+orderRoutes.patch('/cart/increase', async (req, res) => {
+  await quantityCartController.increaseQuantity(req, res);
+});
+orderRoutes.patch('/cart/decrease', async (req, res) => {
+  await quantityCartController.decreaseQuantity(req, res);
 });
 
 //pedidos

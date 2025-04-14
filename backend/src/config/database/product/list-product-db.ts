@@ -23,6 +23,7 @@ class ListProductDb {
         stock: {
           select: {
             quantity: true,
+            reserved: true,
           },
         },
       },

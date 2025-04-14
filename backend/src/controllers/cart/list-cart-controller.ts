@@ -10,10 +10,7 @@ class ListCartController {
     try {
       const cart = await listCartService.execute(user_id);
 
-      return res.status(200).json({
-        success: true,
-        data: cart,
-      });
+      return res.status(200).json(cart);
     } catch (error: any) {
       console.error(error.message.includes('não encontrado') ? 404 : 500);
       throw new Error('Error na controller');
