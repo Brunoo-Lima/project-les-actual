@@ -30,7 +30,6 @@ export function ModalInfo({ onClose, product }: IModalInfoProps) {
           <div className="flex flex-col gap-4 *:text-textColor-dark *:text-base *:font-normal">
             <p>Nome: {product.name}</p>
             <p>Descrição: {product.description || "Sem descrição"}</p>
-            <p>Categoria: {product.category}</p>
             <p>Preço: {FormatValue(product.price)}</p>
             <p>Estoque: {product.stock.quantity}</p>
             <p>Marca: {product.brand}</p>

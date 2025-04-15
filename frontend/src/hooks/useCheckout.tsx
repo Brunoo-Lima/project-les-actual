@@ -9,11 +9,16 @@ import {
   useState,
 } from "react";
 import { toast } from "sonner";
-import { createCart } from "@/services/order";
+import {
+  createCart,
+  decrementItemFromCart,
+  removeItemFromCart,
+} from "@/services/order";
 import { IAddress } from "@/@types/IAddress";
 import { ICreditCard } from "@/@types/ICreditCard";
 import { IOrder } from "@/@types/IOrder";
 import { IProduct } from "@/@types/IProduct";
+import { decreaseItem, increaseItem } from "@/services/cart";
 
 interface ICheckoutContextProps {
   cart: ICart;
@@ -24,24 +29,25 @@ interface ICheckoutContextProps {
   cards: ICreditCard[];
   setCards: React.Dispatch<React.SetStateAction<ICreditCard[]>>;
   selectedCreditCard: ICreditCard | null;
+  order: IOrder;
+  setOrder: React.Dispatch<React.SetStateAction<IOrder>>;
   addProductToCart: (productId: string, quantity: number) => void;
-  handleSelectAddress: (address: IAddress) => void;
-  handleAddAddressOnOrder: (address: IAddress) => void;
-  handleSelectCreditCard: (
-    card: ICreditCard,
-    value: number,
-    installments: number
-  ) => void;
-  handleRemoveCreditCardFromOrder: (id: string) => void;
-  handleAddCreditCardOnOrder: (card: ICreditCard) => void;
-  validatePayment: () => boolean;
   decrementItemCart: (productId: string) => void;
   incrementItemCart: (productId: string) => void;
   removeItemCart: (productId: string) => void;
-  order: IOrder;
-  setOrder: React.Dispatch<React.SetStateAction<IOrder>>;
-  applyCoupon: (coupon: string) => void;
-  clearCart: () => void;
+
+  // handleSelectAddress: (address: IAddress) => void;
+  // handleAddAddressOnOrder: (address: IAddress) => void;
+  // handleSelectCreditCard: (
+  //   card: ICreditCard,
+  //   value: number,
+  //   installments: number
+  // ) => void;
+  // handleRemoveCreditCardFromOrder: (id: string) => void;
+  // handleAddCreditCardOnOrder: (card: ICreditCard) => void;
+  // validatePayment: () => boolean;
+  // applyCoupon: (coupon: string) => void;
+  // clearCart: () => void;
 }
 
 interface ICheckoutProvider {
@@ -119,13 +125,6 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
     }
   }, [cart, userToken]);
 
-  const clearCart = () => {
-    if (userToken) {
-      setCart({ userId: userToken.id, items: [] });
-      setOrder((prev) => ({ ...prev, items: [], total: 0 }));
-    }
-  };
-
   console.log("carttt", cart);
 
   const addProductToCart = async (productId: string, quantity: number) => {
@@ -151,30 +150,38 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
         updatedItems = [...cart.items, { productId, quantity }];
       }
 
-      // Atualiza o estado local primeiro para uma resposta mais rápida
-      setCart((prev) => ({
-        ...prev,
-        items: updatedItems,
-      }));
-
-      // Sincroniza com o backend
       const response = await createCart({
         userId: userToken.id,
-        items: [{ productId, quantity }],
+        items: updatedItems,
       });
 
-      if (response.cartData) {
+      if (response) {
         setCart({
           userId: userToken.id,
-          items: response.cartData.items.map((item: any) => ({
+          items: response.items.map((item: any) => ({
             productId: item.productId,
             quantity: item.quantity,
             product: item.product,
           })),
         });
+
+        toast.success("Produto adicionado ao carrinho");
       }
 
-      toast.success("Produto adicionado ao carrinho");
+      // Atualiza o estado local primeiro para uma resposta mais rápida
+
+      // if (response.cartData) {
+      //   setCart({
+      //     userId: userToken.id,
+      //     items: response.cartData.items.map((item: any) => ({
+      //       productId: item.productId,
+      //       quantity: item.quantity,
+      //       product: item.product,
+      //     })),
+      //   });
+      // }
+
+      // toast.success("Produto adicionado ao carrinho");
     } catch (error: any) {
       console.error("Erro ao adicionar produto:", error);
 
@@ -188,116 +195,160 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
     }
   };
 
-  const updateItemQuantity = (productId: string, newQuantity: number) => {
-    if (newQuantity <= 0) {
-      removeItemCart(productId);
+  const incrementItemCart = async (productId: string) => {
+    if (!userToken?.id) {
+      toast.error("Usuário não autenticado");
       return;
     }
 
-    setCart((prev) => ({
-      ...prev,
-      items: prev.items.map((item) =>
-        item.productId === productId ? { ...item, quantity: newQuantity } : item
-      ),
-    }));
+    try {
+      // Atualização otimista primeiro
+      setCart((prev) => {
+        const existingItem = prev.items.find(
+          (item) => item.product?.id === productId
+        );
+
+        if (!existingItem) {
+          toast.error("Produto não encontrado no carrinho");
+          return prev;
+        }
+
+        // Verificação de estoque
+        if (
+          existingItem.product?.stock &&
+          existingItem.quantity >= existingItem.product.stock.quantity
+        ) {
+          toast.error("Quantidade máxima disponível atingida");
+          return prev;
+        }
+
+        return {
+          ...prev,
+          items: prev.items.map((item) =>
+            item.product?.id === productId
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          ),
+        };
+      });
+
+      // Sincroniza com o backend
+      await increaseItem(userToken.id, productId);
+
+      toast.success("Quantidade aumentada com sucesso");
+    } catch (error: any) {
+      console.error("Erro ao incrementar produto:", error);
+
+      // Reverte em caso de erro
+      setCart((prev) => ({
+        ...prev,
+        items: cart.items,
+      }));
+
+      toast.error(
+        error.response?.data?.error || "Erro ao aumentar quantidade do produto"
+      );
+    }
   };
 
-  const decrementItemCart = (productId: string) => {
-    if (
-      cart.items.find((item) => item.productId === productId)?.quantity === 0
-    ) {
-      removeItemCart(productId);
+  const decrementItemCart = async (productId: string) => {
+    if (!userToken?.id) {
+      toast.error("Usuário não autenticado");
       return;
     }
 
-    setCart((prev) => ({
-      ...prev,
-      items: prev.items.map((item) =>
-        item.productId === productId
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      ),
-    }));
+    try {
+      // Atualização otimista primeiro
+      setCart((prev) => {
+        const existingItemIndex = prev.items.findIndex(
+          (item) => item.product?.id === productId
+        );
+
+        if (existingItemIndex === -1) {
+          toast.error("Produto não encontrado no carrinho");
+          return prev;
+        }
+
+        const currentItem = prev.items[existingItemIndex];
+        const newQuantity = currentItem.quantity - 1;
+
+        // Se for a última unidade, remove o item
+        if (newQuantity < 1) {
+          return {
+            ...prev,
+            items: prev.items.filter((item) => item.product?.id !== productId),
+          };
+        }
+
+        // Apenas decrementa
+        return {
+          ...prev,
+          items: prev.items.map((item) =>
+            item.product?.id === productId
+              ? { ...item, quantity: newQuantity }
+              : item
+          ),
+        };
+      });
+
+      // Chama a API
+      await decreaseItem(userToken.id, productId);
+
+      console.log("cart", cart);
+
+      toast.success("Quantidade diminuída com sucesso");
+    } catch (error: any) {
+      console.error("Erro ao decrementar produto:", error);
+
+      // Reverte a alteração local em caso de erro
+      setCart((prev) => ({
+        ...prev,
+        items: cart.items,
+      }));
+
+      toast.error(error.response?.data?.error || "Erro ao diminuir quantidade");
+    }
   };
 
-  const incrementItemCart = (productId: string) => {
-    setCart((prev) => ({
-      ...prev,
-      items: prev.items.map((item) =>
-        item.productId === productId
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      ),
-    }));
-  };
+  const removeItemCart = async (productId: string) => {
+    if (!userToken || !userToken.id) {
+      toast.error("Usuário não autenticado");
+      return;
+    }
 
-  const removeItemCart = (productId: string) => {
-    setCart((prev) => ({
-      ...prev,
-      items: prev.items.filter((item) => item.productId !== productId),
-    }));
-  };
+    try {
+      const itemToRemove = cart.items.find(
+        (item) => item.product?.id === productId
+      );
+      if (!itemToRemove) {
+        toast.error("Produto não encontrado no carrinho");
+        return;
+      }
 
-  // Funções de endereço e pagamento (mantidas originais)
-  const handleSelectAddress = (address: IAddress) => {
-    setSelectedAddress(address);
-    setOrder((prev) => ({ ...prev, address }));
-  };
-
-  const handleAddAddressOnOrder = (address: IAddress) => {
-    setAddresses((prev) => [...prev, address]);
-  };
-
-  const handleSelectCreditCard = (
-    card: ICreditCard,
-    value: number,
-    installments: number
-  ) => {
-    setSelectedCreditCard(card);
-    setOrder((prev) => {
-      const existingIndex = prev.payment.findIndex(
-        (p) => p.card.id === card.id
+      // Remove localmente primeiro
+      const updatedItems = cart.items.filter(
+        (item) => item.product?.id !== productId
       );
 
-      return {
+      setCart((prev) => ({
         ...prev,
-        payment:
-          existingIndex >= 0
-            ? prev.payment.map((p, i) =>
-                i === existingIndex ? { card, value, installments } : p
-              )
-            : [...prev.payment, { card, value, installments }],
-      };
-    });
-  };
+        items: updatedItems,
+      }));
 
-  const handleRemoveCreditCardFromOrder = (cardId: string) => {
-    setOrder((prev) => ({
-      ...prev,
-      payment: prev.payment.filter((p) => p.card.id !== cardId),
-    }));
-  };
+      await removeItemFromCart(userToken.id, [
+        { productId, quantity: itemToRemove.quantity },
+      ]);
 
-  const handleAddCreditCardOnOrder = (card: ICreditCard) => {
-    setCards((prev) => [...prev, card]);
-  };
-
-  const validatePayment = () => {
-    const totalPaid = order.payment.reduce((acc, p) => acc + p.value, 0);
-    const isValid = totalPaid === order.total;
-    if (!isValid) toast.error("Valor dos cartões não confere com o total");
-    return isValid;
-  };
-
-  const applyCoupon = (coupon: string) => {
-    // Implementação fictícia - ajuste conforme sua regra de negócio
-    const discount = coupon === "PROMO10" ? 10 : 0;
-    setOrder((prev) => ({
-      ...prev,
-      coupon,
-      discountValue: discount,
-      total: prev.total - discount,
-    }));
+      toast.success("Produto removido do carrinho");
+    } catch (error: any) {
+      console.error("Erro ao remover produto:", error);
+      // Reverte a alteração local
+      setCart((prev) => ({
+        ...prev,
+        items: cart.items,
+      }));
+      toast.error(error.message || "Erro ao remover produto do carrinho");
+    }
   };
 
   const contextValue = useMemo(
@@ -311,19 +362,19 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
       setCards,
       selectedCreditCard,
       addProductToCart,
-      handleSelectAddress,
-      handleAddAddressOnOrder,
-      handleSelectCreditCard,
-      handleRemoveCreditCardFromOrder,
-      handleAddCreditCardOnOrder,
-      validatePayment,
+      // handleSelectAddress,
+      // handleAddAddressOnOrder,
+      // handleSelectCreditCard,
+      // handleRemoveCreditCardFromOrder,
+      // handleAddCreditCardOnOrder,
+      // validatePayment,
       decrementItemCart,
       incrementItemCart,
       removeItemCart,
       order,
       setOrder,
-      applyCoupon,
-      clearCart,
+      // applyCoupon,
+      // clearCart,
     }),
     [cart, addresses, cards, selectedAddress, selectedCreditCard, order]
   );

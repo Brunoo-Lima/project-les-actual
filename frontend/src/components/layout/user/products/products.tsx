@@ -16,6 +16,10 @@ export function Products() {
   const { searchName, setSearchName } = useFilter();
   const [filteredData, setFilteredData] = useState<IProduct[]>(products);
 
+  let filteredAvailables = filteredData.filter(
+    (product) => product.isAvailable === true
+  );
+
   useEffect(() => {
     setFilteredData(products);
   }, [products]);
@@ -63,8 +67,8 @@ export function Products() {
       </article>
 
       <div className="flex flex-wrap gap-4 justify-center pt-9">
-        {filteredData.length > 0 ? (
-          filteredData.map((product) => (
+        {filteredAvailables.length > 0 ? (
+          filteredAvailables.map((product) => (
             <Card key={product.id} product={product} />
           ))
         ) : (

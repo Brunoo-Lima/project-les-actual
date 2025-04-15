@@ -49,7 +49,7 @@ export function TableRow({
         </button>
       </td>
 
-      <td>{product.quantity}</td>
+      <td>{product.stock.quantity}</td>
 
       <td>
         <div className="flex items-center gap-x-4">

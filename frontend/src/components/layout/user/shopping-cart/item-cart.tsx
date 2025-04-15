@@ -17,6 +17,7 @@ export function ItemCart({
   handleRemoveItem,
   quantity,
 }: IItemCartProps) {
+  if (!item) return null;
   return (
     <div
       key={item.id}
@@ -30,6 +31,7 @@ export function ItemCart({
       <div className="flex flex-col items-start gap-4">
         <ButtonsQuantity
           quantity={quantity}
+          stock={item.stock}
           handleIncrement={() => handleIncrement(item.id)}
           handleDecrement={() => handleDecrement(item.id)}
         />

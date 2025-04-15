@@ -40,16 +40,51 @@ export const listCart = async (userId: string) => {
   }
 };
 
+export interface ICartItemToRemove {
+  productId: string;
+  quantity?: number; // Opcional para remoção completa
+}
+
 export const removeItemFromCart = async (
   userId: string,
-  itemsToRemove: Array<{ productId: string }>
+  itemsToRemove: ICartItemToRemove[]
 ) => {
   try {
     const { data, status } = await api.delete(`${baseURL}cart/${userId}`, {
       data: {
-        items: itemsToRemove,
+        items: itemsToRemove.map((item) => ({
+          productId: item.productId,
+          quantity: item.quantity || 0, // Se não especificado, remove completamente
+        })),
       },
     });
+
+    if (status !== 200) {
+      toast.error("Algo deu errado ao tentar remover");
+    }
+
+    return data;
+  } catch (error) {
+    toast.error("Algo deu errado ao remover");
+  }
+};
+
+export const decrementItemFromCart = async (
+  userId: string,
+  itemsToRemove: ICartItemToRemove[]
+) => {
+  try {
+    const { data, status } = await api.delete(
+      `${baseURL}item/decrement/${userId}`,
+      {
+        data: {
+          items: itemsToRemove.map((item) => ({
+            productId: item.productId,
+            quantity: item.quantity || 0, // Se não especificado, remove completamente
+          })),
+        },
+      }
+    );
 
     if (status !== 200) {
       toast.error("Algo deu errado ao tentar remover");

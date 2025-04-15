@@ -28,11 +28,9 @@ export function ModalStatusUser({ onClose, user }: IModalStatusUserProps) {
   } = useForm<IStatusSchemaForm>({
     resolver: yupResolver(StatusSchemaForm),
   });
-  const handleSaveStatus: SubmitHandler<IStatusSchemaForm> = async (
-    data: IStatusSchemaForm
-  ) => {
+  const handleSaveStatus: SubmitHandler<IStatusSchemaForm> = async (data) => {
     try {
-      await updateStatusClient(user?.id as string, data);
+      await updateStatusClient(user?.id as string, data as any);
 
       //mudar dps
       await fetch("/api/status/revalidate", { method: "POST" });

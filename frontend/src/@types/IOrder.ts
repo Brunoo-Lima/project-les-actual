@@ -19,6 +19,9 @@ export interface IPaymentMethod {
   installments: number;
 }
 
-export interface ICartItem extends IProduct {
+export interface ICartItem {
   quantity: number;
+  productId: string;
+  product: IProduct;
+  price: number;
 }

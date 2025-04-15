@@ -25,6 +25,7 @@ export interface IProduct {
 export interface IStock {
   id: string;
   quantity: number;
+  reserved: number;
 }
 
 export enum CategoryIsAvailable {

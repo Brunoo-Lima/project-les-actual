@@ -16,7 +16,7 @@ export function ShoppingCart() {
     incrementItemCart,
     decrementItemCart,
     removeItemCart,
-    applyCoupon,
+    // applyCoupon,
     order,
     setCart,
   } = useCheckout();
@@ -24,18 +24,30 @@ export function ShoppingCart() {
 
   const [loading, setLoading] = useState(true);
 
-  // useEffect(() => {
-  //   const loadCart = async () => {
-  //     setLoading(true);
-  //     await fetchCart();
-  //     setLoading(false);
-  //   };
+  useEffect(() => {
+    const loadCart = async () => {
+      setLoading(true);
+      try {
+        const cartData = await listCart(user?.id);
+        setCart(cartData);
 
-  //   loadCart();
-  // }, []);
+        console.log("cartData", cartData);
+        console.log("cart", cart);
+      } catch (error) {
+        console.error("Erro ao carregar carrinho:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user?.id) {
+      // Só carrega se o usuário estiver autenticado
+      loadCart();
+    }
+  }, [user?.id]);
 
   const handleApplyNewCoupon = () => {
-    applyCoupon(newCoupon);
+    // applyCoupon(newCoupon);
     setNewCoupon("");
   };
 
@@ -52,7 +64,7 @@ export function ShoppingCart() {
           {cart.items &&
             cart.items.map((item, index) => (
               <ItemCart
-                key={item.productId}
+                key={index}
                 item={item.product as IProduct}
                 quantity={item.quantity}
                 handleIncrement={incrementItemCart}
