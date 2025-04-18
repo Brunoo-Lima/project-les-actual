@@ -2,12 +2,12 @@ import { Router } from 'express';
 import { CreateCartController } from '../controllers/cart/create-cart-controller';
 import { CreateOrderController } from '../controllers/order/create-order-controller';
 import { ListCartController } from '../controllers/cart/list-cart-controller';
-import { ListDetailOrderController } from '../controllers/order/list-detail-order-controller';
+import { ListOrdersStatusController } from '../controllers/order/list-orders-status-controller';
 import { ListOrdersController } from '../controllers/order/list-orders-controller';
 import { RemoveItemCartController } from '../controllers/cart/remove-item-cart-controller';
 import { QuantityCartController } from '../controllers/cart/quantity-cart-controller';
-import { ApproveOrderController } from '../controllers/order/approve-order-controller';
 import { AddItemCartController } from '../controllers/cart/add-item-cart-controller';
+import { UpdateOrderStatusController } from '../controllers/order/update-order-status-controller';
 
 const orderRoutes = Router();
 
@@ -47,9 +47,9 @@ orderRoutes.post('/checkout', async (req, res) => {
   await createOrderController.handle(req, res);
 });
 
-orderRoutes.get('/order', async (req, res) => {
-  const listDetailOrderController = new ListDetailOrderController();
-  await listDetailOrderController.handle(req, res);
+orderRoutes.get('/order-list', async (req, res) => {
+  const listOrdersStatusController = new ListOrdersStatusController();
+  await listOrdersStatusController.handle(req, res);
 });
 
 orderRoutes.get('/orders', async (req, res) => {
@@ -59,9 +59,9 @@ orderRoutes.get('/orders', async (req, res) => {
 
 //aprovar pedido
 
-orderRoutes.patch('/order/approve/:orderId', async (req, res) => {
-  const approveOrderController = new ApproveOrderController();
-  await approveOrderController.handle(req, res);
+orderRoutes.patch('/order/status/:orderId', async (req, res) => {
+  const updateOrderStatusController = new UpdateOrderStatusController();
+  await updateOrderStatusController.handle(req, res);
 });
 
 export { orderRoutes };

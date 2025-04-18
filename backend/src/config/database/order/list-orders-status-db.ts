@@ -1,14 +1,10 @@
 import { prismaClient } from '../../prisma-client/prisma-client';
 
-class ListDetailOrderDb {
-  async listDetailOrder(userId: string) {
-    return await prismaClient.order.findFirst({
+class ListOrdersStatusDb {
+  async listOrdersStatus(status?: string) {
+    return await prismaClient.order.findMany({
       where: {
-        userId,
-        // isActive: true,
-        // expires_at: {
-        //   gt: new Date(), // Só retorna carrinhos não expirados
-        // },
+        status: status,
       },
       include: {
         items: {
@@ -28,4 +24,4 @@ class ListDetailOrderDb {
   }
 }
 
-export { ListDetailOrderDb };
+export { ListOrdersStatusDb };
