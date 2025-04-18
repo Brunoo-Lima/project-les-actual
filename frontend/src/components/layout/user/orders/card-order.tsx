@@ -6,24 +6,26 @@ import { IProduct } from "@/@types/IProduct";
 import { FormatValue } from "@/utils/format-value";
 
 interface ICardOrderProps {
-  item: Partial<IProduct>;
+  quantity: number;
+  price: number;
+  product: IProduct;
 }
 
-export function CardOrder({ item }: ICardOrderProps) {
+export function CardOrder({ quantity, product, price }: ICardOrderProps) {
   const [previewImage, setPreviewImage] = useState<string>("/img/luffy.webp");
 
   useEffect(() => {
-    if (item.image instanceof File) {
-      const objectUrl = URL.createObjectURL(item.image);
+    if (product.image instanceof File) {
+      const objectUrl = URL.createObjectURL(product.image);
       setPreviewImage(objectUrl);
 
       return () => URL.revokeObjectURL(objectUrl);
-    } else if (typeof item.image === "string") {
-      setPreviewImage(item.image);
+    } else if (typeof product.image === "string") {
+      setPreviewImage(product.image);
     }
-  }, [item.image]);
+  }, [product.image]);
 
-  if (!item) return null;
+  if (!product) return null;
 
   return (
     <div className="flex gap-x-4 border-b border-b-gray-400 pb-4">
@@ -33,7 +35,7 @@ export function CardOrder({ item }: ICardOrderProps) {
             src={previewImage}
             width={64}
             height={64}
-            alt={item.name || "Imagem do produto"}
+            alt={product.name || "Imagem do produto"}
             className="size-16 object-contain"
             priority
           />
@@ -41,15 +43,15 @@ export function CardOrder({ item }: ICardOrderProps) {
       </div>
       <div className="grid grid-cols-2 flex-1 gap-4">
         <div className="flex-1 flex flex-col gap-y-2">
-          <p>{item.name}</p>
-          <p>{FormatValue(item.price || 0)}</p>
+          <p>{product.name}</p>
+          <p>{FormatValue(price || 0)}</p>
         </div>
 
         <div className="flex flex-col items-end gap-y-2">
           <p className="bg-error-light font-semibold py-0.5 px-1 rounded-md">
-            {item.universe}
+            {product.universe}
           </p>
-          <p>Quantidade: {item.stock?.quantity}</p>
+          <p>Quantidade: {quantity}</p>
         </div>
       </div>
     </div>

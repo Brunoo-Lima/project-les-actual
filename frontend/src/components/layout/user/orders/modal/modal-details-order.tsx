@@ -22,6 +22,7 @@ interface IOrderRequest {
   }[];
 
   // payments: IOrderPayment[];
+  // paymentMethod: any[];
 }
 
 interface IModalDetailsOrderProps {
@@ -62,14 +63,15 @@ export default function ModalDetailsOrder({
             <p>Endereço de cobrança: {order.address?.charge ? "Sim" : "Nao"}</p>
           </div>
 
-          {/* <div className="flex flex-col gap-4 bg-zinc-800 rounded-md p-4">
+          <div className="flex flex-col gap-4 bg-zinc-800 rounded-md p-4">
             <h2 className="text-xl font-semibold">Pagamento</h2>
-            <p>Bandeira: {order.payment?.flag}</p>
+
+            {/* <p>Bandeira: {order.payment?.flag}</p>
             <p>Numero: {order.payment?.number}</p>
             <p>Nome impresso: {order.payment?.namePrinted}</p>
             <p>CVV: {order.payment?.cvv}</p>
-            <p>Validade: {order.payment?.dateExpired}</p>
-          </div> */}
+            <p>Validade: {order.payment?.dateExpired}</p> */}
+          </div>
         </div>
       </Modal.Content>
     </Modal.Root>

@@ -9,8 +9,6 @@ export const createProduct = async (productData: FormData) => {
       body: productData,
     });
 
-    console.log("Status da resposta:", response.status);
-
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       const errorMessage =

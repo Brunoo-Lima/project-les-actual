@@ -24,6 +24,12 @@ export function ShoppingCart() {
 
   const [loading, setLoading] = useState(true);
 
+  const total =
+    cart.items.reduce(
+      (acc, item) => acc + item.quantity * item?.product!.price,
+      0
+    ) + order.freight;
+
   useEffect(() => {
     const loadCart = async () => {
       setLoading(true);
@@ -50,12 +56,6 @@ export function ShoppingCart() {
     // applyCoupon(newCoupon);
     setNewCoupon("");
   };
-
-  console.log("cart", cart);
-
-  // if (loading) {
-  //   return <p className="text-lg font-semibold">Carregando...</p>;
-  // }
 
   return (
     <div className="grid grid-cols-2 gap-x-16 place-items-start mt-8 container mx-auto">
@@ -102,11 +102,11 @@ export function ShoppingCart() {
           <p>Subtotal</p>
           <p>
             {FormatValue(
-              order.items.reduce(
-                (acc, item) => acc + item.price * item.quantity,
+              cart.items.reduce(
+                (acc, item) => acc + item.quantity * item?.product!.price,
                 0
               )
-            )}
+            ) || 0}
           </p>
         </div>
 
@@ -124,7 +124,7 @@ export function ShoppingCart() {
 
         <div className="flex justify-between *:text-lg *:font-semibold">
           <p>Total</p>
-          <p>{FormatValue(order.total)}</p>
+          <p>{FormatValue(total)}</p>
         </div>
       </div>
     </div>

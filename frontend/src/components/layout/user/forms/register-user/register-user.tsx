@@ -63,7 +63,6 @@ export function RegisterUser() {
 
       toast.success("Cliente cadastrado com sucesso!");
     } catch (error) {
-      console.log(error);
       toast.error("Erro ao criar cliente!");
     } finally {
       setLoading(false);

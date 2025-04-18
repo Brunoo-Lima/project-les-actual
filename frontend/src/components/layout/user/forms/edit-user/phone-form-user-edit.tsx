@@ -80,11 +80,7 @@ export function PhoneFormUserEdit({
         if (phone.id) {
           // Se o telefone já tem ID, é uma atualização
 
-          console.log("data aaa", data);
-
           const updatedData = await updatePhone(userId, phone.id, phone);
-
-          console.log("teste", updatedData);
         } else {
           // Se não tem ID, é um novo telefone
           await createPhone(userId, phone);
@@ -100,7 +96,6 @@ export function PhoneFormUserEdit({
   };
 
   const handleRemovePhone = async (phoneId: string, index: number) => {
-    // console.log("ID do telefone a ser removido:", phoneId);
     setLoading(true);
     if (phoneId) {
       try {

@@ -10,15 +10,21 @@ import {
 } from "react";
 import { toast } from "sonner";
 import {
-  createCart,
+  createOrder,
   decrementItemFromCart,
   removeItemFromCart,
 } from "@/services/order";
 import { IAddress } from "@/@types/IAddress";
 import { ICreditCard } from "@/@types/ICreditCard";
-import { IOrder } from "@/@types/IOrder";
+import { IOrder, IOrderRequest, IPaymentMethodItem } from "@/@types/IOrder";
 import { IProduct } from "@/@types/IProduct";
-import { decreaseItem, increaseItem } from "@/services/cart";
+import {
+  addItemToCart,
+  createCart,
+  decreaseItem,
+  increaseItem,
+} from "@/services/cart";
+import { FormatValue } from "@/utils/format-value";
 
 interface ICheckoutContextProps {
   cart: ICart;
@@ -36,18 +42,19 @@ interface ICheckoutContextProps {
   incrementItemCart: (productId: string) => void;
   removeItemCart: (productId: string) => void;
 
-  // handleSelectAddress: (address: IAddress) => void;
-  // handleAddAddressOnOrder: (address: IAddress) => void;
-  // handleSelectCreditCard: (
-  //   card: ICreditCard,
-  //   value: number,
-  //   installments: number
-  // ) => void;
-  // handleRemoveCreditCardFromOrder: (id: string) => void;
-  // handleAddCreditCardOnOrder: (card: ICreditCard) => void;
-  // validatePayment: () => boolean;
-  // applyCoupon: (coupon: string) => void;
-  // clearCart: () => void;
+  handleSelectAddress: (address: IAddress) => void;
+  handleAddAddressOnOrder: (address: IAddress) => void;
+  handleSelectCreditCard: (
+    card: ICreditCard,
+    value: number,
+    installments: number
+  ) => void;
+  handleRemoveCreditCardFromOrder: (id: string) => void;
+  handleAddCreditCardOnOrder: (card: ICreditCard) => void;
+  validatePayment: () => boolean;
+  handleAddCouponPayment: (couponCode: string, value: number) => void;
+  clearCart: () => void;
+  createNewOrder: () => Promise<void>;
 }
 
 interface ICheckoutProvider {
@@ -55,6 +62,7 @@ interface ICheckoutProvider {
 }
 
 interface ICart {
+  id: string;
   userId: string;
   items: ICartItem[];
 }
@@ -82,6 +90,7 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
   const [userToken, setUserToken] = useState<IUser | null>(null);
 
   const [cart, setCart] = useState<ICart>({
+    id: "",
     userId: "",
     items: [],
   });
@@ -111,7 +120,7 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
 
           setCart({ ...parsedCart, userId: userData.id });
         } else {
-          setCart({ userId: userData.id, items: [] });
+          setCart({ id: "", userId: userData.id, items: [] });
         }
       }
     };
@@ -126,12 +135,15 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
   }, [cart, userToken]);
 
   console.log("carttt", cart);
+  console.log("order", order);
 
   const addProductToCart = async (productId: string, quantity: number) => {
     if (!userToken || !userToken.id) {
       toast.error("Usuário não autenticado");
       return;
     }
+
+    // await createCart(userToken.id);
 
     try {
       const existingItemIndex = cart.items.findIndex(
@@ -150,13 +162,11 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
         updatedItems = [...cart.items, { productId, quantity }];
       }
 
-      const response = await createCart({
-        userId: userToken.id,
-        items: updatedItems,
-      });
+      const response = await addItemToCart(userToken.id, productId, quantity);
 
       if (response) {
         setCart({
+          id: response.id,
           userId: userToken.id,
           items: response.items.map((item: any) => ({
             productId: item.productId,
@@ -164,6 +174,15 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
             product: item.product,
           })),
         });
+
+        setOrder((prevOrder) => ({
+          ...prevOrder,
+          items: response.items.map((item: any) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+            product: item.product,
+          })),
+        }));
 
         toast.success("Produto adicionado ao carrinho");
       }
@@ -294,8 +313,6 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
       // Chama a API
       await decreaseItem(userToken.id, productId);
 
-      console.log("cart", cart);
-
       toast.success("Quantidade diminuída com sucesso");
     } catch (error: any) {
       console.error("Erro ao decrementar produto:", error);
@@ -351,6 +368,169 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
     }
   };
 
+  //adicionar endereço
+  const handleSelectAddress = (address: IAddress) => {
+    setSelectedAddress(address);
+    setOrder((prev) => ({ ...prev, address }));
+  };
+
+  const handleAddAddressOnOrder = (address: IAddress) => {
+    setAddresses((prev) => [...prev, address]);
+  };
+
+  //pagamento
+  const handleSelectCreditCard = (
+    card: ICreditCard,
+    value: number,
+    installments: number
+  ) => {
+    setOrder((prev) => {
+      // Verifica se já existe pagamento com cartão de crédito
+      const existingPaymentIndex = prev.payment.findIndex(
+        (p) => p.methodId === "credit_card" && p.creditCardId === card.id
+      );
+
+      const newPayment: IPaymentMethodItem = {
+        methodId: "credit_card_1", // Ou obtenha do seu sistema de métodos
+        creditCardId: card.id,
+        amount: value,
+        installments,
+      };
+
+      return {
+        ...prev,
+        payment:
+          existingPaymentIndex >= 0
+            ? prev.payment.map((p, i) =>
+                i === existingPaymentIndex ? newPayment : p
+              )
+            : [...prev.payment, newPayment],
+      };
+    });
+  };
+
+  const handleRemoveCreditCardFromOrder = (cardId: string) => {
+    setOrder((prev) => ({
+      ...prev,
+      payment: prev.payment.filter((p) => p.creditCardId !== cardId),
+    }));
+  };
+
+  const handleAddCreditCardOnOrder = (card: ICreditCard) => {
+    setCards((prev) => [...prev, card]);
+  };
+
+  // const validatePayment = () => {
+  //   const totalPaid = order.payment.reduce((acc, p) => acc + p.amount, 0);
+  //   const isValid = totalPaid === order.total;
+  //   if (!isValid) toast.error("Valor dos cartões não confere com o total");
+  //   return isValid;
+  // };
+
+  const validatePayment = (): boolean => {
+    // Verifica se há pelo menos um método de pagamento
+    if (order.payment.length === 0) {
+      toast.error("Selecione pelo menos um método de pagamento");
+      return false;
+    }
+
+    // Calcula o total pago
+    const totalPaid = order.payment.reduce(
+      (sum, p) => sum + (p.amount || 0),
+      0
+    );
+    const orderTotal = order.total;
+
+    // Verifica se o valor total foi coberto (com margem para arredondamento)
+    if (Math.abs(totalPaid - orderTotal) > 0.01) {
+      toast.error(
+        `A soma dos pagamentos (${FormatValue(
+          totalPaid
+        )}) não corresponde ao total do pedido (${FormatValue(orderTotal)})`
+      );
+      return false;
+    }
+
+    // Validações específicas por método
+    for (const payment of order.payment) {
+      if (payment.methodId === "credit_card" && !payment.creditCardId) {
+        toast.error("Pagamento com cartão requer seleção de um cartão");
+        return false;
+      }
+
+      if (payment.methodId === "coupon" && !payment.couponCode) {
+        toast.error("Pagamento com cupom requer código do cupom");
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  const handleAddCouponPayment = (couponCode: string, value: number) => {
+    setOrder((prev) => ({
+      ...prev,
+      payment: [
+        ...prev.payment,
+        {
+          methodId: "coupon",
+          couponCode,
+          amount: value,
+        },
+      ],
+    }));
+  };
+
+  const clearCart = () => {
+    setCart({
+      ...cart,
+      items: [],
+      userId: userToken!.id,
+    });
+    setOrder((prev) => ({ ...prev, items: [], total: 0 }));
+  };
+
+  const createNewOrder = async () => {
+    if (!userToken?.id || !selectedAddress || !selectedCreditCard) {
+      toast.error("Dados incompletos para criar o pedido");
+      return;
+    }
+
+    try {
+      // Primeiro valida o pagamento
+      if (!validatePayment()) {
+        return;
+      }
+
+      // Prepara os dados do pedido conforme o backend espera
+      const orderData: IOrderRequest = {
+        userId: userToken.id,
+        addressId: selectedAddress.id,
+        paymentMethods: order.payment.map((p) => ({
+          methodId: p.methodId,
+          creditCardId: p.creditCardId,
+          couponCode: p.couponCode,
+          amount: p.amount,
+          installments: p.installments,
+        })),
+        cartId: cart.id || "", // Você precisa ter o cartId no seu estado de carrinho
+        freight: order.freight,
+        discountValue: order.discountValue,
+      };
+
+      const createdOrder = await createOrder(orderData);
+
+      // Limpa o carrinho após sucesso
+      clearCart();
+
+      return createdOrder;
+    } catch (error) {
+      console.error("Erro ao criar pedido:", error);
+      toast.error("Erro ao finalizar pedido");
+      throw error;
+    }
+  };
+
   const contextValue = useMemo(
     () => ({
       cart,
@@ -362,19 +542,20 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
       setCards,
       selectedCreditCard,
       addProductToCart,
-      // handleSelectAddress,
-      // handleAddAddressOnOrder,
-      // handleSelectCreditCard,
-      // handleRemoveCreditCardFromOrder,
-      // handleAddCreditCardOnOrder,
-      // validatePayment,
+      handleSelectAddress,
+      handleAddAddressOnOrder,
+      handleSelectCreditCard,
+      handleRemoveCreditCardFromOrder,
+      handleAddCreditCardOnOrder,
+      validatePayment,
       decrementItemCart,
       incrementItemCart,
       removeItemCart,
       order,
       setOrder,
-      // applyCoupon,
-      // clearCart,
+      handleAddCouponPayment,
+      clearCart,
+      createNewOrder,
     }),
     [cart, addresses, cards, selectedAddress, selectedCreditCard, order]
   );

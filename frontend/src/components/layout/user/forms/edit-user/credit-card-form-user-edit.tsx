@@ -52,7 +52,6 @@ export function CreditCardFormUserEdit({
   });
 
   useEffect(() => {
-    console.log("creditCards rece", creditCards);
     if (creditCards) {
       reset({
         creditCards: creditCards.map((creditCard) => ({
@@ -68,8 +67,6 @@ export function CreditCardFormUserEdit({
       });
     }
   }, [creditCards, reset]);
-
-  console.log("creditCards", creditCards);
 
   const onSubmit = async (data: any) => {
     setLoading(true);

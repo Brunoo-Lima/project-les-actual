@@ -14,7 +14,6 @@ import {
 import { toast } from "sonner";
 import { useData } from "@/hooks/useData";
 import { Textarea } from "@/components/ui/textarea/textarea";
-import { updateProduct } from "@/services/product";
 import axios from "axios";
 import { SelectComponent } from "@/components/ui/select/select";
 import { selectCategoryIsAvailable } from "@/mocks/select/select";
@@ -25,11 +24,7 @@ interface IModalEditProps {
   onClose: () => void;
 }
 
-export function ModalEdit({
-  product,
-  onClose,
-  setSelectedProduct,
-}: IModalEditProps) {
+export function ModalEdit({ product, onClose }: IModalEditProps) {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const { setProducts } = useData();
@@ -81,8 +76,6 @@ export function ModalEdit({
     }
   };
 
-  console.log("product", product);
-
   const onSubmit: SubmitHandler<IProductSchemaForm> = async (data: any) => {
     try {
       const formData = new FormData();
@@ -116,13 +109,6 @@ export function ModalEdit({
         data.stock?.quantity?.toString() || "1"
       );
 
-      console.log("product", product);
-      console.log("product", formData);
-
-      for (const [key, values] of formData.entries()) {
-        console.log("aaa -" + key, values);
-      }
-
       const response = await axios.patch(
         `http://localhost:3333/product?product_id=${product?.id}`,
         formData,
@@ -132,8 +118,6 @@ export function ModalEdit({
           },
         }
       );
-
-      console.log("resss", response.data);
 
       setProducts((prev) => [...prev, response.data]);
 

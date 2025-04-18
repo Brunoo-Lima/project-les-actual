@@ -52,7 +52,7 @@ export function AddressForm({ onClose }: IAddressFormProps) {
         setValue(`street`, data.logradouro);
         setValue(`city`, data.localidade);
         setValue(`state`, data.uf);
-        setValue("publicPlace", data.complemento);
+        // setValue("", data.complemento);
         setValue(`neighborhood`, data.bairro);
       }
     } catch (error) {
@@ -61,8 +61,6 @@ export function AddressForm({ onClose }: IAddressFormProps) {
   };
 
   const onSubmit: SubmitHandler<IAddressSchemaForm> = (data) => {
-    console.log("endereço", data);
-
     const updatedData = {
       id: Math.random() * 100,
       ...data,
@@ -157,12 +155,12 @@ export function AddressForm({ onClose }: IAddressFormProps) {
             )}
           />
 
-          <Input
+          {/* <Input
             label="Logradouro"
             placeholder="Digite o logradouro"
             {...register("publicPlace")}
             error={errors.publicPlace}
-          />
+          /> */}
         </div>
 
         <div className="grid grid-cols-3 gap-4">

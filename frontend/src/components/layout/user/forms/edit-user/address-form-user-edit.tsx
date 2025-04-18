@@ -65,7 +65,6 @@ export function AddressFormUserEdit({
   });
 
   useEffect(() => {
-    console.log("address rece", addresses);
     if (addresses) {
       reset({
         addresses: addresses.map((address) => ({
@@ -88,8 +87,6 @@ export function AddressFormUserEdit({
       });
     }
   }, [addresses, reset]);
-
-  console.log("addresses", addresses);
 
   const onSubmit = async (data: any) => {
     setLoading(true);

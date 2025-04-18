@@ -32,8 +32,6 @@ export function EditUser() {
   const [editSection, setEditSection] = useState<SectionType>(null);
   const [client, setClient] = useState<IUser | null>(null);
 
-  console.log("userrrr", user);
-
   useEffect(() => {
     if (id) {
       const fetchClient = async () => {

@@ -12,11 +12,10 @@ import { ICreditCard } from "@/@types/ICreditCard";
 import { toast } from "sonner";
 import { detailClient } from "@/services/client";
 
-//TODO: Implementar talvez um sistema de parcelamento
-//TODO: implementar talvez um sistema de cupons, no qual o usuario pode escolher o cupom para pagar e tbm o cartao, tem a opção cupom no começo porém aquele é mais promocional
-
+//TODO: MELHORAR ISSO CONFORME A MUDANÇA NO USECHECKOUT E BACKEND
 export function Payment() {
-  const { order, cards, setCards, validatePayment, setOrder } = useCheckout();
+  const { order, cards, setCards, validatePayment, setOrder, cart } =
+    useCheckout();
   const [selectedCards, setSelectedCards] = useState<{
     card1: ICreditCard | null;
     card2: ICreditCard | null;
@@ -41,7 +40,7 @@ export function Payment() {
 
         const creditCardsData = await detailClient(parsedUserData.id);
 
-        console.log("addressesData", creditCardsData);
+        console.log("credit", creditCardsData);
 
         if (creditCardsData) {
           setCards(creditCardsData.creditCards);
@@ -103,7 +102,7 @@ export function Payment() {
     setIsOpenModalAddPayment(false);
   };
 
-  console.log("set", order);
+  console.log("setOrder", order);
 
   const handleAddPayment = () => {
     setOrder((prevOrder) => ({
@@ -112,8 +111,9 @@ export function Payment() {
         ...(selectedCards.card1
           ? [
               {
-                card: selectedCards.card1,
-                value: values.value1,
+                methodId: "credit_card_1",
+                creditCardId: selectedCards.card1.id,
+                amount: selectedCards.card1.value,
                 installments: parcelas.parcela1,
               },
             ]
@@ -192,7 +192,7 @@ export function Payment() {
         </div>
       )}
 
-      <div>Valor: {FormatValue(order.total)}</div>
+      <div>Valor: {FormatValue(cat)}</div>
       <div className="flex items-center gap-4">
         <button
           type="button"

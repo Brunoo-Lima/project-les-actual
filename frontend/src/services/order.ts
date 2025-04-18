@@ -1,6 +1,7 @@
 import api, { baseURL } from "./api";
 import { toast } from "sonner";
 import { IAddress } from "@/@types/IAddress";
+import { IPaymentMethodItem } from "@/@types/IOrder";
 
 export interface ICartRequest {
   userId: string;
@@ -9,26 +10,6 @@ export interface ICartRequest {
     quantity: number;
   }>;
 }
-
-export const createCart = async (cart: ICartRequest) => {
-  try {
-    const { data, status } = await api.post(`${baseURL}cart`, {
-      userId: cart.userId,
-      items: cart.items,
-    });
-
-    if (!data || (status !== 200 && status !== 201)) {
-      toast.error("Algo deu errado na requisição");
-    }
-
-    console.log("Carrinho criado/atualizado:", data);
-
-    return data;
-  } catch (error: any) {
-    console.error(error);
-    toast.error("Erro ao criar carrinho");
-  }
-};
 
 export const listCart = async (userId: string) => {
   try {
@@ -117,6 +98,29 @@ interface IOrderRequest {
 
   // payments: IOrderPayment[];
 }
+
+interface ICreateOrder {
+  userId: string;
+  addressId: string;
+  paymentMethods: IPaymentMethodItem[];
+  cartId: string;
+  freight: number;
+  discountValue?: number; // Opcional, pois pode não haver desconto
+}
+
+export const createOrder = async (order: ICreateOrder) => {
+  try {
+    const { data, status } = await api.post(`${baseURL}checkout`, order);
+
+    if (!data || (status !== 200 && status !== 201)) {
+      toast.error("Algo deu errado na requisição");
+    }
+
+    return data;
+  } catch (error) {
+    toast.error("Algo deu errado na requisição");
+  }
+};
 
 export const listOrders = async (user_id: string) => {
   try {

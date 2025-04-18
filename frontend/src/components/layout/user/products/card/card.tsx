@@ -37,15 +37,14 @@ export function Card({ product }: ICardProps) {
       toast.error("Produto fora de estoque!");
       return;
     }
-
-    if (quantity === 0) {
-      toast.error("Quantidade inválida!");
+    if (quantity < 1 || quantity > product.stock.quantity) {
+      toast.error("Quantidade inválida!");
       return;
     }
 
     addProductToCart(product.id, quantity);
     // toast.success("Produto adicionado ao carrinho!");
-    setQuantity(1);
+    setQuantity(0);
   };
 
   return (

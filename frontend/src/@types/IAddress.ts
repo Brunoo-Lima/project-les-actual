@@ -5,7 +5,7 @@ export interface IAddress {
   neighborhood: string;
   number: string;
   typePublicPlace: string;
-  publicPlace: string;
+  // publicPlace: string;
   street: string;
   city: string;
   state: string;

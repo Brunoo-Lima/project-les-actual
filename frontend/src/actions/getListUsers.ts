@@ -5,7 +5,6 @@ import { getListClient } from "@/services/list-client";
 export async function getListUsers() {
   try {
     const clients = await getListClient();
-    console.log("lci", clients);
     return clients;
   } catch (error) {
     console.error("Error in getListUsers", error);

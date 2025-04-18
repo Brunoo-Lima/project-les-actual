@@ -14,9 +14,11 @@ export interface IOrder {
 }
 
 export interface IPaymentMethod {
-  card: ICreditCard;
-  value: number;
-  installments: number;
+  methodId: string;
+  amount?: number;
+  creditCardId?: string;
+  couponCode?: string;
+  installments?: number;
 }
 
 export interface ICartItem {
@@ -24,4 +26,21 @@ export interface ICartItem {
   productId: string;
   product: IProduct;
   price: number;
+}
+
+export interface IPaymentMethodItem {
+  methodId: string;
+  amount?: number;
+  creditCardId?: string;
+  couponCode?: string;
+  installments?: number;
+}
+
+export interface IOrderRequest {
+  userId: string;
+  addressId: string;
+  paymentMethods: IPaymentMethodItem[];
+  cartId: string;
+  freight: number;
+  discountValue?: number;
 }

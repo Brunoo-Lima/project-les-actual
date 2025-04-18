@@ -67,7 +67,6 @@ export function Users() {
             "day"
           );
 
-        console.log("matchesDate", matchesDate);
         return matchesName && matchesDate && matchesStatus;
       });
 

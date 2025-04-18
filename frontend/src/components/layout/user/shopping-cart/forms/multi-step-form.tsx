@@ -9,9 +9,11 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useCheckout } from "@/hooks/useCheckout";
 import { IOrder } from "@/@types/IOrder";
+import { createOrder } from "@/services/order";
 
 export function MultiStepForm() {
-  const { cart, order, validatePayment, setCart, clearCart } = useCheckout();
+  const { cart, order, validatePayment, setCart, clearCart, createNewOrder } =
+    useCheckout();
   const router = useRouter();
   const { isFirstStep, currentStep, isLastStep, next, previous } =
     useMultiStepForm({
@@ -23,22 +25,22 @@ export function MultiStepForm() {
     });
 
   const handleOrderFinished = async () => {
-    if (!validatePayment()) {
-      toast.error("Erro no pagamento. Verifique os valores dos cartões.");
-      return;
-    }
+    // if (!validatePayment()) {
+    //   toast.error("Erro no pagamento. Verifique os valores dos cartões.");
+    //   return;
+    // }
 
-    // Valida se um endereço foi selecionado
-    if (!order.address) {
-      toast.error("Selecione um endereço de entrega.");
-      return;
-    }
+    // // Valida se um endereço foi selecionado
+    // if (!order.address) {
+    //   toast.error("Selecione um endereço de entrega.");
+    //   return;
+    // }
 
-    // Valida se há itens no carrinho
-    if (cart.length === 0) {
-      toast.error("O carrinho está vazio.");
-      return;
-    }
+    // // Valida se há itens no carrinho
+    // if (cart.items.length === 0) {
+    //   toast.error("O carrinho está vazio.");
+    //   return;
+    // }
 
     //Logica para enviar para o backend
 
@@ -53,6 +55,21 @@ export function MultiStepForm() {
     //   coupon: order.coupon,
     // };
 
+    const newOrder = {
+      ...order,
+    };
+
+    try {
+      await createNewOrder();
+
+      // toast.success("Pedido realizado com sucesso!");
+      // router.push("/pedidos");
+
+      // clearCart();
+    } catch (error) {
+      toast.error("Erro ao realizar pedido.");
+    }
+
     // const existingOrders = JSON.parse(
     //   localStorage.getItem("tempOrders") || "[]"
     // ) as IOrder[];
@@ -61,12 +78,7 @@ export function MultiStepForm() {
 
     // localStorage.setItem("tempOrders", JSON.stringify(existingOrders));
 
-    toast.success("Pedido realizado com sucesso!");
-    router.push("/pedidos");
-
     // setCart([]);
-
-    clearCart();
   };
 
   return (
@@ -86,7 +98,7 @@ export function MultiStepForm() {
         {!isLastStep ? (
           <button
             type="button"
-            disabled={cart.length === 0}
+            disabled={cart.items.length === 0}
             onClick={next}
             className="mt-8 bg-primary text-background p-2 rounded-md font-semibold text-base transition duration-300 hover:bg-primary-dark"
           >
