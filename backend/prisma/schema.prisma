@@ -242,8 +242,10 @@ model OrderPayment {
   id           String  @id @default(uuid())
   orderId      String
   paymentMethodId String
-  amount       Decimal  // Valor pago com este cartão de crédito
+  amount       Decimal  // Valor pago
   status     PaymentStatus @default(pending)
+  installments  Int?     @default(1) // Número de parcelas
+  installmentValue Decimal? 
 
   processedAt DateTime?
 

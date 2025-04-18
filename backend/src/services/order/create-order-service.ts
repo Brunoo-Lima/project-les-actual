@@ -1,11 +1,8 @@
 import { Decimal } from '@prisma/client/runtime/library';
-import { CreateOrderDb } from '../../config/database/order/create-order-db';
-
-type IPaymentMethod = {
-  methodId: string;
-  creditCardId?: string; // Obrigatório se método for credit_card
-  couponCode?: string; // Obrigatório se método for coupon
-};
+import {
+  CreateOrderDb,
+  IPaymentMethodItem,
+} from '../../config/database/order/create-order-db';
 
 class CreateOrderService {
   private createOrderDb: CreateOrderDb;
@@ -17,7 +14,7 @@ class CreateOrderService {
   async execute(
     userId: string,
     addressId: string,
-    paymentData: IPaymentMethod,
+    paymentMethods: IPaymentMethodItem[],
     cartId: string,
     freight: number | Decimal,
     discountValue?: number | Decimal
@@ -26,7 +23,7 @@ class CreateOrderService {
       const order = await this.createOrderDb.createOrder(
         userId,
         addressId,
-        paymentData,
+        paymentMethods,
         cartId,
         freight,
         discountValue

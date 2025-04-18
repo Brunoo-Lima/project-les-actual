@@ -6,6 +6,8 @@ import { ListDetailOrderController } from '../controllers/order/list-detail-orde
 import { ListOrdersController } from '../controllers/order/list-orders-controller';
 import { RemoveItemCartController } from '../controllers/cart/remove-item-cart-controller';
 import { QuantityCartController } from '../controllers/cart/quantity-cart-controller';
+import { ApproveOrderController } from '../controllers/order/approve-order-controller';
+import { AddItemCartController } from '../controllers/cart/add-item-cart-controller';
 
 const orderRoutes = Router();
 
@@ -23,6 +25,11 @@ orderRoutes.get('/cart', async (req, res) => {
 orderRoutes.delete('/cart/:userId', async (req, res) => {
   const removeItemCartController = new RemoveItemCartController();
   await removeItemCartController.handle(req, res);
+});
+
+orderRoutes.post('/cart/add-item', async (req, res) => {
+  const addItemCartController = new AddItemCartController();
+  await addItemCartController.handle(req, res);
 });
 
 const quantityCartController = new QuantityCartController();
@@ -48,6 +55,13 @@ orderRoutes.get('/order', async (req, res) => {
 orderRoutes.get('/orders', async (req, res) => {
   const listOrdersController = new ListOrdersController();
   await listOrdersController.handle(req, res);
+});
+
+//aprovar pedido
+
+orderRoutes.patch('/order/approve/:orderId', async (req, res) => {
+  const approveOrderController = new ApproveOrderController();
+  await approveOrderController.handle(req, res);
 });
 
 export { orderRoutes };
