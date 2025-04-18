@@ -99,6 +99,7 @@ export function PaymentForm({ onClose }: IPaymentFormProps) {
             />
             <Input
               label="Data de validade"
+              type="date"
               placeholder="Digite a data de validade"
               {...register("dateExpired")}
               error={errors.dateExpired}

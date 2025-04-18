@@ -2,12 +2,12 @@ import {
   FacebookLogo,
   InstagramLogo,
   TwitterLogo,
-} from '@phosphor-icons/react/dist/ssr';
-import { GlobeIcon } from 'lucide-react';
+} from "@phosphor-icons/react/dist/ssr";
+import { GlobeIcon } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="bg-backround-light text-white py-8 px-12 border-t border-primary-dark">
+    <footer className="bg-backround-light text-white py-8 px-12 border-t border-primary-dark ">
       <div className="flex gap-12">
         <div className="w-96">
           <GlobeIcon size={32} color="#0d9488" />

@@ -34,8 +34,6 @@ interface IOrderRequest {
       image: string;
     };
   }[];
-
-  // payments: IOrderPayment[];
 }
 
 export function Orders() {
@@ -51,12 +49,15 @@ export function Orders() {
   );
 
   console.log("initial orders", orders);
-  console.log("user", user);
 
   const fetchOrders = async () => {
     setIsLoading(true);
     try {
-      const dataOrder = await listOrders(user.id);
+      const token = localStorage.getItem("@user:data");
+
+      const parsedToken = token && JSON.parse(token);
+
+      const dataOrder = await listOrders(parsedToken.id);
       setOrders(dataOrder || []);
     } catch (error) {
       console.error("Failed to fetch orders:", error);
@@ -92,7 +93,7 @@ export function Orders() {
     setIsOpenModalItemForExchange(true);
   };
 
-  const handleOpenDetails = (order: IOrderRequest) => {
+  const handleOpenDetails = (order: any) => {
     setSelectedOrder(order);
     setIsOpenDetails(true);
   };
@@ -106,7 +107,7 @@ export function Orders() {
   }
 
   return (
-    <section className="flex items-center flex-col gap-y-4 pt-4 mb-8 min-h-screen h-screen">
+    <section className="flex items-center flex-col gap-y-4 pt-4 mb-8 h-full relative">
       <h1 className="text-2xl font-semibold mb-4">Pedidos!</h1>
 
       {orders.length > 0 ? (
@@ -188,7 +189,7 @@ export function Orders() {
       {isOpenDetails && selectedOrder && (
         <ModalBackground>
           <ModalDetailsOrder
-            order={selectedOrder}
+            order={selectedOrder as any}
             onClose={() => setIsOpenDetails(false)}
           />
         </ModalBackground>

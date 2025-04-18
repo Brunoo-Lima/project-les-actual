@@ -25,6 +25,7 @@ import {
   increaseItem,
 } from "@/services/cart";
 import { FormatValue } from "@/utils/format-value";
+import { useRouter } from "next/navigation";
 
 interface ICheckoutContextProps {
   cart: ICart;
@@ -70,7 +71,7 @@ interface ICart {
 interface ICartItem {
   productId: string;
   quantity: number;
-  product?: IProduct;
+  product?: IProduct & { price: number };
 }
 
 interface IUser {
@@ -81,6 +82,7 @@ interface IUser {
 export const CheckoutContext = createContext({} as ICheckoutContextProps);
 
 export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
+  const router = useRouter();
   const [addresses, setAddresses] = useState<IAddress[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<IAddress | null>(null);
   const [cards, setCards] = useState<ICreditCard[]>([]);
@@ -100,7 +102,7 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
     total: 0,
     address: null,
     payment: [],
-    status: "EM PROCESSAMENTO",
+    status: "Pendente",
     freight: 20,
     coupon: null,
     discountValue: 0,
@@ -117,8 +119,11 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
         const savedCart = localStorage.getItem("cart");
         if (savedCart) {
           const parsedCart = JSON.parse(savedCart);
+          const updatedCart = { ...parsedCart, userId: userData.id };
 
-          setCart({ ...parsedCart, userId: userData.id });
+          setCart(updatedCart);
+
+          setOrder((prevOrder) => ({ ...prevOrder, items: updatedCart.items }));
         } else {
           setCart({ id: "", userId: userData.id, items: [] });
         }
@@ -134,6 +139,25 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
     }
   }, [cart, userToken]);
 
+  //calcular valor total do carrinho
+  useEffect(() => {
+    const calculateOrderTotal = () => {
+      const itemsTotal = order.items.reduce((sum, item) => {
+        return sum + (item.product?.price || 0) * item.quantity;
+      }, 0);
+
+      const discount = order.discountValue || 0;
+      const totalValue = itemsTotal + (order.freight || 0) - discount;
+
+      setOrder((prev) => ({
+        ...prev,
+        total: totalValue,
+      }));
+    };
+
+    calculateOrderTotal();
+  }, [order.items, order.freight, order.discountValue]);
+
   console.log("carttt", cart);
   console.log("order", order);
 
@@ -146,22 +170,6 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
     // await createCart(userToken.id);
 
     try {
-      const existingItemIndex = cart.items.findIndex(
-        (item) => item.productId === productId
-      );
-
-      let updatedItems: ICartItem[];
-
-      if (existingItemIndex >= 0) {
-        updatedItems = cart.items.map((item, index) =>
-          index === existingItemIndex
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
-        );
-      } else {
-        updatedItems = [...cart.items, { productId, quantity }];
-      }
-
       const response = await addItemToCart(userToken.id, productId, quantity);
 
       if (response) {
@@ -186,6 +194,9 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
 
         toast.success("Produto adicionado ao carrinho");
       }
+
+      console.log("response", response);
+      console.log("order", order);
 
       // Atualiza o estado local primeiro para uma resposta mais rápida
 
@@ -491,7 +502,7 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
   };
 
   const createNewOrder = async () => {
-    if (!userToken?.id || !selectedAddress || !selectedCreditCard) {
+    if (!userToken?.id || !selectedAddress) {
       toast.error("Dados incompletos para criar o pedido");
       return;
     }
@@ -518,12 +529,10 @@ export const CheckoutProvider = ({ children }: ICheckoutProvider) => {
         discountValue: order.discountValue,
       };
 
-      const createdOrder = await createOrder(orderData);
+      await createOrder(orderData);
 
-      // Limpa o carrinho após sucesso
+      router.push("/pedidos");
       clearCart();
-
-      return createdOrder;
     } catch (error) {
       console.error("Erro ao criar pedido:", error);
       toast.error("Erro ao finalizar pedido");

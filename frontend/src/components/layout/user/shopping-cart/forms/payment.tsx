@@ -1,5 +1,5 @@
-import { ModalBackground } from "@/components/modal/modal-background/modal-background";
 import { useEffect, useState } from "react";
+import { ModalBackground } from "@/components/modal/modal-background/modal-background";
 import { PaymentForm } from "./modal-forms/payment-form";
 import { Plus } from "@phosphor-icons/react";
 import { CreditCard } from "../ui/credit-card";
@@ -11,127 +11,144 @@ import { FormatValue } from "@/utils/format-value";
 import { ICreditCard } from "@/@types/ICreditCard";
 import { toast } from "sonner";
 import { detailClient } from "@/services/client";
+import { IPaymentMethodItem } from "@/@types/IOrder";
 
-//TODO: MELHORAR ISSO CONFORME A MUDANÇA NO USECHECKOUT E BACKEND
 export function Payment() {
-  const { order, cards, setCards, validatePayment, setOrder, cart } =
-    useCheckout();
-  const [selectedCards, setSelectedCards] = useState<{
-    card1: ICreditCard | null;
-    card2: ICreditCard | null;
-  }>({ card1: null, card2: null });
-  const [values, setValues] = useState<{ value1: number; value2: number }>({
-    value1: 0,
-    value2: 0,
-  });
-  const [parcelas, setParcelas] = useState<{
-    parcela1: number;
-    parcela2: number;
-  }>({ parcela1: 1, parcela2: 1 });
+  const {
+    order,
+    cards,
+    setCards,
+    validatePayment,
+    setOrder,
+    cart,
+    handleSelectCreditCard: contextSelectCreditCard,
+    handleRemoveCreditCardFromOrder,
+  } = useCheckout();
 
-  const [isOpenModalAddPayment, setIsOpenModalAddPayment] =
-    useState<boolean>(false);
+  const [selectedCards, setSelectedCards] = useState<ICreditCard[]>([]);
+  const [paymentValues, setPaymentValues] = useState<Record<string, number>>(
+    {}
+  );
+  const [installments, setInstallments] = useState<Record<string, number>>({});
+  const [isOpenModalAddPayment, setIsOpenModalAddPayment] = useState(false);
 
   useEffect(() => {
     const fetchCreditCards = async () => {
       const userData = localStorage.getItem("@user:data");
-      try {
-        const parsedUserData = JSON.parse(userData as string);
+      if (!userData) return;
 
+      try {
+        const parsedUserData = JSON.parse(userData);
         const creditCardsData = await detailClient(parsedUserData.id);
 
-        console.log("credit", creditCardsData);
-
-        if (creditCardsData) {
+        if (creditCardsData?.creditCards) {
           setCards(creditCardsData.creditCards);
         }
       } catch (error) {
         console.error("Erro ao obter cartões de crédito:", error);
+        toast.error("Erro ao carregar cartões de crédito");
       }
     };
 
     fetchCreditCards();
   }, []);
 
+  // Inicializa valores quando cartões são selecionados
   useEffect(() => {
-    // Se apenas um cartão estiver selecionado, atribua o valor total do pedido a ele
-    if (selectedCards.card1 && !selectedCards.card2) {
-      setValues({ value1: order.total, value2: 0 });
-    } else if (!selectedCards.card1 && selectedCards.card2) {
-      setValues({ value1: 0, value2: order.total });
+    if (selectedCards.length === 1 && !paymentValues[selectedCards[0].id]) {
+      setPaymentValues({
+        [selectedCards[0].id]: order.total,
+      });
+      setInstallments({
+        [selectedCards[0].id]: 1,
+      });
     }
   }, [selectedCards, order.total]);
 
   const handleSelectCreditCard = (card: ICreditCard) => {
-    if (!selectedCards.card1) {
-      setSelectedCards({ ...selectedCards, card1: card });
-    } else if (!selectedCards.card2 && selectedCards.card1.id !== card.id) {
-      setSelectedCards({ ...selectedCards, card2: card });
+    // Não permite selecionar mais de 2 cartões
+    if (selectedCards.length >= 2) {
+      toast.info("Máximo de 2 cartões permitidos");
+      return;
     }
-  };
 
-  const handleValueChange = (cardId: string, value: number) => {
-    if (selectedCards.card1?.id === cardId) {
-      setValues({ ...values, value1: value });
-    } else if (selectedCards.card2?.id === cardId) {
-      setValues({ ...values, value2: value });
+    // Verifica se o cartão já foi selecionado
+    if (!selectedCards.some((c) => c.id === card.id)) {
+      setSelectedCards([...selectedCards, card]);
     }
   };
 
   const handleRemoveCreditCard = (cardId: string) => {
-    if (selectedCards.card1?.id === cardId) {
-      setSelectedCards({ ...selectedCards, card1: null });
-    } else if (selectedCards.card2?.id === cardId) {
-      setSelectedCards({ ...selectedCards, card2: null });
-    }
+    setSelectedCards(selectedCards.filter((card) => card.id !== cardId));
+
+    // Remove os valores associados ao cartão
+    const newValues = { ...paymentValues };
+    delete newValues[cardId];
+    setPaymentValues(newValues);
+
+    const newInstallments = { ...installments };
+    delete newInstallments[cardId];
+    setInstallments(newInstallments);
+
+    // Remove do contexto também
+    handleRemoveCreditCardFromOrder(cardId);
+  };
+
+  const handleValueChange = (cardId: string, value: number) => {
+    setPaymentValues({
+      ...paymentValues,
+      [cardId]: value,
+    });
   };
 
   const handleParcelaChange = (cardId: string, parcela: number) => {
-    if (selectedCards.card1?.id === cardId) {
-      setParcelas({ ...parcelas, parcela1: parcela });
-    } else if (selectedCards.card2?.id === cardId) {
-      setParcelas({ ...parcelas, parcela2: parcela });
-    }
+    setInstallments({
+      ...installments,
+      [cardId]: parcela,
+    });
   };
 
-  const handleOpenModalPayment = () => {
-    setIsOpenModalAddPayment(true);
+  const calculateRemainingValue = () => {
+    const totalPaid = Object.values(paymentValues).reduce(
+      (sum, value) => sum + value,
+      0
+    );
+    return Math.max(0, order.total - totalPaid);
   };
-
-  const handleCloseModalPayment = () => {
-    setIsOpenModalAddPayment(false);
-  };
-
-  console.log("setOrder", order);
 
   const handleAddPayment = () => {
-    setOrder((prevOrder) => ({
-      ...prevOrder,
-      payment: [
-        ...(selectedCards.card1
-          ? [
-              {
-                methodId: "credit_card_1",
-                creditCardId: selectedCards.card1.id,
-                amount: selectedCards.card1.value,
-                installments: parcelas.parcela1,
-              },
-            ]
-          : []),
-        ...(selectedCards.card2
-          ? [
-              {
-                card: selectedCards.card2,
-                value: values.value2,
-                installments: parcelas.parcela2,
-              },
-            ]
-          : []),
-      ],
+    const paymentMethods: IPaymentMethodItem[] = selectedCards.map((card) => ({
+      methodId: "credit_card_1", // Ou obtenha do seu sistema de métodos
+      creditCardId: card.id,
+      amount: paymentValues[card.id] || 0,
+      installments: installments[card.id] || 1,
+    }));
+
+    // Verifica se a soma dos valores está correta
+    const totalPaid = paymentMethods.reduce(
+      (sum, pm) => sum + (pm.amount || 0),
+      0
+    );
+    if (Math.abs(totalPaid - order.total) > 0.01) {
+      toast.error(
+        `A soma dos valores (${FormatValue(
+          totalPaid
+        )}) não corresponde ao total do pedido (${FormatValue(order.total)})`
+      );
+      return;
+    }
+
+    // Atualiza o pedido no contexto
+    setOrder((prev) => ({
+      ...prev,
+      payment: paymentMethods,
     }));
 
     toast.success("Pagamento adicionado ao pedido!");
   };
+
+  const handleOpenModalPayment = () => setIsOpenModalAddPayment(true);
+  const handleCloseModalPayment = () => setIsOpenModalAddPayment(false);
 
   return (
     <div className="flex flex-col gap-y-4 w-[600px] min-h-[500px] h-max p-6 border border-gray-700 rounded-lg overflow-hidden">
@@ -145,10 +162,7 @@ export function Payment() {
               card={card}
               onSelectCreditCard={handleSelectCreditCard}
               onRemoveCreditCard={handleRemoveCreditCard}
-              isSelected={
-                selectedCards.card1?.id === card.id ||
-                selectedCards.card2?.id === card.id
-              }
+              isSelected={selectedCards.some((c) => c.id === card.id)}
             />
           ))
         ) : (
@@ -156,43 +170,38 @@ export function Payment() {
         )}
       </div>
 
-      {selectedCards.card1 && (
-        <div className="w-max flex items-end gap-4">
-          {selectedCards.card2 && (
+      {selectedCards.map((card, index) => (
+        <div key={card.id} className="w-full flex items-end gap-4">
+          {selectedCards.length > 1 && (
             <Input
-              label={`Valor cartão (${selectedCards.card1.flag})`}
-              value={values.value1.toString()}
-              onChange={(e) =>
-                handleValueChange(selectedCards!.card1!.id, +e.target.value)
-              }
+              label={`Valor cartão (${card.flag})`}
+              type="number"
+              min="0"
+              max={order.total}
+              value={paymentValues[card.id]?.toString() || ""}
+              onChange={(e) => handleValueChange(card.id, +e.target.value)}
             />
           )}
-          <SelectComponent
-            placeholder="1x"
-            onChange={(e) => handleParcelaChange(selectedCards!.card1!.id, +e)}
-            options={selectParcelas}
-          />
+          <div className="flex-1">
+            <SelectComponent
+              label="Parcelas"
+              placeholder="1x"
+              value={installments[card.id]?.toString() || "1"}
+              onChange={(value) => handleParcelaChange(card.id, +value)}
+              options={selectParcelas}
+            />
+          </div>
+        </div>
+      ))}
+
+      {selectedCards.length > 1 && (
+        <div className="text-sm text-gray-600">
+          Valor restante: {FormatValue(calculateRemainingValue())}
         </div>
       )}
 
-      {selectedCards.card2 && (
-        <div className="w-max flex items-end gap-4">
-          <Input
-            label={`Valor cartão (${selectedCards.card2.flag})`}
-            value={values.value2.toString()}
-            onChange={(e) =>
-              handleValueChange(selectedCards!.card2!.id, +e.target.value)
-            }
-          />
-          <SelectComponent
-            placeholder="1x"
-            onChange={(e) => handleParcelaChange(selectedCards!.card2!.id, +e)}
-            options={selectParcelas}
-          />
-        </div>
-      )}
+      <div className="font-semibold">Total: {FormatValue(order.total)}</div>
 
-      <div>Valor: {FormatValue(cat)}</div>
       <div className="flex items-center gap-4">
         <button
           type="button"
@@ -204,13 +213,15 @@ export function Payment() {
         </button>
 
         <button
-          className="bg-blue-600 text-white p-2 rounded-md"
+          className="bg-blue-600 text-white p-2 rounded-md disabled:opacity-50"
           type="button"
           onClick={handleAddPayment}
+          disabled={selectedCards.length === 0}
         >
           Adicionar pagamento
         </button>
       </div>
+
       {isOpenModalAddPayment && (
         <ModalBackground>
           <PaymentForm onClose={handleCloseModalPayment} />

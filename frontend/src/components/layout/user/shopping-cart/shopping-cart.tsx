@@ -24,12 +24,6 @@ export function ShoppingCart() {
 
   const [loading, setLoading] = useState(true);
 
-  const total =
-    cart.items.reduce(
-      (acc, item) => acc + item.quantity * item?.product!.price,
-      0
-    ) + order.freight;
-
   useEffect(() => {
     const loadCart = async () => {
       setLoading(true);
@@ -37,8 +31,7 @@ export function ShoppingCart() {
         const cartData = await listCart(user?.id);
         setCart(cartData);
 
-        console.log("cartData", cartData);
-        console.log("cart", cart);
+        console.log("cartshop", cart);
       } catch (error) {
         console.error("Erro ao carregar carrinho:", error);
       } finally {
@@ -124,7 +117,7 @@ export function ShoppingCart() {
 
         <div className="flex justify-between *:text-lg *:font-semibold">
           <p>Total</p>
-          <p>{FormatValue(total)}</p>
+          <p>{FormatValue(order.total)}</p>
         </div>
       </div>
     </div>

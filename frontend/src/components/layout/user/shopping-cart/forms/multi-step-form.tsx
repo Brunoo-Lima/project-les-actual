@@ -5,16 +5,11 @@ import { ShoppingCart } from "../shopping-cart";
 import { Addresses } from "./addresses";
 
 import { Payment } from "./payment";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useCheckout } from "@/hooks/useCheckout";
-import { IOrder } from "@/@types/IOrder";
-import { createOrder } from "@/services/order";
 
 export function MultiStepForm() {
-  const { cart, order, validatePayment, setCart, clearCart, createNewOrder } =
-    useCheckout();
-  const router = useRouter();
+  const { cart, createNewOrder } = useCheckout();
   const { isFirstStep, currentStep, isLastStep, next, previous } =
     useMultiStepForm({
       steps: [
@@ -25,60 +20,11 @@ export function MultiStepForm() {
     });
 
   const handleOrderFinished = async () => {
-    // if (!validatePayment()) {
-    //   toast.error("Erro no pagamento. Verifique os valores dos cartões.");
-    //   return;
-    // }
-
-    // // Valida se um endereço foi selecionado
-    // if (!order.address) {
-    //   toast.error("Selecione um endereço de entrega.");
-    //   return;
-    // }
-
-    // // Valida se há itens no carrinho
-    // if (cart.items.length === 0) {
-    //   toast.error("O carrinho está vazio.");
-    //   return;
-    // }
-
-    //Logica para enviar para o backend
-
-    // const newOrder: IOrder = {
-    //   items: cart,
-    //   total: order.total,
-    //   address: order.address,
-    //   payment: order.payment || [],
-    //   status: "Pendente",
-    //   freight: order.freight,
-    //   discountValue: order.discountValue,
-    //   coupon: order.coupon,
-    // };
-
-    const newOrder = {
-      ...order,
-    };
-
     try {
       await createNewOrder();
-
-      // toast.success("Pedido realizado com sucesso!");
-      // router.push("/pedidos");
-
-      // clearCart();
     } catch (error) {
       toast.error("Erro ao realizar pedido.");
     }
-
-    // const existingOrders = JSON.parse(
-    //   localStorage.getItem("tempOrders") || "[]"
-    // ) as IOrder[];
-
-    // existingOrders.push(newOrder);
-
-    // localStorage.setItem("tempOrders", JSON.stringify(existingOrders));
-
-    // setCart([]);
   };
 
   return (

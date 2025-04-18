@@ -13,7 +13,7 @@ export function LayoutUser({ children }: { children: React.ReactNode }) {
   return (
     <>
       <HeaderUser />
-      <main className="container mx-auto py-8 px-12 relative">
+      <main className="container mx-auto py-8 px-12 relative min-h-screen">
         {children}
 
         <ButtonRedirectLogin />

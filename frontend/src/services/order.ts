@@ -118,7 +118,7 @@ export const createOrder = async (order: ICreateOrder) => {
 
     return data;
   } catch (error) {
-    toast.error("Algo deu errado na requisição");
+    toast.error("Não foi possível criar o pedido");
   }
 };
 
@@ -134,6 +134,48 @@ export const listOrders = async (user_id: string) => {
 
     return data;
   } catch (error) {
-    toast.error("Algo deu errado na requisição");
+    toast.error("Não foi possível listar os pedidos");
+  }
+};
+
+export const listOrdersWithoutUserId = async (statusOrder?: string) => {
+  try {
+    const { data, status } = await api.get(
+      `${baseURL}order-list?status=${statusOrder}`
+    );
+
+    if (!data || status !== 200) {
+      toast.error("Algo deu errado na requisição");
+    }
+
+    return data;
+  } catch (error) {
+    toast.error("Não foi possível listar os pedidos");
+  }
+};
+
+export type StatusOrder = "Pendente" | "Aprovado" | "Transito" | "Entregue";
+
+export const updateStatusOrder = async (
+  orderId: string,
+  statusOrder: StatusOrder
+) => {
+  try {
+    const { data, status } = await api.patch(
+      `${baseURL}order/status/${orderId}`,
+      {
+        status: statusOrder,
+      }
+    );
+
+    console.log("a status", data);
+
+    if (!data || status !== 200) {
+      toast.error("Algo deu errado na requisição");
+    }
+
+    return data;
+  } catch (error) {
+    toast.error("Não foi possível aprovar o pedido");
   }
 };
