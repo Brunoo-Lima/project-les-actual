@@ -1,28 +1,30 @@
 "use client";
 
 import { ModalBackground } from "@/components/modal/modal-background/modal-background";
-import { useCheckout } from "@/hooks/useCheckout";
 import { FormatValue } from "@/utils/format-value";
 import { useEffect, useState } from "react";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
-import { redirect } from "next/navigation";
 import ModalDetailsOrder from "./modal/modal-details-order";
 import { CardOrder } from "./card-order";
-import { ordersFinishedList } from "./../../../../mocks/orders-finished-list";
 import { ButtonsActions } from "./buttons-actions";
 import { ModalExchange } from "./modal/modal-exchange";
 import { listOrders } from "@/services/order";
 import { useUseAuth } from "@/hooks/useAuth";
 import { IAddress } from "@/@types/IAddress";
 import { toast } from "sonner";
+import { IPaymentMethodItem } from "@/@types/IOrder";
 
-interface IOrderRequest {
+export interface IOrderRequest {
   id: string;
   total: number;
   status: string;
   freight: number;
   discountValue?: number;
   address?: IAddress;
+  userId: string;
+  addressId: string;
+  paymentMethods: IPaymentMethodItem[];
+  cartId: string;
   items: {
     id: string;
     quantity: number;
@@ -48,7 +50,7 @@ export function Orders() {
     null
   );
 
-  console.log("initial orders", orders);
+  console.log("ordersss", orders);
 
   const fetchOrders = async () => {
     setIsLoading(true);
@@ -71,16 +73,6 @@ export function Orders() {
   useEffect(() => {
     fetchOrders();
   }, [user.id, isAuthenticated]);
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     if (isAuthenticated && user.id) {
-  //       fetchOrders();
-  //     }
-  //   }, 1800000);
-
-  //   return () => clearInterval(interval);
-  // }, [isAuthenticated, user.id]);
 
   console.log("orders", orders);
 
@@ -151,7 +143,7 @@ export function Orders() {
                   Status:{" "}
                   <span
                     className={`${
-                      item.status === "Finalizado"
+                      item.status === "Entregue"
                         ? "text-success"
                         : "text-yellow-400"
                     }`}
@@ -162,15 +154,23 @@ export function Orders() {
 
                 <p className="text-base font-semibold mt-1">
                   Pedido:{" "}
-                  {item.status === "Finalizado" ? "Entregue" : "Pendente"}
+                  <span
+                    className={`${
+                      item.status === "Entregue"
+                        ? "text-success"
+                        : "text-yellow-400"
+                    }`}
+                  >
+                    {item.status}
+                  </span>
                 </p>
 
-                {/* <ButtonsActions
-                item={item as any}
-                coupon={item.}
-                status={item.status}
-                onOpenModalForExchange={handleOpenModalItemForExchange}
-              /> */}
+                <ButtonsActions
+                  item={item}
+                  // coupon={item}
+                  status={item.status}
+                  // onOpenModalForExchange={handleOpenModalItemForExchange}
+                />
 
                 <div className="absolute bottom-4 w-full flex gap-2 items-center">
                   <p>Total do pedido:</p>

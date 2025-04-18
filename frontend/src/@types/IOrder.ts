@@ -34,6 +34,7 @@ export interface IPaymentMethodItem {
   creditCardId?: string;
   couponCode?: string;
   installments?: number;
+  status?: string;
 }
 
 export interface IOrderRequest {

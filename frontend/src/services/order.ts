@@ -168,8 +168,6 @@ export const updateStatusOrder = async (
       }
     );
 
-    console.log("a status", data);
-
     if (!data || status !== 200) {
       toast.error("Algo deu errado na requisição");
     }

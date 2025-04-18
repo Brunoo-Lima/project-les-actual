@@ -1,5 +1,5 @@
 import { IAddress } from "@/@types/IAddress";
-import { IOrder, IPaymentMethodItem } from "@/@types/IOrder";
+import { IPaymentMethodItem } from "@/@types/IOrder";
 import { Modal } from "@/components/modal";
 
 interface IOrderRequest {
@@ -21,7 +21,7 @@ interface IOrderRequest {
     };
   }[];
 
-  paymentMethods: IPaymentMethodItem[];
+  payments: IPaymentMethodItem[];
 }
 
 interface IModalDetailsOrderProps {
@@ -65,16 +65,24 @@ export default function ModalDetailsOrder({
           <div className="flex flex-col gap-4 bg-zinc-800 rounded-md p-4">
             <h2 className="text-xl font-semibold">Pagamento</h2>
 
-            {order.paymentMethods.map((payment) => (
-              <div key={payment.methodId} className="flex flex-col gap-2">
-                <p>Nome: {payment.creditCardId}</p>
-                <p>Valor: {payment.amount}</p>
-                {payment.installments && (
-                  <p>Parcelas: {payment.installments}</p>
-                )}
-                {payment.couponCode && <p>Desconto: {payment.couponCode}</p>}
-              </div>
-            ))}
+            {order.payments &&
+              order.payments.map((payment, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col gap-2 border-b border-b-gray-400 pb-2"
+                >
+                  <p>Nome: {payment.creditCardId ? "Cartão" : "Cupom"}</p>
+                  <p>Valor: {payment.amount}</p>
+                  <p>
+                    Status:{" "}
+                    {payment.status === "completed" ? "Aprovado" : "Pendente"}
+                  </p>
+                  {payment.installments && (
+                    <p>Parcelas: {payment.installments}</p>
+                  )}
+                  {payment.couponCode && <p>Desconto: {payment.couponCode}</p>}
+                </div>
+              ))}
           </div>
         </div>
       </Modal.Content>

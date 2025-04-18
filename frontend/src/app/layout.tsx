@@ -1,6 +1,5 @@
-import type { Metadata } from "next";
-import { Roboto } from "next/font/google";
 import "./globals.css";
+import { Roboto } from "next/font/google";
 import Providers from "@/components/providers/providers";
 
 const roboto = Roboto({
@@ -8,11 +7,6 @@ const roboto = Roboto({
   variable: "--font-roboto",
   subsets: ["latin"],
 });
-
-export const metadata: Metadata = {
-  title: "Login",
-  description: "Página de login",
-};
 
 export default function RootLayout({
   children,
