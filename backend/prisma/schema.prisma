@@ -34,6 +34,7 @@ model User {
 
   order          Order[]
   exchangeCoupon ExchangeCoupon[]
+  exchangeRequests ExchangeRequest[]
 
   cart Cart?
 
@@ -234,6 +235,7 @@ model Order {
   address   Address?       @relation(fields: [addressId], references: [id], onDelete: SetNull)
   
   payments  OrderPayment[]
+  exchangeRequests ExchangeRequest[]
 
   @@map("orders")
 }
@@ -299,9 +301,36 @@ model ExchangeCoupon {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   payments OrderPayment[]
+  exchangeRequest ExchangeRequest?
 
   @@index([code, status]) 
   @@map("exchange_coupons")
+}
+
+model ExchangeRequest {
+  id          String     @id @default(uuid())
+  orderId     String
+  order       Order      @relation(fields: [orderId], references: [id])
+  userId      String
+  user        User       @relation(fields: [userId], references: [id])
+  items       Json       // Array de itens para troca
+  reason      String
+  status      ExchangeStatus
+
+  couponId    String? @unique
+  coupon      ExchangeCoupon? @relation(fields: [couponId], references: [id])
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@map("exchange_requests")
+}
+
+enum ExchangeStatus {
+  AGUARDANDO_APROVACAO
+  TROCA_AUTORIZADA
+  DEVOLUCAO_EM_ANDAMENTO
+  PEDIDO_DEVOLVIDO
 }
 
 model Log {

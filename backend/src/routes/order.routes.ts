@@ -57,8 +57,7 @@ orderRoutes.get('/orders', async (req, res) => {
   await listOrdersController.handle(req, res);
 });
 
-//aprovar pedido
-
+//status do pedido
 orderRoutes.patch('/order/status/:orderId', async (req, res) => {
   const updateOrderStatusController = new UpdateOrderStatusController();
   await updateOrderStatusController.handle(req, res);
