@@ -1,20 +1,18 @@
-import { IProduct } from "@/@types/IProduct";
 import { updateStatusOrder } from "@/services/order";
 import { toast } from "sonner";
 import { IOrderRequest } from "../orders";
 
 interface IButtonsActionsProps {
   item: IOrderRequest;
-  // coupon: string | null;
   status: string;
-  // onOpenModalForExchange: (item: string, order: IOrderRequest) => void;
+  onOpenModalForExchange: (item: string, order: IOrderRequest) => void;
 }
 
 export function ButtonsActions({
   item,
   // coupon,
-  // onOpenModalForExchange,
   status,
+  onOpenModalForExchange,
 }: IButtonsActionsProps) {
   const handleChangeStatusOrder = async () => {
     try {
@@ -27,6 +25,8 @@ export function ButtonsActions({
       toast.error("Erro ao tentar confirmar entrega do pedido");
     }
   };
+
+  const hasExchange = status === "AGUARDANDO_APROVACAO";
 
   return (
     <div className="flex flex-col gap-2 z-2 mt-1">
@@ -50,15 +50,28 @@ export function ButtonsActions({
         <p>Cupom Disponível: {coupon}</p>
       ) : status === "TROCA SOLICITADA" ? (
         <p>TROCA SOLICITADA</p>
-      ) : (
+      ) : ( */}
+
+      {status === "Entregue" && (
         <button
           type="button"
-          // onClick={() => onOpenModalForExchange(item)}
-          className="underline text-orange-400"
+          className="bg-orange-500 p-1 rounded-md hover:bg-orange-600 transition"
+          onClick={() => onOpenModalForExchange("all", item)}
         >
+          {/* {status ? "AGUARDANDO APROVACAO" : "Solicitar troca"} */}
           Solicitar troca
         </button>
-      )} */}
+      )}
+
+      {/* <button
+        type="button"
+        onClick={() => onOpenModalForExchange(item.id, item)}
+        className="underline text-orange-400"
+      >
+        Solicitar troca
+      </button> */}
+
+      {/* )} */}
     </div>
   );
 }

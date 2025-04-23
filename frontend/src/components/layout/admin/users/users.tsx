@@ -11,7 +11,7 @@ import { useFilter } from "@/hooks/useFilter";
 import { toast } from "sonner";
 import dayjs from "dayjs";
 import { getListClient } from "@/services/list-client";
-import { deleteClient } from "@/services/client";
+import { deleteClient, useFilterClient } from "@/services/client";
 
 export function Users() {
   const {
@@ -25,6 +25,8 @@ export function Users() {
   const [users, setUsers] = useState<IUser[]>([]);
   const [loading, setLoading] = useState(false);
   const [isOpenModalFilter, setIsOpenModalFilter] = useState<boolean>(false);
+
+  // const { mutate, data, isError, error } = useFilterClient();
 
   useEffect(() => {
     const fetchClients = async () => {
@@ -44,36 +46,25 @@ export function Users() {
     fetchClients();
   }, []);
 
-  const applyFilters = async () => {
-    try {
-      const filtered = users.filter((user) => {
-        const matchesName = user.name
-          .toLowerCase()
-          .includes(searchName.toLowerCase());
+  // console.log("clientData", data);
 
-        const matchesStatus =
-          !selectedStatus || user.status
-            ? "Ativo"
-            : "Inativo" === selectedStatus.value;
+  // useEffect(() => {
+  //   if (data) {
+  //     setUsers(data);
+  //   }
+  // }, [data]);
 
-        const matchesDate =
-          !selectedDateRegister ||
-          dayjs(user.created_at, "DD/MM/YYYY").isBefore(
-            dayjs(selectedDateRegister, "DD/MM/YYYY"),
-            "day"
-          ) ||
-          dayjs(user.created_at, "DD/MM/YYYY").isSame(
-            dayjs(selectedDateRegister, "DD/MM/YYYY"),
-            "day"
-          );
-
-        return matchesName && matchesDate && matchesStatus;
-      });
-
-      setUsers(filtered);
-    } catch (error) {
-      toast.error("Erro ao buscar usuários");
-    }
+  const applyFilter = () => {
+    // const filters: Partial<IUser> = {
+    //   name: searchName || undefined,
+    //   status:
+    //     selectedStatus?.value === "ativo"
+    //       ? true
+    //       : selectedStatus?.value === "inativo"
+    //       ? false
+    //       : undefined,
+    // };
+    // mutate(filters as any);
   };
 
   const clearFields = () => {
@@ -117,7 +108,7 @@ export function Users() {
       {isOpenModalFilter && (
         <ModalBackground>
           <ModalFilterUser
-            onApplyFilters={applyFilters}
+            onApplyFilters={applyFilter}
             onClearFields={clearFields}
             onClose={() => setIsOpenModalFilter(false)}
           />

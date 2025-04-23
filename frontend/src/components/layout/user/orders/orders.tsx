@@ -167,9 +167,8 @@ export function Orders() {
 
                 <ButtonsActions
                   item={item}
-                  // coupon={item}
                   status={item.status}
-                  // onOpenModalForExchange={handleOpenModalItemForExchange}
+                  onOpenModalForExchange={handleOpenModalItemForExchange}
                 />
 
                 <div className="absolute bottom-4 w-full flex gap-2 items-center">

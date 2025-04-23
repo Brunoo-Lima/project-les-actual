@@ -1,5 +1,8 @@
 import { IUser } from "@/@types/IUser";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { revalidatePath } from "next/cache";
+import api from "./api";
+import { toast } from "sonner";
 
 export const createClient = async (user: IUser) => {
   try {
@@ -123,4 +126,40 @@ export const updateStatusClient = async (
     console.error("Erro ao atualizar status do cliente!", error);
     throw new Error("Erro ao atualizar status do cliente");
   }
+};
+
+// export const filterClient = async (client: IUser) => {
+//   try {
+//     const data = await fetch("http://localhost:3333/client/filter", {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify(client || {}),
+//     });
+
+//     if (!data.ok) {
+//       throw new Error(`Algo deu errado na requisição: ${data.statusText}`);
+//     }
+
+//     return data;
+//   } catch (error) {}
+// };
+
+export const filterClient = async (client: IUser) => {
+  const { data, status } = await api.post("client/filter", {
+    client,
+  });
+
+  if (status !== 200 && status !== 201) {
+    toast.error("Algo deu errado na requisição");
+  }
+
+  return data;
+};
+
+export const useFilterClient = () => {
+  return useMutation({
+    mutationFn: filterClient,
+  });
 };
