@@ -30,7 +30,7 @@ class CreateReplacementService {
 
     if (!order) throw new Error('Pedido não encontrado');
 
-    if (order.status !== 'ENTREGUE')
+    if (order.status !== 'Entregue')
       throw new Error('Só é possível trocar pedidos entregues');
 
     this.validationReplacement.validateExchangeItems(order.items, items);

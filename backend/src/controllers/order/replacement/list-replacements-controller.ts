@@ -2,13 +2,10 @@ import { Request, Response } from 'express';
 
 import { prismaClient } from '../../../config/prisma-client/prisma-client';
 
-class ListReplacementController {
+class ListReplacementsController {
   async handle(req: Request, res: Response) {
     try {
-      const { exchangeId } = req.params;
-
-      const exchange = await prismaClient.exchangeRequest.findUnique({
-        where: { id: exchangeId },
+      const exchange = await prismaClient.exchangeRequest.findMany({
         include: {
           order: true,
           coupon: true,
@@ -22,4 +19,4 @@ class ListReplacementController {
   }
 }
 
-export { ListReplacementController };
+export { ListReplacementsController };
