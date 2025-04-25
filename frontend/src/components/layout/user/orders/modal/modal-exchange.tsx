@@ -134,7 +134,7 @@ export function ModalExchange({
 
           <Button
             className="bg-blue-500 hover:bg-blue-600 cursor-pointer text-white"
-            text={isSubmitting ? "Enviando..." : "Confirmar Troca"}
+            text={isSubmitting ? "Enviando..." : "Solicitar Troca"}
             onClick={handleSubmit}
             disabled={
               isSubmitting || !reason.trim() || selectedItems.length === 0

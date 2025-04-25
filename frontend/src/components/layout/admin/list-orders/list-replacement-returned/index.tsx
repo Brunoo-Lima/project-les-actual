@@ -1,49 +1,24 @@
 "use client";
 
 import { IReplacement } from "@/@types/IReplacement";
-import { getListReplacements, updateReplacement } from "@/services/replacement";
+import { getListReplacementsStatus } from "@/services/replacement";
 import { FormatValue } from "@/utils/format-value";
-import { CheckIcon, XIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 
-export function ListReplacement() {
+//TODO: Nao ta gerando o cupom ainda
+export function ListReplacementReturned() {
   const [replacements, setReplacements] = useState<IReplacement[]>([]);
 
   useEffect(() => {
     const fetchOrdersReplacement = async () => {
-      const ordersReplacement = await getListReplacements();
+      const ordersReplacement = await getListReplacementsStatus(
+        "PEDIDO_DEVOLVIDO"
+      );
       setReplacements(ordersReplacement);
     };
 
     fetchOrdersReplacement();
   }, []);
-
-  const handleAcceptOrderExchange = async (id: string) => {
-    if (!id) {
-      toast.error("ID inválido para a troca");
-      return;
-    }
-
-    try {
-      await updateReplacement(id, "TROCA_AUTORIZADA");
-
-      toast.success("Pedido de troca aprovado!");
-    } catch (error) {
-      console.error("Erro detalhado:", error);
-
-      toast.error("Erro ao aprovar pedido de troca");
-    }
-  };
-
-  const handleRefusedOrderExchange = async (id: string) => {
-    try {
-      await updateReplacement(id, "TROCA_RECUSADA");
-      toast.success("Pedido de troca recusado!");
-    } catch (error) {
-      toast.error("Erro ao reprovar pedido de troca");
-    }
-  };
 
   return (
     <div>
@@ -54,7 +29,7 @@ export function ListReplacement() {
             <th className="w-1/5">Data do pedido</th>
             <th className="w-1/5">Valor do pedido</th>
             <th className="w-1/5">Quantidade de itens</th>
-            <th className="w-1/12 pl-4">Ações</th>
+            <th className="w-1/12 pl-4">Status do pedido</th>
           </tr>
         </thead>
 
@@ -79,21 +54,9 @@ export function ListReplacement() {
                 <td>{FormatValue(totalOrder)}</td>
                 <td>{totalQuantity}</td>
                 <td className="flex gap-2 ml-2 items-center">
-                  <button
-                    type="button"
-                    onClick={() => handleAcceptOrderExchange(replacement.id)}
-                    className="size-7 rounded-full bg-green-500 p-1 flex items-center justify-center"
-                  >
-                    <CheckIcon size={16} color="#ffffff" />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => handleRefusedOrderExchange(replacement.id)}
-                    className="size-7 rounded-full bg-error p-1 flex items-center justify-center"
-                  >
-                    <XIcon size={16} color="#ffffff" />
-                  </button>
+                  {replacement.status === "PEDIDO_DEVOLVIDO" && (
+                    <p>Produto Devolvido</p>
+                  )}
                 </td>
               </tr>
             );

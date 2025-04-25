@@ -1,30 +1,27 @@
 import { IUser } from "@/@types/IUser";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { revalidatePath } from "next/cache";
 import api from "./api";
 import { toast } from "sonner";
+import axios from "axios";
 
 export const createClient = async (user: IUser) => {
   try {
-    const response = await fetch("http://localhost:3333/client", {
-      method: "POST",
+    const response = await api.post("client", user, {
       headers: {
         "Content-Type": "application/json",
       },
-
-      body: JSON.stringify(user),
     });
 
-    if (!response.ok) {
-      throw new Error(`Algo deu errado na requisição: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-
-    return data;
+    return response.data;
   } catch (error) {
     console.error("Erro ao criar cliente!");
-    throw new Error("Erro ao criar cliente");
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        `Erro ao criar cliente: ${error.response?.statusText || error.message}`
+      );
+    } else {
+      throw new Error("Erro ao criar cliente");
+    }
   }
 };
 

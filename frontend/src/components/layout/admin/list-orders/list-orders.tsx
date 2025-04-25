@@ -7,8 +7,16 @@ import { ListProgress } from "./list-progress";
 import { ListComplete } from "./list-complete";
 import { ListReplacement } from "./list-replacement";
 import { ListWaitingApproval } from "./list-waiting-approval";
+import { ListReplacementRequest } from "./list-replacement-request";
+import { ListReplacementReturned } from "./list-replacement-returned";
 
-type Tab = "COMPLETE" | "PROGRESS" | "REPLACEMENT" | "WAITING_APPROVAL";
+type Tab =
+  | "COMPLETE"
+  | "PROGRESS"
+  | "REPLACEMENT"
+  | "WAITING_APPROVAL"
+  | "REPLACEMENT_PROGRESS"
+  | "REPLACEMENT_RETURNED";
 
 export function ListOrders() {
   const [option, setOption] = useState<Tab>("WAITING_APPROVAL");
@@ -42,6 +50,18 @@ export function ListOrders() {
           active={option === "REPLACEMENT"}
           onClick={() => handleChangeOption("REPLACEMENT")}
         />
+
+        <TabActions
+          textButton="Trocas em andamento"
+          active={option === "REPLACEMENT_PROGRESS"}
+          onClick={() => handleChangeOption("REPLACEMENT_PROGRESS")}
+        />
+
+        <TabActions
+          textButton="Trocas devolvidas"
+          active={option === "REPLACEMENT_RETURNED"}
+          onClick={() => handleChangeOption("REPLACEMENT_RETURNED")}
+        />
       </div>
 
       {option === "WAITING_APPROVAL" && <ListWaitingApproval />}
@@ -51,6 +71,10 @@ export function ListOrders() {
       {option === "COMPLETE" && <ListComplete />}
 
       {option === "REPLACEMENT" && <ListReplacement />}
+
+      {option === "REPLACEMENT_PROGRESS" && <ListReplacementRequest />}
+
+      {option === "REPLACEMENT_RETURNED" && <ListReplacementReturned />}
     </section>
   );
 }

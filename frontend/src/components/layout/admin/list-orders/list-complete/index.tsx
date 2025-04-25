@@ -60,7 +60,7 @@ export function ListComplete() {
                 </td>
 
                 <td className="flex items-center gap-2">
-                  <p>{order.status}</p>
+                  <p>{order.status || "Devolvido"}</p>
                 </td>
               </tr>
             );
