@@ -4,12 +4,11 @@ import { UpdateReplacementService } from '../../../services/order/replacement/up
 class UpdateReplacementController {
   async handle(req: Request, res: Response) {
     try {
-      const { exchangeId } = req.params;
-      const { status } = req.body;
+      const { status, id } = req.body;
 
       const updateReplacementService = new UpdateReplacementService();
 
-      const result = await updateReplacementService.execute(exchangeId, status);
+      const result = await updateReplacementService.execute(id, status);
 
       res.status(200).json(result);
     } catch (error: any) {

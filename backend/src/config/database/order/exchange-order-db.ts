@@ -5,7 +5,8 @@ export type ExchangeStatus =
   | 'AGUARDANDO_APROVACAO'
   | 'TROCA_AUTORIZADA'
   | 'DEVOLUCAO_EM_ANDAMENTO'
-  | 'PEDIDO_DEVOLVIDO';
+  | 'PEDIDO_DEVOLVIDO'
+  | 'TROCA_RECUSADA';
 
 class ExchangeOrderDb {
   async findOrderWithItems(orderId: string, userId: string) {
@@ -39,9 +40,9 @@ class ExchangeOrderDb {
     });
   }
 
-  async updateExchangeStatus(exchangeId: string, status: ExchangeStatus) {
+  async updateExchangeStatus(id: string, status: ExchangeStatus) {
     return await prismaClient.exchangeRequest.update({
-      where: { id: exchangeId },
+      where: { id },
       data: { status },
     });
   }

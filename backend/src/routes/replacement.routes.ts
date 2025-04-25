@@ -3,6 +3,7 @@ import { CreateReplacementController } from '../controllers/order/replacement/cr
 import { UpdateReplacementController } from '../controllers/order/replacement/update-replacement-controller';
 import { ListDetailReplacementController } from '../controllers/order/replacement/list-detail-replacement-controller';
 import { ListReplacementsController } from '../controllers/order/replacement/list-replacements-controller';
+import { ListReplacementStatusController } from '../controllers/order/replacement/list-replacement-status-controller';
 
 const replacementRoutes = Router();
 
@@ -11,7 +12,7 @@ replacementRoutes.post('/replacement/:userId', async (req, res) => {
   await createReplacementController.handle(req, res);
 });
 
-replacementRoutes.patch('/replacement/:id/status', async (req, res) => {
+replacementRoutes.patch('/replacement/status', async (req, res) => {
   const updateReplacementController = new UpdateReplacementController();
   await updateReplacementController.handle(req, res);
 });
@@ -24,6 +25,11 @@ replacementRoutes.get('/replacement/:id', async (req, res) => {
 replacementRoutes.get('/replacements', async (req, res) => {
   const listReplacementsController = new ListReplacementsController();
   await listReplacementsController.handle(req, res);
+});
+
+replacementRoutes.get('/replacements/status', async (req, res) => {
+  const listReplacementStatusController = new ListReplacementStatusController();
+  await listReplacementStatusController.handle(req, res);
 });
 
 export { replacementRoutes };

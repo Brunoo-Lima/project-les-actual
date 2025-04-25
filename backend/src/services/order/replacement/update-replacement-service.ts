@@ -14,16 +14,30 @@ class UpdateReplacementService {
     this.validationReplacement = new ReplacementValidation();
   }
 
-  async execute(exchangeId: string, newStatus: ExchangeStatus) {
-    const exchange = await this.exchangeOrderDb.findExchangeRequest(exchangeId);
+  async execute(id: string, status: ExchangeStatus) {
+    const exchange = await this.exchangeOrderDb.findExchangeRequest(id);
     if (!exchange) throw new Error('Solicitação de troca não encontrada');
 
+    if (status === 'TROCA_AUTORIZADA') {
+      // Primeiro atualiza para TROCA_AUTORIZADA
+      await this.exchangeOrderDb.updateExchangeStatus(id, 'TROCA_AUTORIZADA');
+
+      // Depois automaticamente muda para DEVOLUCAO_EM_ANDAMENTO
+      const updatedExchange = await this.exchangeOrderDb.updateExchangeStatus(
+        id,
+        'DEVOLUCAO_EM_ANDAMENTO'
+      );
+
+      return updatedExchange;
+    }
+
+    // Para outros status (incluindo PEDIDO_DEVOLVIDO)
     const updatedExchange = await this.exchangeOrderDb.updateExchangeStatus(
-      exchangeId,
-      newStatus
+      id,
+      status
     );
 
-    if (newStatus === 'PEDIDO_DEVOLVIDO' && !exchange.couponId) {
+    if (status === 'PEDIDO_DEVOLVIDO' && !exchange.couponId) {
       const items = exchange.items as unknown as ExchangeItem[];
       const couponValue = this.validationReplacement.calculateTotalValue(items);
       const couponCode = this.validationReplacement.generateCouponCode();
@@ -35,7 +49,7 @@ class UpdateReplacementService {
         exchange.userId
       );
 
-      await this.exchangeOrderDb.linkCouponToExchange(exchangeId, coupon.id);
+      await this.exchangeOrderDb.linkCouponToExchange(id, coupon.id);
     }
     return updatedExchange;
   }

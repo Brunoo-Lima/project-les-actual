@@ -6,6 +6,7 @@ class ListReplacementsController {
   async handle(req: Request, res: Response) {
     try {
       const exchange = await prismaClient.exchangeRequest.findMany({
+        where: { status: 'AGUARDANDO_APROVACAO' },
         include: {
           order: true,
           coupon: true,

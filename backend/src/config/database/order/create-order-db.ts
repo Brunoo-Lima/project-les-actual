@@ -20,9 +20,6 @@ class CreateOrderDb {
     discountValue?: number | Decimal
   ) {
     return await prismaClient.$transaction(async (prisma) => {
-      console.log('Procurando carrinho:', { cartId, userId });
-      console.log('Buscando carrinho com ID:', cartId);
-
       const cart = await prisma.cart.findUnique({
         where: {
           id: cartId,
@@ -35,7 +32,6 @@ class CreateOrderDb {
           },
         },
       });
-      console.log('Carrinho encontrado:', cart);
 
       if (!cart) throw new Error('Carrinho não encontrado');
       if (cart.userId !== userId)
