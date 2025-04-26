@@ -10,6 +10,25 @@ export type IPaymentMethodItem = {
   installments?: number;
 };
 
+export type StatusOrder =
+  | 'AGUARDANDO_APROVACAO'
+  | 'REPROVADO'
+  | 'APROVADO'
+  | 'EM_PROCESSAMENTO'
+  | 'TROCA_SOLICITADA'
+  | 'TROCA_ACEITA'
+  | 'TROCA_CONCLUIDA'
+  | 'TROCA_RECUSADA'
+  | 'DEVOLUCAO_EM_ANDAMENTO'
+  | 'DEVOLUCAO_SOLICITADA'
+  | 'DEVOLUCAO_RECUSADA'
+  | 'DEVOLUCAO_CONCLUIDA'
+  | 'DEVOLUCAO_ACEITA'
+  | 'PEDIDO_DEVOLVIDO'
+  | 'CANCELADO'
+  | 'EM_TRANSPORTE'
+  | 'ENTREGUE';
+
 class CreateOrderDb {
   async createOrder(
     userId: string,
@@ -117,7 +136,7 @@ class CreateOrderDb {
         data: {
           userId,
           total: new Decimal(totalValue),
-          status: 'Pendente',
+          status: 'AGUARDANDO_APROVACAO',
           freight: new Decimal(Number(freight)),
           discountValue: discountValue ? new Decimal(discount) : null,
           addressId,

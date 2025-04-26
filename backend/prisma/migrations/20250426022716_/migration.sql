@@ -8,7 +8,7 @@ CREATE TYPE "PaymentStatus" AS ENUM ('pending', 'completed', 'failed', 'refunded
 CREATE TYPE "PaymentType" AS ENUM ('credit_card', 'coupon', 'pix', 'boleto');
 
 -- CreateEnum
-CREATE TYPE "ExchangeStatus" AS ENUM ('AGUARDANDO_APROVACAO', 'TROCA_AUTORIZADA', 'TROCA_RECUSADA', 'DEVOLUCAO_EM_ANDAMENTO', 'PEDIDO_DEVOLVIDO');
+CREATE TYPE "StatusOrder" AS ENUM ('AGUARDANDO_APROVACAO', 'REPROVADO', 'APROVADO', 'EM_PROCESSAMENTO', 'TROCA_SOLICITADA', 'TROCA_ACEITA', 'TROCA_CONCLUIDA', 'TROCA_RECUSADA', 'DEVOLUCAO_EM_ANDAMENTO', 'DEVOLUCAO_SOLICITADA', 'DEVOLUCAO_RECUSADA', 'DEVOLUCAO_CONCLUIDA', 'DEVOLUCAO_ACEITA', 'PEDIDO_DEVOLVIDO', 'CANCELADO', 'EM_TRANSPORTE', 'ENTREGUE');
 
 -- CreateTable
 CREATE TABLE "users" (
@@ -165,7 +165,7 @@ CREATE TABLE "orders" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "total" DECIMAL(65,30) NOT NULL,
-    "status" TEXT NOT NULL,
+    "status" "StatusOrder" NOT NULL,
     "freight" DECIMAL(65,30) NOT NULL,
     "discountValue" DECIMAL(65,30),
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
@@ -221,7 +221,7 @@ CREATE TABLE "exchange_requests" (
     "userId" TEXT NOT NULL,
     "items" JSONB NOT NULL,
     "reason" TEXT NOT NULL,
-    "status" "ExchangeStatus" NOT NULL,
+    "status" "StatusOrder" NOT NULL,
     "couponId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,

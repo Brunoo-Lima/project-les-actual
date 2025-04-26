@@ -1,14 +1,25 @@
 import { Decimal } from '@prisma/client/runtime/library';
-import { prismaClient } from '../../prisma-client/prisma-client';
+import { prismaClient } from '../../../prisma-client/prisma-client';
 
-export type ExchangeStatus =
+export type StatusOrder =
   | 'AGUARDANDO_APROVACAO'
-  | 'TROCA_AUTORIZADA'
+  | 'REPROVADO'
+  | 'APROVADO'
+  | 'EM_PROCESSAMENTO'
+  | 'TROCA_SOLICITADA'
+  | 'TROCA_ACEITA'
+  | 'TROCA_CONCLUIDA'
+  | 'TROCA_RECUSADA'
   | 'DEVOLUCAO_EM_ANDAMENTO'
+  | 'DEVOLUCAO_SOLICITADA'
+  | 'DEVOLUCAO_RECUSADA'
+  | 'DEVOLUCAO_CONCLUIDA'
   | 'PEDIDO_DEVOLVIDO'
-  | 'TROCA_RECUSADA';
+  | 'CANCELADO'
+  | 'EM_TRANSPORTE'
+  | 'ENTREGUE';
 
-class ExchangeOrderDb {
+class ReturnProductGeneral {
   async findOrderWithItems(orderId: string, userId: string) {
     return await prismaClient.order.findUnique({
       where: { id: orderId, userId },
@@ -28,7 +39,7 @@ class ExchangeOrderDb {
         userId,
         items,
         reason,
-        status: 'AGUARDANDO_APROVACAO',
+        status: 'DEVOLUCAO_SOLICITADA',
       },
     });
   }
@@ -40,7 +51,7 @@ class ExchangeOrderDb {
     });
   }
 
-  async updateExchangeStatus(id: string, status: ExchangeStatus) {
+  async updateExchangeStatus(id: string, status: StatusOrder) {
     return await prismaClient.exchangeRequest.update({
       where: { id },
       data: { status },
@@ -73,4 +84,4 @@ class ExchangeOrderDb {
   }
 }
 
-export { ExchangeOrderDb };
+export { ReturnProductGeneral };

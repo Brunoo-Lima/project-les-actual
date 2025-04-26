@@ -1,7 +1,8 @@
 import { prismaClient } from '../../prisma-client/prisma-client';
+import { StatusOrder } from './create-order-db';
 
 class ListOrdersStatusDb {
-  async listOrdersStatus(status?: string) {
+  async listOrdersStatus(status?: StatusOrder) {
     return await prismaClient.order.findMany({
       where: {
         status: status,

@@ -222,7 +222,7 @@ model Order {
   id            String   @id @default(uuid())
   userId        String
   total         Decimal
-  status        String
+  status        StatusOrder
   freight       Decimal
   discountValue Decimal?
 
@@ -315,7 +315,7 @@ model ExchangeRequest {
   user        User       @relation(fields: [userId], references: [id])
   items       Json       // Array de itens para troca
   reason      String
-  status      ExchangeStatus
+  status      StatusOrder
 
   couponId    String? @unique
   coupon      ExchangeCoupon? @relation(fields: [couponId], references: [id])
@@ -326,12 +326,27 @@ model ExchangeRequest {
   @@map("exchange_requests")
 }
 
-enum ExchangeStatus {
+enum StatusOrder {
   AGUARDANDO_APROVACAO
-  TROCA_AUTORIZADA
+  REPROVADO
+  APROVADO
+  EM_PROCESSAMENTO
+
+  TROCA_SOLICITADA
+  TROCA_ACEITA
+  TROCA_CONCLUIDA
   TROCA_RECUSADA
+
   DEVOLUCAO_EM_ANDAMENTO
+  DEVOLUCAO_SOLICITADA
+  DEVOLUCAO_RECUSADA
+  DEVOLUCAO_CONCLUIDA
+  DEVOLUCAO_ACEITA
+
   PEDIDO_DEVOLVIDO
+  CANCELADO
+  EM_TRANSPORTE
+  ENTREGUE
 }
 
 model Log {

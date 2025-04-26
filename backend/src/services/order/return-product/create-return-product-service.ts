@@ -1,5 +1,5 @@
 import { Decimal } from '@prisma/client/runtime/library';
-import { ExchangeOrderDb } from '../../../config/database/order/exchange-order-db';
+import { ReturnProductGeneral } from '../../../config/database/order/return-product/return-product-general';
 import { ReplacementValidation } from '../../../validations/replacement/replacement-validation';
 
 export type ExchangeItem = {
@@ -8,12 +8,12 @@ export type ExchangeItem = {
   price: Decimal | number;
 };
 
-class CreateReplacementService {
-  private exchangeOrderDb: ExchangeOrderDb;
+class CreateReturnProductService {
+  private returnProductGeneralDb: ReturnProductGeneral;
   private validationReplacement: ReplacementValidation;
 
   constructor() {
-    this.exchangeOrderDb = new ExchangeOrderDb();
+    this.returnProductGeneralDb = new ReturnProductGeneral();
     this.validationReplacement = new ReplacementValidation();
   }
 
@@ -23,19 +23,19 @@ class CreateReplacementService {
     items: ExchangeItem[],
     reason: string
   ) {
-    const order = await this.exchangeOrderDb.findOrderWithItems(
+    const order = await this.returnProductGeneralDb.findOrderWithItems(
       orderId,
       userId
     );
 
     if (!order) throw new Error('Pedido não encontrado');
 
-    if (order.status !== 'Entregue')
-      throw new Error('Só é possível trocar pedidos entregues');
+    if (order.status !== 'ENTREGUE')
+      throw new Error('Só é possível devolver pedidos entregues');
 
     this.validationReplacement.validateExchangeItems(order.items, items);
 
-    return await this.exchangeOrderDb.createExchangeRequest(
+    return await this.returnProductGeneralDb.createExchangeRequest(
       orderId,
       userId,
       JSON.stringify(items),
@@ -44,4 +44,4 @@ class CreateReplacementService {
   }
 }
 
-export { CreateReplacementService };
+export { CreateReturnProductService };

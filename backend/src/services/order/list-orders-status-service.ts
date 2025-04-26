@@ -1,3 +1,4 @@
+import { StatusOrder } from '../../config/database/order/create-order-db';
 import { ListOrdersStatusDb } from '../../config/database/order/list-orders-status-db';
 
 class ListDetailOrderService {
@@ -7,7 +8,7 @@ class ListDetailOrderService {
     this.listOrdersStatusDb = new ListOrdersStatusDb();
   }
 
-  async execute(status?: string) {
+  async execute(status?: StatusOrder) {
     if (!status) {
       throw new Error('Status do pedido é obrigatório');
     }

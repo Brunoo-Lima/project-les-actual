@@ -1,6 +1,22 @@
 import { prismaClient } from '../../prisma-client/prisma-client';
 
-export type StatusOrder = 'Pendente' | 'Aprovado' | 'Transito' | 'Entregue';
+export type StatusOrder =
+  | 'AGUARDANDO_APROVACAO'
+  | 'REPROVADO'
+  | 'APROVADO'
+  | 'EM_PROCESSAMENTO'
+  | 'TROCA_SOLICITADA'
+  | 'TROCA_ACEITA'
+  | 'TROCA_CONCLUIDA'
+  | 'TROCA_RECUSADA'
+  | 'DEVOLUCAO_EM_ANDAMENTO'
+  | 'DEVOLUCAO_SOLICITADA'
+  | 'DEVOLUCAO_RECUSADA'
+  | 'DEVOLUCAO_CONCLUIDA'
+  | 'PEDIDO_DEVOLVIDO'
+  | 'CANCELADO'
+  | 'EM_TRANSPORTE'
+  | 'ENTREGUE';
 
 class UpdateOrderStatusDb {
   async updateOrderStatus(orderId: string, newStatus: StatusOrder) {
@@ -27,11 +43,11 @@ class UpdateOrderStatusDb {
       // 2. Se for aprovação, processar e mudar para "Em trânsito"
       let finalStatus = newStatus;
 
-      if (newStatus === 'Aprovado') {
-        finalStatus = 'Transito';
+      if (newStatus === 'APROVADO') {
+        finalStatus = 'EM_TRANSPORTE';
       }
 
-      if (newStatus === 'Aprovado') {
+      if (newStatus === 'APROVADO') {
         await this.processOrderApproval(order, prisma);
       }
 

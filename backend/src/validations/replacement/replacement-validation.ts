@@ -1,5 +1,5 @@
 import { Decimal } from '@prisma/client/runtime/library';
-import { ExchangeItem } from '../../services/order/replacement/create-replacement-service';
+import { ExchangeItem } from '../../services/order/return-product/create-return-product-service';
 
 class ReplacementValidation {
   validateExchangeItems(

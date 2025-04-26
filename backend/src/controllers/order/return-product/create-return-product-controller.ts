@@ -1,15 +1,15 @@
 import { Request, Response } from 'express';
-import { CreateReplacementService } from '../../../services/order/replacement/create-replacement-service';
+import { CreateReturnProductService } from '../../../services/order/return-product/create-return-product-service';
 
-class CreateReplacementController {
+class CreateReturnProductController {
   async handle(req: Request, res: Response) {
     try {
       const { userId } = req.params;
       const { orderId, items, reason } = req.body;
 
-      const createReplacementService = new CreateReplacementService();
+      const createReturnProductService = new CreateReturnProductService();
 
-      const result = await createReplacementService.execute(
+      const result = await createReturnProductService.execute(
         userId,
         orderId,
         items,
@@ -23,4 +23,4 @@ class CreateReplacementController {
   }
 }
 
-export { CreateReplacementController };
+export { CreateReturnProductController };

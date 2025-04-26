@@ -2,11 +2,11 @@ import { Request, Response } from 'express';
 
 import { prismaClient } from '../../../config/prisma-client/prisma-client';
 
-class ListReplacementsController {
+class ListReturnProductController {
   async handle(req: Request, res: Response) {
     try {
       const exchange = await prismaClient.exchangeRequest.findMany({
-        where: { status: 'AGUARDANDO_APROVACAO' },
+        where: { status: 'DEVOLUCAO_SOLICITADA' },
         include: {
           order: true,
           coupon: true,
@@ -20,4 +20,4 @@ class ListReplacementsController {
   }
 }
 
-export { ListReplacementsController };
+export { ListReturnProductController };
