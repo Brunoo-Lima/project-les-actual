@@ -1,18 +1,24 @@
 import { updateStatusOrder } from "@/services/order";
 import { toast } from "sonner";
 import { IOrderRequest } from "../orders";
+import { useEffect, useState } from "react";
+import { getListReplacements } from "@/services/return-product";
+import { IReplacement } from "@/@types/IReplacement";
 
 interface IButtonsActionsProps {
   item: IOrderRequest;
   status: string;
   onOpenModalForExchange: (item: string, order: IOrderRequest) => void;
+  statusOrder: boolean;
+  statusProgress?: string;
 }
 
 export function ButtonsActions({
   item,
-  // coupon,
+  statusOrder,
   status,
   onOpenModalForExchange,
+  statusProgress,
 }: IButtonsActionsProps) {
   const handleChangeStatusOrder = async () => {
     try {
@@ -26,21 +32,19 @@ export function ButtonsActions({
     }
   };
 
-  const hasExchange = status === "AGUARDANDO_APROVACAO";
-
   return (
     <div className="flex flex-col gap-2 z-2 mt-1">
       <button
         type="submit"
-        disabled={status === "ENTREGUE" ? true : false}
+        disabled={status.toUpperCase() === "ENTREGUE" ? true : false}
         className={`p-1 rounded-md ${
-          status === "ENTREGUE"
+          status.toUpperCase() === "ENTREGUE"
             ? "bg-blue-500/70 cursor-not-allowed"
             : "bg-blue-500 cursor-pointer hover:bg-blue-600 transition duration-300"
         }`}
         onClick={handleChangeStatusOrder}
       >
-        {status.toLowerCase() === "Entregue".toLowerCase()
+        {status.toUpperCase() === "ENTREGUE"
           ? "Pedido entregue"
           : "Confirmar entrega"}
       </button>
@@ -54,16 +58,23 @@ export function ButtonsActions({
         <p>TROCA SOLICITADA</p>
       ) : ( */}
 
-      {status.toLowerCase() === "Entregue".toLowerCase() && (
+      {/* {statusOrder ? (
+
+      ): ()} */}
+
+      {statusOrder ? (
+        <p className="text-yellow-600">
+          <strong>{statusProgress?.replaceAll("_", " ")}</strong>
+        </p>
+      ) : status.toUpperCase() === "ENTREGUE" ? (
         <button
           type="button"
           className="bg-orange-500 p-1 rounded-md hover:bg-orange-600 transition"
           onClick={() => onOpenModalForExchange("all", item)}
         >
-          {/* {status ? "AGUARDANDO APROVACAO" : "Solicitar troca"} */}
           Solicitar devolução
         </button>
-      )}
+      ) : null}
 
       {/* <button
         type="button"

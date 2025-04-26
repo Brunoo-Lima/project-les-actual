@@ -1,6 +1,5 @@
 import { toast } from "sonner";
 import api from "./api";
-import { ExchangeStatus } from "@/@types/IReplacement";
 import { StatusOrder } from "./order";
 
 export const createExchangeOrder = async (
@@ -70,7 +69,7 @@ export const updateReplacement = async (
   }
 };
 
-export const getListReplacementsStatus = async (newStatus: ExchangeStatus) => {
+export const getListReplacementsStatus = async (newStatus: StatusOrder) => {
   try {
     const { data } = await api.get(
       `/return-product/status/?status=${newStatus}`

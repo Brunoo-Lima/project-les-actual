@@ -13,6 +13,8 @@ import { useUseAuth } from "@/hooks/useAuth";
 import { IAddress } from "@/@types/IAddress";
 import { toast } from "sonner";
 import { IPaymentMethodItem } from "@/@types/IOrder";
+import { IReplacement } from "@/@types/IReplacement";
+import { getListReplacements } from "@/services/return-product";
 
 export interface IOrderRequest {
   id: string;
@@ -49,6 +51,27 @@ export function Orders() {
   const [selectedOrder, setSelectedOrder] = useState<IOrderRequest | null>(
     null
   );
+
+  const [ordersReturnProducts, setOrdersReturnProducts] = useState<
+    IReplacement[]
+  >([]);
+
+  useEffect(() => {
+    const fetchOrder = async () => {
+      const order = await getListReplacements();
+
+      setOrdersReturnProducts(order);
+    };
+
+    fetchOrder();
+  }, []);
+
+  const currentReplacement = ordersReturnProducts.find(
+    (rep) => rep.orderId === selectedOrder?.id
+  );
+
+  const hasRequest = !!currentReplacement;
+  const requestStatus = currentReplacement?.status;
 
   const fetchOrders = async () => {
     setIsLoading(true);
@@ -151,13 +174,17 @@ export function Orders() {
                 <p className="text-base font-semibold mt-1">
                   Pedido:{" "}
                   <span
-                    className={`${
-                      item.status === "Entregue"
+                    className={`text-sm ${
+                      hasRequest
+                        ? "text-yellow-600"
+                        : item.status === "Entregue"
                         ? "text-success"
                         : "text-yellow-400"
                     }`}
                   >
-                    {item.status}
+                    {hasRequest
+                      ? requestStatus?.replaceAll("_", " ")
+                      : item.status}
                   </span>
                 </p>
 
@@ -165,6 +192,8 @@ export function Orders() {
                   item={item}
                   status={item.status}
                   onOpenModalForExchange={handleOpenModalItemForExchange}
+                  statusOrder={hasRequest}
+                  statusProgress={requestStatus}
                 />
 
                 <div className="absolute bottom-4 w-full flex gap-2 items-center">

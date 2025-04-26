@@ -23,7 +23,7 @@ export interface IReplacement {
   items: string;
   // items: ReturnItem[]; // Isso será convertido de string JSON
   reason: string;
-  status: ExchangeStatus; // você pode expandir conforme os status possíveis
+  status: StatusOrder; // você pode expandir conforme os status possíveis
   couponId: string | null;
   createdAt: string;
   updatedAt: string;
@@ -31,9 +31,21 @@ export interface IReplacement {
   coupon: unknown | null; // definir tipo correto se houver dados de cupom
 }
 
-export type ExchangeStatus =
+export type StatusOrder =
   | "AGUARDANDO_APROVACAO"
-  | "TROCA_AUTORIZADA"
+  | "REPROVADO"
+  | "APROVADO"
+  | "EM_PROCESSAMENTO"
+  | "TROCA_SOLICITADA"
+  | "TROCA_ACEITA"
+  | "TROCA_CONCLUIDA"
+  | "TROCA_RECUSADA"
   | "DEVOLUCAO_EM_ANDAMENTO"
+  | "DEVOLUCAO_SOLICITADA"
+  | "DEVOLUCAO_RECUSADA"
+  | "DEVOLUCAO_CONCLUIDA"
+  | "DEVOLUCAO_ACEITA"
   | "PEDIDO_DEVOLVIDO"
-  | "TROCA_RECUSADA";
+  | "CANCELADO"
+  | "EM_TRANSPORTE"
+  | "ENTREGUE";
