@@ -2,12 +2,11 @@
 
 import { IReplacement } from "@/@types/IReplacement";
 import {
-  getListReplacements,
   getListReplacementsStatus,
   updateReplacement,
-} from "@/services/replacement";
+} from "@/services/return-product";
 import { FormatValue } from "@/utils/format-value";
-import { CheckIcon, XIcon } from "lucide-react";
+import { CheckIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -27,7 +26,7 @@ export function ListReplacementRequest() {
 
   const handleReturnedOrderExchange = async (id: string) => {
     if (!id) {
-      toast.error("ID inválido para a troca");
+      toast.error("ID inválido para a devolução");
       return;
     }
 

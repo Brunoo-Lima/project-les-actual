@@ -1,7 +1,7 @@
 "use client";
 
 import { IReplacement } from "@/@types/IReplacement";
-import { getListReplacementsStatus } from "@/services/replacement";
+import { getListReplacementsStatus } from "@/services/return-product";
 import { FormatValue } from "@/utils/format-value";
 import { useEffect, useState } from "react";
 

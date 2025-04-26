@@ -50,8 +50,6 @@ export function Orders() {
     null
   );
 
-  console.log("ordersss", orders);
-
   const fetchOrders = async () => {
     setIsLoading(true);
     try {
@@ -73,8 +71,6 @@ export function Orders() {
   useEffect(() => {
     fetchOrders();
   }, [user.id, isAuthenticated]);
-
-  console.log("orders", orders);
 
   const handleOpenModalItemForExchange = (
     item: string,

@@ -24,7 +24,7 @@ export function ListWaitingApproval() {
 
   const fetchOrders = async () => {
     try {
-      const ordersData = await listOrdersWithoutUserId("Pendente");
+      const ordersData = await listOrdersWithoutUserId("AGUARDANDO_APROVACAO");
       setOrders(ordersData);
     } catch (error) {
       toast.error("Algo deu errado na requisição");
@@ -37,7 +37,7 @@ export function ListWaitingApproval() {
 
   const handleChangeStatus = async (orderId: string) => {
     try {
-      const newStatusOrder = await updateStatusOrder(orderId, "Aprovado");
+      const newStatusOrder = await updateStatusOrder(orderId, "APROVADO");
 
       if (newStatusOrder) {
         toast.success("Pedido aprovado com sucesso!");
@@ -63,38 +63,47 @@ export function ListWaitingApproval() {
         </thead>
 
         <tbody>
-          {orders.map((order: any) => (
-            <tr key={order.id} className="border-b border-gray-500 h-9">
-              <td>{order.id}</td>
-              <td>{order.created_at}</td>
-              <td>{FormatValue(order.total)}</td>
-              <td>{order.items.length}</td>
-              <td>
-                <p
-                  className={`w-max px-2 py-1 rounded-md ${
-                    payment === "AGUARDANDO PAGAMENTO"
-                      ? "bg-yellow-500"
-                      : "bg-primary"
-                  } `}
-                >
-                  {payment}
-                </p>
-              </td>
+          {orders &&
+            orders.map((order: any) => (
+              <tr key={order.id} className="border-b border-gray-500 h-9">
+                <td>{order.id}</td>
+                <td>{order.created_at}</td>
+                <td>{FormatValue(order.total)}</td>
+                <td>{order.items.length}</td>
+                <td>
+                  <p
+                    className={`w-max px-2 py-1 rounded-md ${
+                      payment === "AGUARDANDO PAGAMENTO"
+                        ? "bg-yellow-500"
+                        : "bg-primary"
+                    } `}
+                  >
+                    {payment}
+                  </p>
+                </td>
 
-              <td className="flex items-center gap-2">
-                <p className="w-max px-2 py-1 rounded-md">{order.status}</p>
+                <td className="flex items-center gap-2">
+                  <p className="w-max px-2 py-1 rounded-md">{order.status}</p>
 
-                {order.status === "Pendente" && (
-                  <CheckIcon
-                    size={16}
-                    color="#ffffff"
-                    className="rounded-full size-7 bg-primary p-1 cursor-pointer"
-                    onClick={() => handleChangeStatus(order.id)}
-                  />
-                )}
+                  {order.status === "AGUARDANDO_APROVACAO" && (
+                    <CheckIcon
+                      size={16}
+                      color="#ffffff"
+                      className="rounded-full size-7 bg-primary p-1 cursor-pointer"
+                      onClick={() => handleChangeStatus(order.id)}
+                    />
+                  )}
+                </td>
+              </tr>
+            ))}
+
+          {orders.length === 0 && (
+            <tr>
+              <td colSpan={6} className="text-center">
+                Nenhum pedido pendente
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>

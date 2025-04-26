@@ -5,7 +5,7 @@ import { Modal } from "@/components/modal";
 import { useUseAuth } from "@/hooks/useAuth";
 import { Textarea } from "@/components/ui/textarea/textarea";
 import { Button } from "@/components/ui/button/button";
-import { createExchangeOrder } from "@/services/replacement";
+import { createExchangeOrder } from "@/services/return-product";
 import { IOrderRequest } from "../orders";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox/checkbox";
@@ -50,12 +50,12 @@ export function ModalExchange({
 
   const handleSubmit = async () => {
     if (!reason.trim()) {
-      toast.error("Por favor, informe o motivo da troca");
+      toast.error("Por favor, informe o motivo da devolução");
       return;
     }
 
     if (selectedItems.length === 0) {
-      toast.error("Selecione pelo menos um item para troca");
+      toast.error("Selecione pelo menos um item para devolução");
       return;
     }
 
@@ -73,10 +73,10 @@ export function ModalExchange({
       await createExchangeOrder(order.id, user.id, itemsToExchange, reason);
 
       onClose();
-      toast.success("Troca solicitada com sucesso!");
+      toast.success("Devolução solicitada com sucesso!");
     } catch (error) {
       console.error("Exchange error:", error);
-      toast.error("Erro ao solicitar troca");
+      toast.error("Erro ao solicitar devolução");
     } finally {
       setIsSubmitting(false);
     }
@@ -84,7 +84,7 @@ export function ModalExchange({
 
   return (
     <Modal.Root className="w-[600px] h-[400px] p-4 rounded-md">
-      <Modal.Header title="Solicitar troca" onClick={onClose} />
+      <Modal.Header title="Solicitar devolução" onClick={onClose} />
 
       <Modal.Content className="flex flex-col gap-2 mt-4">
         <div className="flex items-center space-x-2 mt-3">
@@ -115,10 +115,10 @@ export function ModalExchange({
 
         <div className="mb-4">
           <Textarea
-            label="Motivo da troca"
+            label="Motivo da devolução"
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            placeholder="Descreva o motivo da troca..."
+            placeholder="Descreva o motivo da devolução..."
             rows={4}
           />
         </div>
@@ -134,7 +134,7 @@ export function ModalExchange({
 
           <Button
             className="bg-blue-500 hover:bg-blue-600 cursor-pointer text-white"
-            text={isSubmitting ? "Enviando..." : "Solicitar Troca"}
+            text={isSubmitting ? "Enviando..." : "Solicitar devolução"}
             onClick={handleSubmit}
             disabled={
               isSubmitting || !reason.trim() || selectedItems.length === 0

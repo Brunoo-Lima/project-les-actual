@@ -10,7 +10,7 @@ export function ListComplete() {
 
   const fetchOrders = async () => {
     try {
-      const ordersData = await listOrdersWithoutUserId("Entregue");
+      const ordersData = await listOrdersWithoutUserId("ENTREGUE");
       setOrders(ordersData);
     } catch (error) {
       toast.error("Algo deu errado na requisição");

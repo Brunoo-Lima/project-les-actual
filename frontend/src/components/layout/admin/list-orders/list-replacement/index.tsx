@@ -1,7 +1,10 @@
 "use client";
 
 import { IReplacement } from "@/@types/IReplacement";
-import { getListReplacements, updateReplacement } from "@/services/replacement";
+import {
+  getListReplacements,
+  updateReplacement,
+} from "@/services/return-product";
 import { FormatValue } from "@/utils/format-value";
 import { CheckIcon, XIcon } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -26,7 +29,7 @@ export function ListReplacement() {
     }
 
     try {
-      await updateReplacement(id, "TROCA_AUTORIZADA");
+      await updateReplacement(id, "DEVOLUCAO_EM_ANDAMENTO");
 
       toast.success("Pedido de troca aprovado!");
     } catch (error) {

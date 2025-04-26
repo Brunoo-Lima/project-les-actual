@@ -154,7 +154,24 @@ export const listOrdersWithoutUserId = async (statusOrder?: string) => {
   }
 };
 
-export type StatusOrder = "Pendente" | "Aprovado" | "Transito" | "Entregue";
+export type StatusOrder =
+  | "AGUARDANDO_APROVACAO"
+  | "REPROVADO"
+  | "APROVADO"
+  | "EM_PROCESSAMENTO"
+  | "TROCA_SOLICITADA"
+  | "TROCA_ACEITA"
+  | "TROCA_CONCLUIDA"
+  | "TROCA_RECUSADA"
+  | "DEVOLUCAO_EM_ANDAMENTO"
+  | "DEVOLUCAO_SOLICITADA"
+  | "DEVOLUCAO_RECUSADA"
+  | "DEVOLUCAO_CONCLUIDA"
+  | "DEVOLUCAO_ACEITA"
+  | "PEDIDO_DEVOLVIDO"
+  | "CANCELADO"
+  | "EM_TRANSPORTE"
+  | "ENTREGUE";
 
 export const updateStatusOrder = async (
   orderId: string,

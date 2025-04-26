@@ -16,7 +16,7 @@ export function ButtonsActions({
 }: IButtonsActionsProps) {
   const handleChangeStatusOrder = async () => {
     try {
-      const changeStatus = await updateStatusOrder(item.id, "Entregue");
+      const changeStatus = await updateStatusOrder(item.id, "ENTREGUE");
 
       if (changeStatus) {
         toast.success("Entrega confirmada com sucesso!");
@@ -32,15 +32,17 @@ export function ButtonsActions({
     <div className="flex flex-col gap-2 z-2 mt-1">
       <button
         type="submit"
-        disabled={status === "Entregue" ? true : false}
+        disabled={status === "ENTREGUE" ? true : false}
         className={`p-1 rounded-md ${
-          status === "Entregue"
+          status === "ENTREGUE"
             ? "bg-blue-500/70 cursor-not-allowed"
             : "bg-blue-500 cursor-pointer hover:bg-blue-600 transition duration-300"
         }`}
         onClick={handleChangeStatusOrder}
       >
-        {status === "Entregue" ? "Pedido entregue" : "Confirmar entrega"}
+        {status.toLowerCase() === "Entregue".toLowerCase()
+          ? "Pedido entregue"
+          : "Confirmar entrega"}
       </button>
       <button type="button" className="bg-error p-1 rounded-md">
         Cancelar pedido
@@ -52,14 +54,14 @@ export function ButtonsActions({
         <p>TROCA SOLICITADA</p>
       ) : ( */}
 
-      {status === "Entregue" && (
+      {status.toLowerCase() === "Entregue".toLowerCase() && (
         <button
           type="button"
           className="bg-orange-500 p-1 rounded-md hover:bg-orange-600 transition"
           onClick={() => onOpenModalForExchange("all", item)}
         >
           {/* {status ? "AGUARDANDO APROVACAO" : "Solicitar troca"} */}
-          Solicitar troca
+          Solicitar devolução
         </button>
       )}
 

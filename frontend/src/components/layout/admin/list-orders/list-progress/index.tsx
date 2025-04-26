@@ -11,7 +11,7 @@ export function ListProgress() {
 
   const fetchOrders = async () => {
     try {
-      const ordersData = await listOrdersWithoutUserId("Transito");
+      const ordersData = await listOrdersWithoutUserId("EM_TRANSPORTE");
       setOrders(ordersData);
     } catch (error) {
       toast.error("Algo deu errado na requisição");
