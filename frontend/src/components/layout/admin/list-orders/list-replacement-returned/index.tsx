@@ -25,11 +25,12 @@ export function ListReplacementReturned() {
       <table className="w-full">
         <thead className="text-left p-2">
           <tr>
-            <th className="w-1/5">Id do pedido</th>
-            <th className="w-1/5">Data do pedido</th>
-            <th className="w-1/5">Valor do pedido</th>
-            <th className="w-1/5">Quantidade de itens</th>
-            <th className="w-1/12 pl-4">Status do pedido</th>
+            <th className="w-1/6">Id do pedido</th>
+            <th className="w-1/6">Data do pedido</th>
+            <th className="w-1/6">Valor do pedido</th>
+            <th className="w-1/6">Quantidade de itens</th>
+            <th className="w-1/6">Status</th>
+            <th className="w-1/6">Status do pedido</th>
           </tr>
         </thead>
 
@@ -53,6 +54,7 @@ export function ListReplacementReturned() {
                 <td>{replacement.createdAt}</td>
                 <td>{FormatValue(totalOrder)}</td>
                 <td>{totalQuantity}</td>
+                <td>{replacement.status}</td>
                 <td className="flex gap-2 ml-2 items-center">
                   {replacement.status === "PEDIDO_DEVOLVIDO" && (
                     <p>Produto Devolvido</p>

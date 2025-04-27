@@ -46,19 +46,19 @@ export function ListOrders() {
           onClick={() => handleChangeOption("COMPLETE")}
         />
         <TabActions
-          textButton="Troca"
+          textButton="Troca/Devolução"
           active={option === "REPLACEMENT"}
           onClick={() => handleChangeOption("REPLACEMENT")}
         />
 
         <TabActions
-          textButton="Trocas em andamento"
+          textButton="Trocas/devoluções em andamento"
           active={option === "REPLACEMENT_PROGRESS"}
           onClick={() => handleChangeOption("REPLACEMENT_PROGRESS")}
         />
 
         <TabActions
-          textButton="Trocas devolvidas"
+          textButton="Trocas/devoluções finalizadas"
           active={option === "REPLACEMENT_RETURNED"}
           onClick={() => handleChangeOption("REPLACEMENT_RETURNED")}
         />

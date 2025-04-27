@@ -33,10 +33,21 @@ export function ListReplacementRequest() {
     try {
       await updateReplacement(id, "PEDIDO_DEVOLVIDO");
       toast.success("Pedido devolvido!");
-    } catch (error) {
-      console.error("Erro detalhado:", error);
 
-      toast.error("Erro ao confirmar pedido devolvido");
+      const result = await updateReplacement(id, "PEDIDO_DEVOLVIDO");
+      console.log("Resultado da atualização:", result); // Log adicional
+
+      setReplacements((prev) => prev.filter((item) => item.id !== id));
+      toast.success(result.message || "Pedido devolvido com sucesso!");
+    } catch (error: any) {
+      console.error("Erro detalhado:", error.response?.data || error.message);
+      toast.error(
+        error.response?.data?.message || "Erro ao processar devolução"
+      );
+
+      // console.error("Erro detalhado:", error);
+
+      // toast.error("Erro ao confirmar pedido devolvido");
     }
   };
 
@@ -45,17 +56,20 @@ export function ListReplacementRequest() {
       <table className="w-full">
         <thead className="text-left p-2">
           <tr>
-            <th className="w-1/5">Id do pedido</th>
-            <th className="w-1/5">Data do pedido</th>
-            <th className="w-1/5">Valor do pedido</th>
-            <th className="w-1/5">Quantidade de itens</th>
-            <th className="w-1/6 pl-4">Status do pedido</th>
+            <th className="w-1/6">Id do pedido</th>
+            <th className="w-1/6">Data do pedido</th>
+            <th className="w-1/6">Valor do pedido</th>
+            <th className="w-1/6">Quantidade de itens</th>
+            <th className="w-1/6">Status</th>
+            <th className="w-1/6">Status do pedido</th>
           </tr>
         </thead>
 
         <tbody>
           {replacements.map((replacement: IReplacement) => {
-            const parsedItems = JSON.parse(replacement.items); // transforma string em array de objetos
+            const parsedItems = replacement.items
+              ? JSON.parse(replacement.items)
+              : []; // transforma string em array de objetos
             const totalQuantity = parsedItems.reduce(
               (acc: number, item: { quantity: number }) => acc + item.quantity,
               0
@@ -70,9 +84,10 @@ export function ListReplacementRequest() {
             return (
               <tr key={replacement.id} className="border-b border-gray-500 h-9">
                 <td>{replacement.id}</td>
-                <td>{replacement.createdAt}</td>
+                <td>{new Date(replacement.createdAt).toLocaleDateString()}</td>
                 <td>{FormatValue(totalOrder)}</td>
                 <td>{totalQuantity}</td>
+                <td>{replacement.status}</td>
                 <td className="flex gap-2 ml-2 items-center">
                   {replacement.status === "DEVOLUCAO_EM_ANDAMENTO" && (
                     <p>Devolução em andamento</p>

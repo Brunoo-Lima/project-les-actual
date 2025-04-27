@@ -22,20 +22,30 @@ export function ListReplacement() {
     fetchOrdersReplacement();
   }, []);
 
-  const handleAcceptOrderExchange = async (id: string) => {
+  const handleAcceptOrderExchange = async (id: string, status: string) => {
     if (!id) {
       toast.error("ID inválido para a troca");
       return;
     }
 
     try {
-      await updateReplacement(id, "DEVOLUCAO_EM_ANDAMENTO");
+      const statusOrder = status.startsWith("DEVOLUCAO_")
+        ? "DEVOLUCAO_EM_ANDAMENTO"
+        : "TROCA_ACEITA";
 
-      toast.success("Pedido de troca aprovado!");
+      const result = await updateReplacement(id, statusOrder);
+
+      console.log(result, "result");
+
+      toast.success(
+        `Pedido de ${
+          statusOrder === "DEVOLUCAO_EM_ANDAMENTO" ? "devolução" : "troca"
+        } aprovado!`
+      );
     } catch (error) {
       console.error("Erro detalhado:", error);
 
-      toast.error("Erro ao aprovar pedido de troca");
+      toast.error("Erro ao aprovar solicitação");
     }
   };
 
@@ -57,6 +67,7 @@ export function ListReplacement() {
             <th className="w-1/5">Data do pedido</th>
             <th className="w-1/5">Valor do pedido</th>
             <th className="w-1/5">Quantidade de itens</th>
+            <th className="w-1/5">Status</th>
             <th className="w-1/12 pl-4">Ações</th>
           </tr>
         </thead>
@@ -78,13 +89,19 @@ export function ListReplacement() {
             return (
               <tr key={replacement.id} className="border-b border-gray-500 h-9">
                 <td>{replacement.id}</td>
-                <td>{replacement.createdAt}</td>
+                <td>{new Date(replacement.createdAt).toLocaleDateString()}</td>
                 <td>{FormatValue(totalOrder)}</td>
                 <td>{totalQuantity}</td>
+                <td>{replacement.status}</td>
                 <td className="flex gap-2 ml-2 items-center">
                   <button
                     type="button"
-                    onClick={() => handleAcceptOrderExchange(replacement.id)}
+                    onClick={() =>
+                      handleAcceptOrderExchange(
+                        replacement.id,
+                        replacement.status
+                      )
+                    }
                     className="size-7 rounded-full bg-green-500 p-1 flex items-center justify-center"
                   >
                     <CheckIcon size={16} color="#ffffff" />

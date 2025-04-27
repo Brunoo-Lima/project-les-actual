@@ -46,7 +46,7 @@ export function ListComplete() {
             return (
               <tr key={order.id} className="border-b border-gray-500 h-9">
                 <td>{order.id}</td>
-                <td>{order.created_at}</td>
+                <td>{new Date(order.created_at).toLocaleDateString()}</td>
                 <td>{FormatValue(order.total)}</td>
                 <td>{order.items.length}</td>
                 <td>
@@ -60,7 +60,7 @@ export function ListComplete() {
                 </td>
 
                 <td className="flex items-center gap-2">
-                  <p>{order.status || "Devolvido"}</p>
+                  <p>{order.status}</p>
                 </td>
               </tr>
             );

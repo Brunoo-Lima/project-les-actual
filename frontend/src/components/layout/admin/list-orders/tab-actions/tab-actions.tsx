@@ -9,10 +9,11 @@ export function TabActions({ active, textButton, onClick }: ITabActionsProps) {
     <button
       type="button"
       onClick={onClick}
-      className={`${active ? "border-b-2 border-primary-dark" : ""} w-52 h-8`}
+      className={`${
+        active ? "border-b-2 border-primary-dark" : ""
+      } min-w-max w-max h-8 px-8`}
     >
       {textButton}
     </button>
   );
 }
-

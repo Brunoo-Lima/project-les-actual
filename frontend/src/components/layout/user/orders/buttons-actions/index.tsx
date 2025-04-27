@@ -9,17 +9,25 @@ interface IButtonsActionsProps {
   item: IOrderRequest;
   status: string;
   onOpenModalForExchange: (item: string, order: IOrderRequest) => void;
-  statusOrder: boolean;
-  statusProgress?: string;
+  hasRequest: boolean;
+  requestStatus?: string;
 }
 
 export function ButtonsActions({
   item,
-  statusOrder,
+  hasRequest,
+  requestStatus,
   status,
   onOpenModalForExchange,
-  statusProgress,
 }: IButtonsActionsProps) {
+  const statusOrderDisabledButton =
+    status.toUpperCase() === "ENTREGUE" ||
+    status.toUpperCase() === "AGUARDANDO_APROVACAO";
+
+  const disabledButtonCancelOrder =
+    status.toUpperCase() === "ENTREGUE" ||
+    status.toUpperCase() === "EM_TRANSPORTE";
+
   const handleChangeStatusOrder = async () => {
     try {
       const changeStatus = await updateStatusOrder(item.id, "ENTREGUE");
@@ -36,9 +44,9 @@ export function ButtonsActions({
     <div className="flex flex-col gap-2 z-2 mt-1">
       <button
         type="submit"
-        disabled={status.toUpperCase() === "ENTREGUE" ? true : false}
+        disabled={statusOrderDisabledButton}
         className={`p-1 rounded-md ${
-          status.toUpperCase() === "ENTREGUE"
+          statusOrderDisabledButton
             ? "bg-blue-500/70 cursor-not-allowed"
             : "bg-blue-500 cursor-pointer hover:bg-blue-600 transition duration-300"
         }`}
@@ -48,43 +56,42 @@ export function ButtonsActions({
           ? "Pedido entregue"
           : "Confirmar entrega"}
       </button>
-      <button type="button" className="bg-error p-1 rounded-md">
+      <button
+        type="button"
+        className={`bg-error p-1 rounded-md ${
+          disabledButtonCancelOrder ? "cursor-not-allowed" : "cursor-pointer"
+        }`}
+        disabled={disabledButtonCancelOrder}
+      >
         Cancelar pedido
       </button>
 
-      {/* {coupon ? (
-        <p>Cupom Disponível: {coupon}</p>
-      ) : status === "TROCA SOLICITADA" ? (
-        <p>TROCA SOLICITADA</p>
-      ) : ( */}
-
-      {/* {statusOrder ? (
-
-      ): ()} */}
-
-      {statusOrder ? (
-        <p className="text-yellow-600">
-          <strong>{statusProgress?.replaceAll("_", " ")}</strong>
+      {hasRequest ? (
+        <p className="text-base font-semibold mt-1">
+          Status da Solicitação:{" "}
+          <span
+            className={`
+              ${requestStatus === "DEVOLUCAO_ACEITA" ? "text-blue-400" : ""}
+              ${requestStatus === "TROCA_SOLICITADA" ? "text-orange-400" : ""}
+              ${requestStatus === "DEVOLUCAO_CONCLUIDA" ? "text-success" : ""}
+              ${requestStatus === "TROCA_RECUSADA" ? "text-red-400" : ""}
+            `}
+          >
+            {requestStatus?.replaceAll("_", " ")}
+          </span>
         </p>
-      ) : status.toUpperCase() === "ENTREGUE" ? (
-        <button
-          type="button"
-          className="bg-orange-500 p-1 rounded-md hover:bg-orange-600 transition"
-          onClick={() => onOpenModalForExchange("all", item)}
-        >
-          Solicitar devolução
-        </button>
-      ) : null}
-
-      {/* <button
-        type="button"
-        onClick={() => onOpenModalForExchange(item.id, item)}
-        className="underline text-orange-400"
-      >
-        Solicitar troca
-      </button> */}
-
-      {/* )} */}
+      ) : (
+        /* Botão de solicitar troca/devolução (apenas se o pedido estiver "ENTREGUE" e não houver solicitação) */
+        status.toUpperCase() === "ENTREGUE" && (
+          <button
+            type="button"
+            className="bg-orange-500 p-1 rounded-md hover:bg-orange-600 transition"
+            onClick={() => onOpenModalForExchange("all", item)}
+          >
+            Solicitar troca/devolução
+          </button>
+        )
+      )}
     </div>
   );
 }

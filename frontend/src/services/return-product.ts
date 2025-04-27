@@ -10,23 +10,25 @@ export const createExchangeOrder = async (
     quantity: number;
     price: number;
   }>,
-  reason: string
+  reason: string,
+  requestType: "exchange" | "return"
 ) => {
   try {
     const { data, status } = await api.post(`return-product/${userId}`, {
       orderId,
       items,
       reason,
+      requestType,
     });
 
     if (!data || status !== 201) {
-      throw new Error("Erro ao criar pedido de devolução");
+      throw new Error("Erro ao criar pedido");
     }
 
     return data;
   } catch (error) {
     console.error(error);
-    toast.error("Erro ao solicitar devolução");
+    toast.error("Erro ao criar pedido");
     throw error;
   }
 };
@@ -36,13 +38,13 @@ export const getListReplacements = async () => {
     const { data, status } = await api.get(`/return-products`);
 
     if (!data || status !== 200) {
-      throw new Error("Erro ao buscar pedidos de devoluções");
+      throw new Error("Erro ao buscar pedidos");
     }
 
     return data;
   } catch (error) {
-    console.error("Erro ao buscar pedidos de devoluções:", error);
-    toast.error("Erro ao listar pedidos de devoluções");
+    console.error("Erro ao buscar pedidos:", error);
+    toast.error("Erro ao listar pedidos");
     throw error;
   }
 };
@@ -63,8 +65,8 @@ export const updateReplacement = async (
 
     return data;
   } catch (error) {
-    console.error("Erro ao atualizar status de devolução", error);
-    toast.error("Erro ao atualizar status de devolução");
+    console.error("Erro ao atualizar status", error);
+    toast.error("Erro ao atualizar status");
     throw error;
   }
 };
@@ -72,7 +74,7 @@ export const updateReplacement = async (
 export const getListReplacementsStatus = async (newStatus: StatusOrder) => {
   try {
     const { data } = await api.get(
-      `/return-product/status/?status=${newStatus}`
+      `/return-product/status?status=${newStatus}`
     );
 
     if (!data) {
@@ -81,8 +83,8 @@ export const getListReplacementsStatus = async (newStatus: StatusOrder) => {
 
     return data;
   } catch (error) {
-    console.error("Erro ao listar pedidos de devoluções", error);
-    toast.error("Erro ao listar pedidos de devoluções");
+    console.error("Erro ao listar pedidos", error);
+    toast.error("Erro ao listar pedidos");
     throw error;
   }
 };

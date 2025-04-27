@@ -1,8 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { ModalBackground } from "@/components/modal/modal-background/modal-background";
 import { FormatValue } from "@/utils/format-value";
-import { useEffect, useState } from "react";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import ModalDetailsOrder from "./modal/modal-details-order";
 import { CardOrder } from "./card-order";
@@ -66,12 +66,12 @@ export function Orders() {
     fetchOrder();
   }, []);
 
-  const currentReplacement = ordersReturnProducts.find(
-    (rep) => rep.orderId === selectedOrder?.id
-  );
+  // const currentReplacement = ordersReturnProducts.find(
+  //   (rep) => rep.orderId === selectedOrder?.id
+  // );
 
-  const hasRequest = !!currentReplacement;
-  const requestStatus = currentReplacement?.status;
+  // const hasRequest = !!currentReplacement;
+  // const requestStatus = currentReplacement?.status;
 
   const fetchOrders = async () => {
     setIsLoading(true);
@@ -123,88 +123,98 @@ export function Orders() {
 
       {orders.length > 0 ? (
         orders
-          .map((item) => (
-            <div
-              key={item.id}
-              className="grid grid-cols-[1fr_220px] place-items-center gap-6 bg-background-dark rounded-md p-4 min-w-[650px] w-max h-max min-h-[250px]"
-            >
-              <div className="flex flex-col gap-y-4 w-full h-[250px] overflow-auto relative z-1 container-address-form">
-                {item.items.map((product) => (
-                  <CardOrder
-                    key={`${item.id}-${product.id}`}
-                    quantity={product.quantity}
-                    product={product.product as any}
-                    price={product.price}
+          .map((item) => {
+            const currentReplacement = ordersReturnProducts.find(
+              (rep) => rep.orderId === item.id // Usa item.id em vez de selectedOrder?.id
+            );
+            const hasRequest = !!currentReplacement;
+            const requestStatus = currentReplacement?.status;
+
+            return (
+              <div
+                key={item.id}
+                className="grid grid-cols-[1fr_220px] place-items-center gap-6 bg-background-dark rounded-md p-4 min-w-[650px] w-max h-max min-h-[250px]"
+              >
+                <div className="flex flex-col gap-y-4 w-full h-[300px] overflow-auto relative z-1 container-address-form">
+                  {item.items.map((product) => (
+                    <CardOrder
+                      key={`${item.id}-${product.id}`}
+                      quantity={product.quantity}
+                      product={product.product as any}
+                      price={product.price}
+                    />
+                  ))}
+                </div>
+
+                <div className="flex flex-col relative h-full">
+                  <div
+                    className="flex items-center gap-2 cursor-pointer transition duration-300 *:hover:text-primary-light relative"
+                    onClick={() => handleOpenDetails(item)}
+                  >
+                    <p className="">Ver detalhes do pedido</p>
+                    {isOpenDetails === true ? (
+                      <ChevronUpIcon
+                        size={20}
+                        onClick={() => setIsOpenDetails(false)}
+                      />
+                    ) : (
+                      <ChevronDownIcon
+                        size={20}
+                        onClick={() => setIsOpenDetails(true)}
+                      />
+                    )}
+                  </div>
+
+                  <p className="text-base font-semibold mt-1">
+                    Status:{" "}
+                    <span
+                      className={`${
+                        item.status === "ENTREGUE"
+                          ? "text-success"
+                          : "text-yellow-400"
+                      }`}
+                    >
+                      {item.status}
+                    </span>
+                  </p>
+
+                  <p className="text-base font-semibold mt-1">
+                    Pedido:{" "}
+                    <span
+                      className={`${
+                        item.status === "ENTREGUE"
+                          ? "text-success"
+                          : item.status === "DEVOLUCAO_ACEITA"
+                          ? "text-blue-400"
+                          : item.status === "DEVOLUCAO_EM_ANDAMENTO"
+                          ? "text-orange-400"
+                          : "text-yellow-400"
+                      }`}
+                    >
+                      {item.status
+                        ? item.status.replaceAll("_", " ")
+                        : item.status}
+                    </span>
+                  </p>
+
+                  <ButtonsActions
+                    item={item}
+                    status={item.status}
+                    onOpenModalForExchange={handleOpenModalItemForExchange}
+                    hasRequest={hasRequest}
+                    requestStatus={requestStatus}
                   />
-                ))}
-              </div>
 
-              <div className="flex flex-col relative h-full">
-                <div
-                  className="flex items-center gap-2 cursor-pointer transition duration-300 *:hover:text-primary-light relative"
-                  onClick={() => handleOpenDetails(item)}
-                >
-                  <p className="">Ver detalhes do pedido</p>
-                  {isOpenDetails === true ? (
-                    <ChevronUpIcon
-                      size={20}
-                      onClick={() => setIsOpenDetails(false)}
-                    />
-                  ) : (
-                    <ChevronDownIcon
-                      size={20}
-                      onClick={() => setIsOpenDetails(true)}
-                    />
-                  )}
-                </div>
-
-                <p className="text-base font-semibold mt-1">
-                  Status:{" "}
-                  <span
-                    className={`${
-                      item.status === "Entregue"
-                        ? "text-success"
-                        : "text-yellow-400"
-                    }`}
-                  >
-                    {item.status}
-                  </span>
-                </p>
-
-                <p className="text-base font-semibold mt-1">
-                  Pedido:{" "}
-                  <span
-                    className={`text-sm ${
-                      hasRequest
-                        ? "text-yellow-600"
-                        : item.status === "Entregue"
-                        ? "text-success"
-                        : "text-yellow-400"
-                    }`}
-                  >
-                    {hasRequest
-                      ? requestStatus?.replaceAll("_", " ")
-                      : item.status}
-                  </span>
-                </p>
-
-                <ButtonsActions
-                  item={item}
-                  status={item.status}
-                  onOpenModalForExchange={handleOpenModalItemForExchange}
-                  statusOrder={hasRequest}
-                  statusProgress={requestStatus}
-                />
-
-                <div className="absolute bottom-4 w-full flex gap-2 items-center">
-                  <p>Total do pedido:</p>
-                  <span className="font-bold text-xl inline-flex">
-                    {FormatValue(item.total || 0)}
-                  </span>
+                  <div className="absolute bottom-4 w-full flex gap-2 items-center">
+                    <p>Total do pedido:</p>
+                    <span className="font-bold text-xl inline-flex">
+                      {FormatValue(item.total || 0)}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            );
+          })
           .reverse()
       ) : (
         <p>Não há pedidos para exibir!</p>

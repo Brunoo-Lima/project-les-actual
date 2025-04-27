@@ -6,7 +6,6 @@ import { useUseAuth } from "@/hooks/useAuth";
 import { Textarea } from "@/components/ui/textarea/textarea";
 import { Button } from "@/components/ui/button/button";
 import { createExchangeOrder } from "@/services/return-product";
-import { IOrderRequest } from "../orders";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox/checkbox";
 
@@ -24,6 +23,9 @@ export function ModalExchange({
   const [reason, setReason] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [requestType, setRequestType] = useState<"exchange" | "return">(
+    "return"
+  );
   const { user } = useUseAuth();
 
   useEffect(() => {
@@ -70,13 +72,30 @@ export function ModalExchange({
           price: item.price,
         }));
 
-      await createExchangeOrder(order.id, user.id, itemsToExchange, reason);
+      if (requestType === "return") {
+        await createExchangeOrder(
+          order.id,
+          user.id,
+          itemsToExchange,
+          reason,
+          "return"
+        );
+        toast.success("Devolução solicitada com sucesso!");
+      } else {
+        await createExchangeOrder(
+          order.id,
+          user.id,
+          itemsToExchange,
+          reason,
+          "exchange"
+        );
+        toast.success("Troca solicitada com sucesso!");
+      }
 
       onClose();
-      toast.success("Devolução solicitada com sucesso!");
     } catch (error) {
       console.error("Exchange error:", error);
-      toast.error("Erro ao solicitar devolução");
+      toast.error("Erro ao solicitar a operação");
     } finally {
       setIsSubmitting(false);
     }
@@ -84,9 +103,29 @@ export function ModalExchange({
 
   return (
     <Modal.Root className="w-[600px] h-[400px] p-4 rounded-md">
-      <Modal.Header title="Solicitar devolução" onClick={onClose} />
+      <Modal.Header title="Solicitar troca/devolução" onClick={onClose} />
 
       <Modal.Content className="flex flex-col gap-2 mt-4">
+        <div className="mb-4">
+          <label className="font-semibold">Tipo de solicitação:</label>
+          <div className="flex gap-4">
+            <Button
+              className={`${
+                requestType === "return" ? "bg-blue-500" : "bg-gray-300"
+              } hover:bg-blue-600 text-white w-full`}
+              text="Devolução"
+              onClick={() => setRequestType("return")}
+            />
+            <Button
+              className={`${
+                requestType === "exchange" ? "bg-blue-500" : "bg-gray-300"
+              } hover:bg-blue-600 text-white w-full`}
+              text="Troca"
+              onClick={() => setRequestType("exchange")}
+            />
+          </div>
+        </div>
+
         <div className="flex items-center space-x-2 mt-3">
           <Checkbox
             label="Selecionar todos"
@@ -134,7 +173,13 @@ export function ModalExchange({
 
           <Button
             className="bg-blue-500 hover:bg-blue-600 cursor-pointer text-white"
-            text={isSubmitting ? "Enviando..." : "Solicitar devolução"}
+            text={
+              isSubmitting
+                ? "Enviando..."
+                : `Solicitar ${
+                    requestType === "return" ? "devolução" : "troca"
+                  }`
+            }
             onClick={handleSubmit}
             disabled={
               isSubmitting || !reason.trim() || selectedItems.length === 0
