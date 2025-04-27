@@ -5,6 +5,7 @@ class ListReturnProductStatusDb {
   async listReturnProductStatus(status: StatusOrder) {
     return await prismaClient.exchangeRequest.findMany({
       where: { status: status },
+      include: { order: true },
     });
   }
 }

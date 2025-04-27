@@ -5,7 +5,7 @@ class CreateReturnProductController {
   async handle(req: Request, res: Response) {
     try {
       const { userId } = req.params;
-      const { orderId, items, reason } = req.body;
+      const { orderId, items, reason, requestType } = req.body;
 
       const createReturnProductService = new CreateReturnProductService();
 
@@ -13,7 +13,8 @@ class CreateReturnProductController {
         userId,
         orderId,
         items,
-        reason
+        reason,
+        requestType
       );
 
       res.status(201).json(result);

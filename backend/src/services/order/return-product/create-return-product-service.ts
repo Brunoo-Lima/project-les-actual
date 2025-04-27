@@ -1,6 +1,6 @@
 import { Decimal } from '@prisma/client/runtime/library';
 import { ReturnProductGeneral } from '../../../config/database/order/return-product/return-product-general';
-import { ReplacementValidation } from '../../../validations/replacement/replacement-validation';
+import { ReturnProductValidation } from '../../../validations/return-product/return-product-validation';
 
 export type ExchangeItem = {
   productId: string;
@@ -10,18 +10,19 @@ export type ExchangeItem = {
 
 class CreateReturnProductService {
   private returnProductGeneralDb: ReturnProductGeneral;
-  private validationReplacement: ReplacementValidation;
+  private validationReturnProduct: ReturnProductValidation;
 
   constructor() {
     this.returnProductGeneralDb = new ReturnProductGeneral();
-    this.validationReplacement = new ReplacementValidation();
+    this.validationReturnProduct = new ReturnProductValidation();
   }
 
   async execute(
     userId: string,
     orderId: string,
     items: ExchangeItem[],
-    reason: string
+    reason: string,
+    requestType: 'exchange' | 'return'
   ) {
     const order = await this.returnProductGeneralDb.findOrderWithItems(
       orderId,
@@ -33,13 +34,14 @@ class CreateReturnProductService {
     if (order.status !== 'ENTREGUE')
       throw new Error('Só é possível devolver pedidos entregues');
 
-    this.validationReplacement.validateExchangeItems(order.items, items);
+    this.validationReturnProduct.validateExchangeItems(order.items, items);
 
-    return await this.returnProductGeneralDb.createExchangeRequest(
+    return await this.returnProductGeneralDb.handleRequestType(
       orderId,
       userId,
       JSON.stringify(items),
-      reason
+      reason,
+      requestType
     );
   }
 }
