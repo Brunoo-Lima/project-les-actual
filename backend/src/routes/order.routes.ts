@@ -8,6 +8,7 @@ import { RemoveItemCartController } from '../controllers/cart/remove-item-cart-c
 import { QuantityCartController } from '../controllers/cart/quantity-cart-controller';
 import { AddItemCartController } from '../controllers/cart/add-item-cart-controller';
 import { UpdateOrderStatusController } from '../controllers/order/update-order-status-controller';
+import { CancelOrderController } from '../controllers/order/cancel-order-controller';
 
 const orderRoutes = Router();
 
@@ -61,6 +62,11 @@ orderRoutes.get('/orders', async (req, res) => {
 orderRoutes.patch('/order/status/:orderId', async (req, res) => {
   const updateOrderStatusController = new UpdateOrderStatusController();
   await updateOrderStatusController.handle(req, res);
+});
+
+orderRoutes.patch('/order/cancel', async (req, res) => {
+  const cancelOrderController = new CancelOrderController();
+  await cancelOrderController.handle(req, res);
 });
 
 export { orderRoutes };
