@@ -13,7 +13,7 @@ class ListCouponsService {
     }
 
     try {
-      await this.listCouponDb.listCoupons(userId);
+      return await this.listCouponDb.listCoupons(userId);
     } catch (error) {
       console.error('Erro ao listar cupons', error);
       throw new Error('Erro ao listar cupons');

@@ -91,28 +91,25 @@ class ReturnProductGeneral {
         data: { status: newStatus },
       });
 
-      // Lógica específica para devoluções
-      if (
-        requestType === 'return' &&
-        newStatus === ORDER_STATUS.RETURN_COMPLETED &&
-        !exchange.couponId
-      ) {
+      if (newStatus === ORDER_STATUS.ORDER_RETURNED && !exchange.couponId) {
+        const couponCode = `DEV-${Date.now()}`;
         const coupon = await tx.exchangeCoupon.create({
           data: {
-            code: `DEV-${Date.now()}`,
-            value: exchange.order.total,
-            expiration: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-            userId: exchange.userId,
+            code: couponCode,
+            value: new Decimal(exchange.order.total.toString()),
+            expiration: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 dias
             status: 'active',
             isUsed: false,
+            userId: exchange.userId,
           },
         });
+
+        // Associa o cupom à solicitação
         await tx.exchangeRequest.update({
           where: { id },
           data: { couponId: coupon.id },
         });
       }
-
       return updated;
     });
   }
@@ -157,6 +154,13 @@ class ReturnProductGeneral {
       data: { couponId },
     });
   }
+}
+
+function generateCouponCode(userId: string) {
+  return `DEV-${userId.slice(0, 4)}-${Math.random()
+    .toString(36)
+    .slice(2, 8)
+    .toUpperCase()}`;
 }
 
 export { ReturnProductGeneral };

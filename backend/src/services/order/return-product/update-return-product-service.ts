@@ -1,27 +1,18 @@
+import { Decimal } from '@prisma/client/runtime/library';
+import { CreateCouponDb } from '../../../config/database/coupons/create-coupon-db';
 import { StatusOrder } from '../../../config/database/order/create-order-db';
-import {
-  ORDER_STATUS,
-  ReturnProductGeneral,
-} from '../../../config/database/order/return-product/return-product-general';
+import { ReturnProductGeneral } from '../../../config/database/order/return-product/return-product-general';
 import { ReturnProductValidation } from '../../../validations/return-product/return-product-validation';
-
-import { ExchangeItem } from './create-return-product-service';
 
 class UpdateReturnProductService {
   private returnProductGeneralDb: ReturnProductGeneral;
   private validationReplacement: ReturnProductValidation;
+  private createCouponDb: CreateCouponDb;
 
   constructor() {
     this.returnProductGeneralDb = new ReturnProductGeneral();
     this.validationReplacement = new ReturnProductValidation();
-  }
-
-  private shouldCreateCoupon(status: StatusOrder, hasCoupon: boolean): boolean {
-    const isReturn =
-      status === ORDER_STATUS.RETURN_ACCEPTED ||
-      status === ORDER_STATUS.RETURN_COMPLETED;
-
-    return isReturn && !hasCoupon;
+    this.createCouponDb = new CreateCouponDb();
   }
 
   async execute(
@@ -47,24 +38,40 @@ class UpdateReturnProductService {
       await this.returnProductGeneralDb.updateExchangeStatus(
         id,
         status,
-        requestType // Passando o tipo para a camada de banco
+        requestType
       );
 
-    // Lógica de cupom separada e mais clara
-    // if (this.shouldCreateCoupon(status, !!exchange.couponId)) {
-    //   const items = exchange.items as unknown as ExchangeItem[];
-    //   const couponValue = this.validationReplacement.calculateTotalValue(items);
-    //   const couponCode = this.validationReplacement.generateCouponCode();
+    if (!exchange.order || !exchange.order.total) {
+      throw new Error('Informações do pedido incompletas para gerar cupom');
+    }
 
-    //   const coupon = await this.returnProductGeneralDb.createExchangeCoupon(
-    //     couponCode,
-    //     couponValue,
-    //     new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 dias
-    //     exchange.userId
-    //   );
+    // if (
+    //   requestType === 'return' &&
+    //   status === 'PEDIDO_DEVOLVIDO' &&
+    //   !exchange.couponId // Verifica se já não tem cupom
+    // ) {
+    //   try {
+    //     const couponCode = `DEV-${
+    //       Date.now() + Math.random().toString(36).slice(2, 8)
+    //     }`;
+    //     const coupon = await this.returnProductGeneralDb.createExchangeCoupon(
+    //       couponCode,
+    //       new Decimal(exchange.order.total.toString()),
+    //       new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 dias de expiração
+    //       exchange.userId
+    //     );
 
-    //   await this.returnProductGeneralDb.linkCouponToExchange(id, coupon.id);
+    //     // Associa o cupom à solicitação
+    //     await this.returnProductGeneralDb.linkCouponToExchange(id, coupon.id);
+    //     console.log('Cupom criado no serviço:', coupon.code);
+    //   } catch (error) {
+    //     console.error('Erro ao criar cupom no serviço:', error);
+    //   }
     // }
+
+    // console.log('Total do pedido:', exchange.order.total);
+    // console.log('Tipo do total:', typeof exchange.order.total);
+    // console.log('UserId:', exchange.userId);
 
     return updatedRequest;
   }
