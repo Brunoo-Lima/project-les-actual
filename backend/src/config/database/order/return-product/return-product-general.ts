@@ -80,37 +80,70 @@ class ReturnProductGeneral {
     return await prismaClient.$transaction(async (tx) => {
       const exchange = await tx.exchangeRequest.findUnique({
         where: { id },
-        include: { order: true },
+        include: {
+          order: {
+            include: {
+              items: {
+                include: {
+                  product: {
+                    include: {
+                      stock: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          coupon: true,
+        },
       });
 
       if (!exchange) throw new Error('Solicitação não encontrada');
 
-      // Atualiza status
-      const updated = await tx.exchangeRequest.update({
-        where: { id },
-        data: { status: newStatus },
-      });
+      if (newStatus === ORDER_STATUS.ORDER_RETURNED) {
+        // 2.1 Verifica se já foi processado (tem cupom)
+        if (exchange.coupon) {
+          throw new Error('Devolução já processada para este pedido');
+        }
 
-      if (newStatus === ORDER_STATUS.ORDER_RETURNED && !exchange.couponId) {
+        // 2.2 Processa devolução ao estoque
+        for (const item of exchange.order.items) {
+          if (!item.product.stock) {
+            throw new Error(
+              `Produto ${item.product.id} sem estoque cadastrado`
+            );
+          }
+
+          await tx.stock.update({
+            where: { id: item.product.stock.id },
+            data: { quantity: { increment: item.quantity } },
+          });
+        }
+
+        // 2.3 Cria cupom (já serve como flag de processamento)
         const couponCode = `DEV-${Date.now()}`;
         const coupon = await tx.exchangeCoupon.create({
           data: {
             code: couponCode,
             value: new Decimal(exchange.order.total.toString()),
-            expiration: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 dias
+            expiration: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
             status: 'active',
             isUsed: false,
             userId: exchange.userId,
           },
         });
 
-        // Associa o cupom à solicitação
+        // 2.4 Atualiza a solicitação com o cupom
         await tx.exchangeRequest.update({
           where: { id },
           data: { couponId: coupon.id },
         });
       }
-      return updated;
+
+      return await tx.exchangeRequest.update({
+        where: { id },
+        data: { status: newStatus },
+      });
     });
   }
 
